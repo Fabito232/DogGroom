@@ -5,9 +5,9 @@ class Cliente extends Model {}
 
 Cliente.init({
     Cedula: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        type: DataTypes.STRING,
         primaryKey: true,
+        allowNull: false
     },
     Nombre: {
         type: DataTypes.STRING,
