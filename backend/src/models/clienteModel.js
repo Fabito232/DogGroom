@@ -20,6 +20,7 @@ Cliente.init({
 }, {
     sequelize,
     freezeTableName: true,
+    timestamps: false
 });
 
 (async () => {
@@ -30,14 +31,5 @@ Cliente.init({
         console.error("Error al sincronizar la tabla Cliente:", error);
     }
 })();
-
-// (async () => {
-//     try {
-//         await sequelize.drop();
-//         console.log('All tables dropped!');
-//     } catch (error) {
-//         console.error("Error al sincronizar la tabla Cliente:", error);
-//     }
-// })();
 
 export default Cliente;

@@ -1,22 +1,33 @@
 import  Cliente  from "../models/clienteModel.js"
 
 export const createCliente = async (req, res) => {
+
+    const existencia = await Cliente.findByPk(req.body.cedula);
+    if(existencia !== null) {
+        return res.json({
+            ok: false,
+            status: 400,
+            message: "Existe un Cliente con esa cedula"
+        });
+    }
+
     try {
         const cliente = await Cliente.create({
+            Cedula: req.body.cedula,
             Nombre: req.body.nombre,
             Telefono: req.body.telefono
         });
-        console.log(cliente)
         res.json({
             ok: true,
             status: 200,
-            message: "Cliente creado correctamente"
+            message: "Cliente creado correctamente",
+            data: cliente
         });
     } catch (error) {
-        console.error("Error al crear el cliente:", error);
-        res.status(500).json({
+      //  console.error("Error al crear el cliente:", error);
+        res.json({
             ok: false,
-            status: 500,
+            status: 400,
             message: "Error al crear el cliente"
         });
     }
