@@ -1,10 +1,11 @@
 import sequelize from "../database/database.js";
 import { DataTypes, Model } from "sequelize";
+import TipoMascota from "./tipoMascota.js";
 
-class TipoMascota extends Model {}
+class Servicio extends Model {}
 
-TipoMascota.init({
-    ID_TipoMascota: {
+Servicio.init({
+    ID_Servicio: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
@@ -13,6 +14,10 @@ TipoMascota.init({
     Descripcion: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    Precio: {
+        type: DataTypes.DECIMAL,
+        allowNull: false
     }
 }, {
     sequelize,
@@ -20,5 +25,7 @@ TipoMascota.init({
     createdAt: false,
     updatedAt: false
 });
+TipoMascota.hasMany(Servicio, {foreignKey: 'ID_TipoMascota'});
 
-export default TipoMascota;
+
+export default Servicio;

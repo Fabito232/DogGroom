@@ -1,10 +1,11 @@
 import sequelize from "../database/database.js";
 import { DataTypes, Model } from "sequelize";
-class Cliente extends Model {}
 
-Cliente.init({
-    Cedula: {
-        type: DataTypes.STRING,
+class Producto extends Model {}
+
+Producto.init({
+    ID_Producto: {
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false
     },
@@ -12,8 +13,16 @@ Cliente.init({
         type: DataTypes.STRING,
         allowNull: false
     },
-    Telefono: {
+    Marca: {
         type: DataTypes.STRING,
+        allowNull: false  
+    },
+    Descripcion: {
+        type: DataTypes.STRING,
+        allowNull: false  
+    },
+    Cantidad: {
+        type: DataTypes.INTEGER,
         allowNull: false  
     }
 }, {
@@ -22,4 +31,4 @@ Cliente.init({
     timestamps: false
 });
 
-export default Cliente;
+export default Producto;

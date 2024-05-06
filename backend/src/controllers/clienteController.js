@@ -1,5 +1,4 @@
 import  Cliente  from "../models/clienteModel.js"
-
 export const createCliente = async (req, res) => {
 
     const existencia = await Cliente.findByPk(req.body.cedula);
