@@ -1,6 +1,5 @@
 import sequelize from "../database.js";
 import { DataTypes, Model } from "sequelize";
-
 class Cliente extends Model {}
 
 Cliente.init({
