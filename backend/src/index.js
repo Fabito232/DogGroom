@@ -11,6 +11,9 @@ import mascotaRoutes from "./routes/mascotaRoute.js";
 import citasRoutes from "./routes/citaRoute.js"
 import servicioRoutes from "./routes/servicioRoute.js";
 import citasDetalleRoutes from "./routes/citaDetalleRoute.js";
+import productoRoutes from "./routes/productoRoute.js";
+import empleadoRoutes from "./routes/empleadoRoute.js";
+import tipoMascota from "./routes/tipoMascotaRoute.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -35,6 +38,9 @@ app.use('/api/', mascotaRoutes);
 app.use('/api/', citasRoutes);
 app.use('/api/', servicioRoutes);
 app.use('/api/', citasDetalleRoutes);
+app.use('/api/', productoRoutes);
+app.use('/api/', empleadoRoutes);
+app.use('/api/', tipoMascota);
 
 app.listen(DB_PORT)
 console.log("Server on port:", DB_PORT)

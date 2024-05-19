@@ -5,7 +5,7 @@ import Mascota from "../models/mascotaModel.js";
 import Cita from "../models/citaModel.js";
 import CitaDetalle from "../models/citaDetalle.js";
 import Servicio from "../models/servicioModel.js";
-import Empleado from "../models/empleadoDetalle.js";
+import Empleado from "../models/empleadoModel.js";
 import Producto from "../models/productoModel.js";
 
 async function Sync () {
