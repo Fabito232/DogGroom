@@ -1,5 +1,7 @@
 import Empleado from '../models/empleadoModel.js'
 import bcrypt from 'bcrypt';
+import { SECRET } from '../config.js';
+import { generarToken } from '../middleware/auth.js';
 
 export const createEmpleado = async (req, res) => {
     try {
@@ -49,7 +51,10 @@ export const loginEmpleado = async (req, res) => {
                 message: "Contraseña incorrecta"
             });
         }
+        const token =  generarToken({ id: empleado.id, correo: empleado.correo });
+
         res.json({
+            token: token,
             ok: true,
             status: 200,
             message: "Inicio de sesión exitoso",

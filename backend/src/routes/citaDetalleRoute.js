@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { createCitaDetalle, getCitaDetalle, getListCitaDetalle, deleteCitaDetalle, updateCitaDetalle } from "../controllers/citaDetalleController.js";
 
-
 const router = Router();
 
 router.get('/CitaDetalles', getListCitaDetalle);

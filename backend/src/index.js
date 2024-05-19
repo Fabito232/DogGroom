@@ -1,5 +1,6 @@
 import express from "express";
 import multer from 'multer';
+import morgan from "morgan";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import path from 'path'
@@ -14,8 +15,9 @@ import citasDetalleRoutes from "./routes/citaDetalleRoute.js";
 import productoRoutes from "./routes/productoRoute.js";
 import empleadoRoutes from "./routes/empleadoRoute.js";
 import tipoMascota from "./routes/tipoMascotaRoute.js";
-
+import { verificarToken } from "./middleware/auth.js";
 const app = express();
+app.use(morgan('dev'));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -32,14 +34,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/uploads',express.static(join(__dirname, 'public/uploads')));
 
 modelSync()
-
+app.use('/api/', empleadoRoutes);
+app.use(verificarToken)
 app.use('/api/', clienteRoutes);
 app.use('/api/', mascotaRoutes);
 app.use('/api/', citasRoutes);
 app.use('/api/', servicioRoutes);
 app.use('/api/', citasDetalleRoutes);
 app.use('/api/', productoRoutes);
-app.use('/api/', empleadoRoutes);
+
 app.use('/api/', tipoMascota);
 
 app.listen(DB_PORT)
