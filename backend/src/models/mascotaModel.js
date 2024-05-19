@@ -1,5 +1,5 @@
-import sequelize from "../database/database.js";
 import { DataTypes, Model } from "sequelize";
+import sequelize from "../database/database.js";
 import Cliente from "./clienteModel.js";
 import TipoMascota from "./tipoMascota.js";
 
@@ -22,7 +22,7 @@ Mascota.init({
     },
     FotoURL: {
         type: DataTypes.STRING,
-        allowNull: false  
+        allowNull: true  
     }
 }, {
     sequelize,
@@ -31,6 +31,7 @@ Mascota.init({
 });
 
 Cliente.hasMany(Mascota, { foreignKey: 'ID_Cliente' },);
+Mascota.belongsTo(Cliente, {foreignKey: 'ID_Mascota' })
 TipoMascota.hasMany(Mascota, { foreignKey: 'ID_TipoMascota'});
 
 export default Mascota;

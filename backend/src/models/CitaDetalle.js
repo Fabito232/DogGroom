@@ -14,7 +14,7 @@ CitaDetalle.init({
     },
     MontoAdicional: {
         type: DataTypes.DECIMAL,
-        allowNull: false
+        allowNull: true
     }
 }, {
     sequelize,
