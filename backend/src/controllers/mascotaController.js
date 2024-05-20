@@ -21,7 +21,7 @@ export const createMascota = async (req, res) => {
             ID_TipoMascota: req.body.ID_TipoMascota
         });
 
-        res.json({
+        return res.json({
             ok: true,
             status: 200,
             message: "Mascota creado correctamente",
@@ -35,7 +35,7 @@ export const createMascota = async (req, res) => {
             console.log('Imagen eliminada');
         });
         console.error("Error al crear el Mascota:", error);
-        res.json({
+        return res.json({
             ok: false,
             status: 400,
             message: "Error al crear el Mascota"
@@ -44,25 +44,32 @@ export const createMascota = async (req, res) => {
 }
 
 export const getMascota = async (req, res) => {
-    const id = req.params.id
+    
     try {
-        const mascota = await Mascota.findByPk(id);
+        const id = req.params.id
+        const mascota = await Mascota.findAll(
+            {
+                where: {
+                    ID_Cliente: id
+                }
+            }
+        )
         if (mascota !== null) {
-            res.json({
+            return res.json({
                 ok: true,
                 status: 200,
                 message: "Se obtuvo el Mascota correctamente",
                 data: mascota
             });
         } else {
-            res.status(404).json({
+            return res.status(404).json({
                 ok: false,
                 status: 404,
                 message: "No se encontró el Mascota con el ID proporcionado",
             });
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             ok: false,
             status: 500,
             message: "Error al obtener el Mascota",
@@ -75,14 +82,14 @@ export const getListMascota = async (req, res) => {
 
     try {
         const mascota = await Mascota.findAll()
-        res.json({
+        return res.json({
             ok: true,
             status: 200,
             message: "Se obtuvo todos los Mascota correctamente",
             data: mascota
         })
     } catch (error) {
-        res.json({
+        return res.json({
             ok: false,
             status: 500,
             message: "No se encontro ningun Mascota",
@@ -111,7 +118,7 @@ export const deleteMascota = async (req, res) => {
                 }
             });
         }
-        res.json({
+        return res.json({
             ok: true,
             status: 200,
             message: "Mascota eliminada correctamente",
@@ -120,7 +127,7 @@ export const deleteMascota = async (req, res) => {
 
     } catch (error) {
         console.error("Error al eliminar la mascota:", error);
-        res.status(500).json({
+        return res.status(500).json({
             ok: false,
             status: 500,
             message: "Error al eliminar la mascota",
@@ -130,12 +137,9 @@ export const deleteMascota = async (req, res) => {
 };
 
 export const updateMascota = async (req, res) => {
-    const id = req.params.id
-    console.log(id)
-    console.log(req.body)
-    console.log(req.file)
     
     try {
+        const id = req.params.id
         let fotoURL = null;
         if (req.file) {
           fotoURL = `/uploads/${req.file.filename}`;
@@ -155,21 +159,21 @@ export const updateMascota = async (req, res) => {
                 }
             })
             if (filasActualizadas > 0) {
-                res.json({
+                return res.json({
                     ok: true,
                     status: 200,
                     message: "Se actualizo la Mascota correctamente",
                     data: filasActualizadas
                 });
             } else {
-                res.status(404).json({
+                return res.status(404).json({
                     ok: false,
                     status: 404,
                     message: "No se encontró la Mascota con el ID proporcionado",
                 });
             }
     } catch (error) {
-        res.json({
+        return res.json({
             ok: false,
             status: 500,
             message: "No se actualizo la Mascota",

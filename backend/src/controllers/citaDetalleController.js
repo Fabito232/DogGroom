@@ -90,14 +90,14 @@ export const deleteCitaDetalle = async (req, res) => {
                 ID_Cita: id
             }
         })
-        res.json({
+        return res.json({
             ok: true,
             status: 200,
             message: "Se borro la CitaDetalle correctamente",
             data: citaDetalle
         })
     } catch (error) {
-        res.json({
+        return res.json({
             ok: false,
             status: 500,
             message: "No se borro la CitaDetalle",
@@ -120,14 +120,14 @@ export const updateCitaDetalle = async (req, res) => {
         await t.commit();
 
         if (citaDetalles.length > 0) {
-            res.json({
+            return res.json({
                 ok: true,
                 status: 200,
                 message: "Se actualizaron los detalles de la cita correctamente",
                 data: citaDetalles
             });
         } else {
-            res.status(404).json({
+            return res.status(404).json({
                 ok: false,
                 status: 404,
                 message: "No se encontraron detalles de cita para actualizar"
@@ -136,7 +136,7 @@ export const updateCitaDetalle = async (req, res) => {
     } catch (error) {
         await t.rollback();
         console.error('Error al actualizar detalles de cita:', error);
-        res.status(500).json({
+        return res.status(500).json({
             ok: false,
             status: 500,
             message: "Error al actualizar detalles de cita",

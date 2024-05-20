@@ -12,7 +12,7 @@ export const createEmpleado = async (req, res) => {
             Correo: req.body.correo,
             Contrasena: contraHash,
         });
-        res.json({
+        return res.json({
             ok: true,
             status: 200,
             message: "Empleado creada correctamente",
@@ -20,7 +20,7 @@ export const createEmpleado = async (req, res) => {
         });
     } catch (error) {
         console.error("Error al crear el Empleado:", error);
-        res.json({
+        return res.json({
             ok: false,
             status: 400,
             message: "Error al crear la Empleado"
@@ -53,7 +53,7 @@ export const loginEmpleado = async (req, res) => {
         }
         const token =  generarToken({ id: empleado.id, correo: empleado.correo });
 
-        res.json({
+        return res.json({
             token: token,
             ok: true,
             status: 200,
@@ -66,7 +66,7 @@ export const loginEmpleado = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             ok: false,
             status: 500,
             message: "Error al obtener el Empleado",

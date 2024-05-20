@@ -3,10 +3,10 @@ import { createTipoMascota, getTipoMascota, getListTipoMascota, deleteTipoMascot
 import { validarDatosTipoMa } from "../middleware/validators.js";
 const router = Router();
 
-router.get('/TipoMascotas', getListTipoMascota)
-router.get('/TipoMascotas/:id', getTipoMascota)
-router.post('/TipoMascotas',validarDatosTipoMa, createTipoMascota);
-router.delete('/TipoMascotas/:id',deleteTipoMascota)
-router.put('/TipoMascotas/:id', validarDatosTipoMa, updateTipoMascota )
+router.get('/tipoMascotas', getListTipoMascota)
+router.get('/tipoMascotas/:id', getTipoMascota)
+router.post('/tipoMascotas',validarDatosTipoMa, createTipoMascota);
+router.delete('/tipoMascotas/:id',deleteTipoMascota)
+router.put('/tipoMascotas/:id', validarDatosTipoMa, updateTipoMascota )
 
 export default router

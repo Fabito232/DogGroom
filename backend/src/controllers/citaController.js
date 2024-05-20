@@ -10,15 +10,15 @@ export const createCita = async (req, res) => {
             MontoTotal: req.body.montoTotal,
             ID_Cliente: req.body.cedula
         });
-        res.json({
+        return res.json({
             ok: true,
             status: 200,
             message: "Cita creada correctamente",
-            data: Cita
+            data: cita
         });
     } catch (error) {
         console.error("Error al crear el Cita:", error);
-        res.json({
+        return res.json({
             ok: false,
             status: 400,
             message: "Error al crear la Cita"
@@ -31,21 +31,21 @@ export const getCita = async (req, res) => {
         const id = req.params.id
         const cita = await Cita.findByPk(id);
         if (cita !== null) {
-            res.json({
+            return res.json({
                 ok: true,
                 status: 200,
                 message: "Se obtuvo la Cita correctamente",
                 data: cita
             });
         } else {
-            res.status(404).json({
+            return res.status(404).json({
                 ok: false,
                 status: 404,
                 message: "No se encontró la Cita con el ID proporcionado",
             });
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             ok: false,
             status: 500,
             message: "Error al obtener la Cita",
@@ -60,14 +60,14 @@ export const getListCita = async (req, res) => {
     try {
         const cita = await Cita.findAll({
         })
-        res.json({
+        return res.json({
             ok: true,
             status: 200,
             message: "Se obtuvo todos las Cita correctamente",
             data: cita
         })
     } catch (error) {
-        res.json({
+        return res.json({
             ok: false,
             status: 500,
             message: "No se encontro ninguna Cita",
@@ -76,21 +76,22 @@ export const getListCita = async (req, res) => {
 }
 
 export const deleteCita = async (req, res) => {
-    const id = req.params.id
+    
     try {
+        const id = req.params.id
         const cita = await Cita.destroy({
             where:{
                 ID_Cita: id
             }
         })
-        res.json({
+        return res.json({
             ok: true,
             status: 200,
             message: "Se borro la Cita correctamente",
             data: cita
         })
     } catch (error) {
-        res.json({
+        return res.json({
             ok: false,
             status: 500,
             message: "No se borro la Cita",
@@ -99,10 +100,9 @@ export const deleteCita = async (req, res) => {
 }
 
 export const updateCita = async (req, res) => {
-    const id = req.params.id
-    console.log(id)
-    console.log(req.body)
+    
     try {
+        const id = req.params.id
         const [filasActualizadas]  = await Cita.update(
             {
                 FechaYHora: req.body.fechaYHora,
@@ -117,20 +117,20 @@ export const updateCita = async (req, res) => {
                 }
             })
             if (filasActualizadas > 0) {
-                res.json({
+                return res.json({
                     ok: true,
                     status: 200,
                     message: "Se obtuvo la Cita correctamente",
                 });
             } else {
-                res.status(404).json({
+                return res.status(404).json({
                     ok: false,
                     status: 404,
                     message: "No se encontró la Cita con el ID proporcionado",
                 });
             }
     } catch (error) {
-        res.json({
+        return res.json({
             ok: false,
             status: 500,
             message: "No se actualizo la Cita",

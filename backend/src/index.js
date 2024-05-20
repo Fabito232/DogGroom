@@ -23,7 +23,6 @@ const storage = multer.diskStorage({
   },
 });
 app.use(multer({ storage }).single('image'));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use('/uploads',express.static(join(__dirname, 'public/uploads')));

@@ -26,6 +26,14 @@ Cita.init({
     MontoTotal: {
         type: DataTypes.DECIMAL,
         allowNull: false
+    },
+    ID_Cliente: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        references: {
+            model: Cliente,
+            key: 'Cedula'
+        }
     }
 }, {
     sequelize,
@@ -33,7 +41,8 @@ Cita.init({
     createdAt: false,
     updatedAt: false
 });
+
 Cliente.hasMany(Cita, {foreignKey: 'ID_Cliente'});
-Cita.belongsTo(Cliente,{foreignKey: 'ID_Cita'});
+//Cita.belongsTo(Cliente,{foreignKey: 'ID_Cita'});
 
 export default Cita;

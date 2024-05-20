@@ -3,10 +3,10 @@ import { createCita, getCita, getListCita, deleteCita, updateCita } from "../con
 import { validarDatosCita } from "../middleware/validators.js";
 const router = Router();
 
-router.get('/Citas', getListCita);
-router.get('/Citas/:id', getCita);
-router.post('/Citas',validarDatosCita, createCita);
-router.delete('/Citas/:id',deleteCita);
-router.put('/Citas/:id',validarDatosCita, updateCita );
+router.get('/citas', getListCita);
+router.get('/citas/:id', getCita);
+router.post('/citas',validarDatosCita, createCita);
+router.delete('/citas/:id',deleteCita);
+router.put('/citas/:id',validarDatosCita, updateCita );
 
 export default router

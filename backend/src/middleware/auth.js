@@ -4,6 +4,7 @@ import { SECRET } from '../config.js';
 export const generarToken = (datos) => {
     return jwt.sign(datos, SECRET, { expiresIn: '1h' });
 }
+
 export const renovarToken = (req, res) => {
   try {
     const decoded = jwt.verify(req.body.token, SECRET);

@@ -23,6 +23,22 @@ Mascota.init({
     FotoURL: {
         type: DataTypes.STRING,
         allowNull: true  
+    },
+    ID_Cliente: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        references: {
+            model: Cliente,
+            key: 'Cedula'
+        }
+    },
+    ID_TipoMascota: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: TipoMascota,
+            key: 'ID_TipoMascota'
+        }
     }
 }, {
     sequelize,
@@ -31,7 +47,7 @@ Mascota.init({
 });
 
 Cliente.hasMany(Mascota, { foreignKey: 'ID_Cliente' },);
-Mascota.belongsTo(Cliente, {foreignKey: 'ID_Mascota' })
+//Mascota.belongsTo(Cliente, {foreignKey: 'ID_Mascota' })
 TipoMascota.hasMany(Mascota, { foreignKey: 'ID_TipoMascota'});
 
 export default Mascota;
