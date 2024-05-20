@@ -1,13 +1,18 @@
 
 import Mascota from "../models/mascotaModel.js";
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export const createMascota = async (req, res) => {
+    let fotoURL = null;
+    if (req.file) {
+      fotoURL = `/uploads/${req.file.filename}`;
+    }
     try {
-        let fotoURL = null;
-        if (req.file) {
-          fotoURL = `/uploads/${req.file.filename}`;
-        }
-
         const mascota = await Mascota.create({
             Nombre: req.body.nombre,
             Raza: req.body.raza,
@@ -23,8 +28,12 @@ export const createMascota = async (req, res) => {
             data: mascota
         });
 
-       
     } catch (error) {
+        const fotoPath = join(__dirname, '../public' + fotoURL);
+        fs.unlink(fotoPath, (err) => {
+            if (err) console.error("Error al eliminar la imagen:", err);
+            console.log('Imagen eliminada');
+        });
         console.error("Error al crear el Mascota:", error);
         res.json({
             ok: false,
@@ -62,7 +71,6 @@ export const getMascota = async (req, res) => {
     }
 };
 
-
 export const getListMascota = async (req, res) => {
 
     try {
@@ -83,27 +91,43 @@ export const getListMascota = async (req, res) => {
 }
 
 export const deleteMascota = async (req, res) => {
-    const id = req.params.id
     try {
-        const mascota = await Mascota.destroy({
-            where:{
-                ID_Mascota: id
-            }
-        })
+        const id = req.params.id;
+        const mascota = await Mascota.findByPk(id);
+        if (!mascota) {
+            return res.status(404).json({
+                ok: false,
+                status: 404,
+                message: "Mascota no encontrada",
+            });
+        }
+        
+        if (mascota.FotoURL) {
+            const fotoPath = join(__dirname, '../', 'public', mascota.FotoURL);
+            fs.unlink(fotoPath, (error) => {});
+            await Mascota.destroy({
+                where: {
+                    ID_Mascota: id
+                }
+            });
+        }
         res.json({
             ok: true,
             status: 200,
-            message: "Se borro el Mascota correctamente",
+            message: "Mascota eliminada correctamente",
             data: mascota
-        })
+        });
+
     } catch (error) {
-        res.json({
+        console.error("Error al eliminar la mascota:", error);
+        res.status(500).json({
             ok: false,
             status: 500,
-            message: "No se borro el Mascota",
-        })
+            message: "Error al eliminar la mascota",
+            error: error.message
+        });
     }
-}
+};
 
 export const updateMascota = async (req, res) => {
     const id = req.params.id

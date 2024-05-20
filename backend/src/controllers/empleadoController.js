@@ -74,3 +74,4 @@ export const loginEmpleado = async (req, res) => {
         });
     }
 };
+
