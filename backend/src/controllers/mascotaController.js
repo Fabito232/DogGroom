@@ -47,6 +47,7 @@ export const getMascota = async (req, res) => {
     
     try {
         const id = req.params.id
+        console.log(id)
         const mascota = await Mascota.findAll(
             {
                 where: {

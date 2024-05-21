@@ -41,5 +41,7 @@ CitaDetalle.init({
 
 Cita.hasMany(CitaDetalle, {foreignKey: 'ID_Cita'});
 Servicio.hasMany(CitaDetalle, {foreignKey: 'ID_Servicio'});
+CitaDetalle.belongsTo(Cita, { foreignKey: 'ID_Cita'});
+CitaDetalle.belongsTo(Servicio, { foreignKey: 'ID_Servicio' });
 
 export default CitaDetalle;

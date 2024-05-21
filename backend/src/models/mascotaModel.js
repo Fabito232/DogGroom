@@ -47,7 +47,8 @@ Mascota.init({
 });
 
 Cliente.hasMany(Mascota, { foreignKey: 'ID_Cliente' },);
-//Mascota.belongsTo(Cliente, {foreignKey: 'ID_Mascota' })
 TipoMascota.hasMany(Mascota, { foreignKey: 'ID_TipoMascota'});
+Mascota.belongsTo(Cliente, {foreignKey: 'ID_Cliente' })
+Mascota.belongsTo(TipoMascota, { foreignKey: 'ID_TipoMascota'})
 
 export default Mascota;

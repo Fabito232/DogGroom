@@ -1,9 +1,10 @@
 import Joi from 'joi';
 
 const mascotaSchema = Joi.object({
+    image: Joi.string().allow('', null).optional(),
     nombre: Joi.string().required(),
     raza: Joi.string().required(),
-    cedula: Joi.number().integer().positive().required(),
+    cedula: Joi.string().required(),
     ID_TipoMascota: Joi.number().integer().positive().required()
 });
 
@@ -21,11 +22,12 @@ const productoSchema = Joi.object({
 });
 
 const tipoMascotaSchema = Joi.object({
-    Descripcion: Joi.string().required(),
+    descripcion: Joi.string().required()
 });
 
 const servicioSchema = Joi.object({
     descripcion: Joi.string().required(),
+    ID_TipoMascota: Joi.number().integer().positive().required(),
     precio: Joi.number().integer().positive().required()
 });
 

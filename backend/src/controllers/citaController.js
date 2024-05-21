@@ -1,4 +1,9 @@
+import CitaDetalle from '../models/citaDetalle.js';
 import Cita from '../models/citaModel.js'
+import Cliente from '../models/clienteModel.js';
+import Mascota from '../models/mascotaModel.js';
+import Servicio from '../models/servicioModel.js';
+import TipoMascota from '../models/tipoMascota.js';
 
 export const createCita = async (req, res) => {
 
@@ -29,7 +34,31 @@ export const createCita = async (req, res) => {
 export const getCita = async (req, res) => {
     try {
         const id = req.params.id
-        const cita = await Cita.findByPk(id);
+        const cita = await Cita.findAll(
+            {
+                where: {
+                    ID_Cita: id
+                },
+                include: [
+                {
+                    model: Cliente,
+                    include: [{
+                        model: Mascota,
+                        include:[{
+                            model: TipoMascota
+                        }]
+                    }]
+                },
+                    
+                {
+                    model: CitaDetalle,
+                    include: [{
+                        model: Servicio
+                    }]
+                }]
+            }
+        )
+
         if (cita !== null) {
             return res.json({
                 ok: true,
@@ -138,3 +167,30 @@ export const updateCita = async (req, res) => {
         })
     }
 }
+
+
+// const allCita = await Cita.findAll(
+//     {
+//         where: {
+//             ID_Cita: id
+//         },
+//         include: [
+//         {
+//             model: Cliente,
+//             include: [{
+//                 model: Mascota,
+//                 include:[{
+//                     model: TipoMascota
+//                 }]
+//             }]
+//         },
+            
+//         {
+//             model: CitaDetalle,
+//             include: [{
+//                 model: Servicio
+//             }]
+//         }]
+//     }
+// )
+// console.log(allCita)

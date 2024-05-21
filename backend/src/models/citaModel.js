@@ -43,6 +43,6 @@ Cita.init({
 });
 
 Cliente.hasMany(Cita, {foreignKey: 'ID_Cliente'});
-//Cita.belongsTo(Cliente,{foreignKey: 'ID_Cita'});
+Cita.belongsTo(Cliente,{foreignKey: 'ID_Cliente'});
 
 export default Cita;
