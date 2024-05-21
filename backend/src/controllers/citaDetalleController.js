@@ -1,4 +1,4 @@
-import CitaDetalle from '../models/citaDetalle.js'
+import CitaDetalle from '../models/citaDetalleModel.js'
 import sequelize from '../database/database.js';
 
 export const createCitaDetalle = async (req, res) => {
