@@ -1,0 +1,94 @@
+.principal-div{
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(6,1fr);
+    grid-template-rows: auto;
+    margin: 0 auto;
+}
+
+/*CSS para la sección de la lista de clientes*/
+.cliente-list-container {
+    grid-column: 2/3;
+    flex: 1;
+    float: left;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #B17D47;
+}
+
+.list-container{
+    background-color: white;
+    padding: 10px;
+}
+
+/*CSS para la sección del form*/
+.cliente-form-container {
+    grid-column: 3/5;
+    flex: 1;
+    float: right;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #674B4B;
+}
+
+.cliente-list {
+    padding: 0;
+}
+
+.cliente-item {
+    background: #000000;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.form-group {
+    flex: 1;
+    padding: 4px;
+}
+
+input {
+    padding: 8px;
+    width: 230px;
+    height: 50px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 200px;
+    height: 30px;
+    margin-bottom: 10px;
+    margin-left: 15px;
+    background-color: #81B850;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #65953a;
+}
+
+select {
+    width: 200px;
+    height: 40px;
+    padding: 10px;
+    margin-bottom: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
