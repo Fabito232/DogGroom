@@ -18,6 +18,14 @@ Servicio.init({
     Precio: {
         type: DataTypes.DECIMAL,
         allowNull: false
+    },
+    ID_TipoMascota: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: TipoMascota,
+            key: 'ID_TipoMascota'
+        }
     }
 }, {
     sequelize,
@@ -25,7 +33,8 @@ Servicio.init({
     createdAt: false,
     updatedAt: false
 });
-TipoMascota.hasMany(Servicio, {foreignKey: 'ID_TipoMascota'});
 
+TipoMascota.hasMany(Servicio, {foreignKey: 'ID_TipoMascota'});
+Servicio.belongsTo(TipoMascota, {foreignKey: 'ID_Servicio'});
 
 export default Servicio;
