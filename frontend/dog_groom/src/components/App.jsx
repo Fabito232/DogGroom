@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Lista_productos from './components/lista_productos';
-import Agregar_producto from './components/agregar_producto';
+import Lista_productos from './lista_productos';
 
 const App = () => {
   return (
