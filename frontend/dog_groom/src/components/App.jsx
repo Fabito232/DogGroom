@@ -1,5 +1,5 @@
 import React from 'react';
-import ClienteList from './components/ClienteList';
+import AgendarCita from './AgendarCita';
 
 function App() {
   return (
@@ -7,7 +7,7 @@ function App() {
       <header className="App-header">
       </header>
       <main>
-        <ClienteList />
+        <AgendarCita />
       </main>
     </div>
   );

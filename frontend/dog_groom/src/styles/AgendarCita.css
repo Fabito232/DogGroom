@@ -1,4 +1,4 @@
-.principal-div {
+.div-principal {
     padding: 0;
     margin: 0;
     display: flex;
@@ -8,42 +8,30 @@
     height: 100vh;
 }
 
-.cliente-list-container {
-    width: 475px;
+.contenedor-lista-clientes {
+    width: 300px;
     height: 740px;
     margin: 0 15px;
     padding: 20px;
     border-radius: 10px;
     background-color: #B17D47;
-}
-
-.cliente-form-container {
-    width: 757px;
-    height: 740px;
-    margin: 0 15px;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: #674B4B;
-}
-
-.cliente-list-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.list-container {
+.contenedor-de-la-lista {
     flex: 1;
     width: 100%;
     overflow-y: auto;
 }
 
-.list-container::-webkit-scrollbar {
+.contenedor-de-la-lista::-webkit-scrollbar {
     display: none;
 }
 
-.cliente-list {
+.lista-clientes {
     padding: 0;
     width: 100%;
 }
@@ -58,7 +46,16 @@
     align-items: flex-start;
 }
 
-.form-row {
+.contenedor-formulario-cliente {
+    width: 757px;
+    height: 740px;
+    margin: 0 15px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #674B4B;
+}
+
+.fila-formulario {
     display: flex;
     justify-content: center;
     margin-bottom: 10px;
@@ -66,7 +63,7 @@
     flex-wrap: wrap;
 }
 
-.form-group {
+.grupo-componentes {
     flex: 1;
     padding: 4px;
     min-width: 220px;
@@ -78,13 +75,14 @@
     margin-top: 10px;
 }
 
-.cliente-table th,
 .cliente-table td {
     border: 1px solid #000000;
     padding: 8px;
 }
 
 .cliente-table th {
+    border: 1px solid #000000;
+    padding: 8px;
     background-color: #ffffff;
     color: rgb(0, 0, 0);
     text-align: left;

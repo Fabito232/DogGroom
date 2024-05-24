@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/ClienteList.css';
+import '../styles/AgendarCita.css';
 
-const ClienteList = () => {
+function AgendarCita() {
   // Pruebas local
   const [clientes, setClientes] = useState([]);
 
@@ -63,10 +63,10 @@ const ClienteList = () => {
   };
 
   return (
-    <section className="principal-div">
-      <div className="cliente-list-container">
-        <div className='list-container'>
-          <ul className="cliente-list">
+    <div className="div-principal">
+      <div className="contenedor-lista-clientes">
+        <div className='contenedor-de-la-lista'>
+          <ul className="lista-clientes">
             {clientes.map(cliente => (
               <li key={cliente.id} className="cliente-item">
                 <span className="cliente-nombre">{cliente.id} - {cliente.nombreCliente} - {cliente.cedula}</span>
@@ -75,10 +75,10 @@ const ClienteList = () => {
           </ul>
         </div>
       </div>
-      <div className="cliente-form-container">
+      <div className="contenedor-formulario-cliente">
         <form onSubmit={handleAgregarCliente}>
-          <div className="form-row">
-            <div className="form-group">
+          <div className="fila-formulario">
+            <div className="grupo-componentes">
               <input
                 type="text"
                 id="NombreCliente"
@@ -88,7 +88,7 @@ const ClienteList = () => {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="grupo-componentes">
               <input
                 type="text"
                 id="cedula"
@@ -98,7 +98,7 @@ const ClienteList = () => {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="grupo-componentes">
               <input
                 type="text"
                 id="telefono"
@@ -110,8 +110,8 @@ const ClienteList = () => {
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
+          <div className="fila-formulario">
+            <div className="grupo-componentes">
               <input
                 type="text"
                 id="NombrePerro"
@@ -121,7 +121,7 @@ const ClienteList = () => {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="grupo-componentes">
               <input
                 type="text"
                 id="raza"
@@ -131,7 +131,7 @@ const ClienteList = () => {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="grupo-componentes">
               {/* Hay que hacerlo select */}
               <input
                 type="text"
@@ -144,8 +144,8 @@ const ClienteList = () => {
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
+          <div className="fila-formulario">
+            <div className="grupo-componentes">
               <select id="servicios" name="servicios">
                 <option value="" selected>Opciones...</option>
                 <option value="paquete1">Paquete 1</option>
@@ -153,7 +153,7 @@ const ClienteList = () => {
                 <option value="baño">Baño</option>
               </select>
             </div>
-            <div className="form-group">
+            <div className="grupo-componentes">
               <input
                 type="text"
                 id="precio"
@@ -163,12 +163,12 @@ const ClienteList = () => {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="grupo-componentes">
               <button type="submit">+</button>
             </div>
           </div>
 
-          <div className="form-row">
+          <div className="fila-formulario">
             <table className="cliente-table">
               <thead>
                 <tr>
@@ -190,8 +190,8 @@ const ClienteList = () => {
             </table>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
+          <div className="fila-formulario">
+            <div className="grupo-componentes">
               <input
                 type="text"
                 id="hora"
@@ -201,7 +201,7 @@ const ClienteList = () => {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="grupo-componentes">
               <input
                 type="text"
                 id="descripcion"
@@ -211,7 +211,7 @@ const ClienteList = () => {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="grupo-componentes">
               <input
                 type="text"
                 id="estado"
@@ -222,17 +222,13 @@ const ClienteList = () => {
               />
             </div>
           </div>
-          <div className="form-row">
+          <div className="fila-formulario">
             <button type="submit">Agendar Cita</button>
           </div>
         </form>
-
-
       </div>
-    </section>
-
-
+    </div>
   );
-};
+}
 
-export default ClienteList;
+export default AgendarCita;
