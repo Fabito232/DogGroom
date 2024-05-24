@@ -2,11 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
-import Lista_productos from './lista_productos.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Lista_productos/>
-
+    <App />
   </React.StrictMode>,
 )
+
+//<Lista_productos/>
+//<Agregar_producto/>
