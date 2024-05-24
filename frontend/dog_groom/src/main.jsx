@@ -8,3 +8,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <App />
   </React.StrictMode>,
 )
+
+//<Lista_productos/>
+//<Agregar_producto/>
