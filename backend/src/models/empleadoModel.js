@@ -7,6 +7,7 @@ Empleado.init({
     ID_Empleado: {
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
         allowNull: false
     },
     Nombre: {
@@ -15,9 +16,10 @@ Empleado.init({
     },
     Correo: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
-    Password: {
+    Contrasena: {
         type: DataTypes.STRING,
         allowNull: false  
     }

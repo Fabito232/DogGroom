@@ -6,11 +6,12 @@ class Producto extends Model {}
 Producto.init({
     ID_Producto: {
         type: DataTypes.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
         allowNull: false
     },
     Nombre: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(5),
         allowNull: false
     },
     Marca: {

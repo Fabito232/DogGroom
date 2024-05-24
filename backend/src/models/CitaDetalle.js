@@ -14,7 +14,23 @@ CitaDetalle.init({
     },
     MontoAdicional: {
         type: DataTypes.DECIMAL,
-        allowNull: false
+        allowNull: true
+    },
+    ID_Cita: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: Cita,
+            key: 'ID_Cita'
+        }
+    },
+    ID_Servicio: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: Servicio,
+            key: 'ID_Servicio'
+        }
     }
 }, {
     sequelize,
@@ -22,7 +38,10 @@ CitaDetalle.init({
     createdAt: false,
     updatedAt: false
 });
+
 Cita.hasMany(CitaDetalle, {foreignKey: 'ID_Cita'});
 Servicio.hasMany(CitaDetalle, {foreignKey: 'ID_Servicio'});
+CitaDetalle.belongsTo(Cita, { foreignKey: 'ID_Cita'});
+CitaDetalle.belongsTo(Servicio, { foreignKey: 'ID_Servicio' });
 
 export default CitaDetalle;

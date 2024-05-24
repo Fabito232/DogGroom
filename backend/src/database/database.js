@@ -7,7 +7,7 @@ const sequelize = new Sequelize(DB_DATABASE,DB_USER,DB_PASSWORD,{
     dialect: DB_DIALECT
 })
 
-async () => {
+const conectarBaseDatos = async () => {
   try {
       await sequelize.authenticate();
       console.log('Connection has been established successfully.');
@@ -15,5 +15,5 @@ async () => {
       console.error('Unable to connect to the database:', error);
   }
 }
-
+conectarBaseDatos();
 export default sequelize
