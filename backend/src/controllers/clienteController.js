@@ -1,30 +1,30 @@
 import  Cliente  from "../models/clienteModel.js"
+
 export const createCliente = async (req, res) => {
 
-    const existencia = await Cliente.findByPk(req.body.cedula);
-    if(existencia !== null) {
-        return res.json({
-            ok: false,
-            status: 400,
-            message: "Existe un Cliente con esa cedula"
-        });
-    }
-
     try {
+        const existencia = await Cliente.findByPk(req.body.cedula);
+        if(existencia !== null) {
+            return res.json({
+                ok: false,
+                status: 400,
+                message: "Existe un Cliente con esa cedula"
+            });
+        }
+
         const cliente = await Cliente.create({
             Cedula: req.body.cedula,
             Nombre: req.body.nombre,
             Telefono: req.body.telefono
         });
-        res.json({
+        return res.json({
             ok: true,
             status: 200,
             message: "Cliente creado correctamente",
             data: cliente
         });
     } catch (error) {
-      //  console.error("Error al crear el cliente:", error);
-        res.json({
+        return res.json({
             ok: false,
             status: 400,
             message: "Error al crear el cliente"
@@ -33,25 +33,26 @@ export const createCliente = async (req, res) => {
 }
 
 export const getCliente = async (req, res) => {
-    const id = req.params.id
+    
     try {
+        const id = req.params.id
         const cliente = await Cliente.findByPk(id);
         if (cliente !== null) {
-            res.json({
+            return res.json({
                 ok: true,
                 status: 200,
                 message: "Se obtuvo el cliente correctamente",
                 data: cliente
             });
         } else {
-            res.status(404).json({
+            return res.status(404).json({
                 ok: false,
                 status: 404,
                 message: "No se encontró el cliente con el ID proporcionado",
             });
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             ok: false,
             status: 500,
             message: "Error al obtener el cliente",
@@ -62,18 +63,19 @@ export const getCliente = async (req, res) => {
 
 
 export const getListCliente = async (req, res) => {
-    const id = req.params.id
+    
     try {
+        const id = req.params.id
         const cliente = await Cliente.findAll({
         })
-        res.json({
+        return res.json({
             ok: true,
             status: 200,
             message: "Se obtuvo todos los cliente correctamente",
             data: cliente
         })
     } catch (error) {
-        res.json({
+        return res.json({
             ok: false,
             status: 500,
             message: "No se encontro ningun cliente",
@@ -82,21 +84,22 @@ export const getListCliente = async (req, res) => {
 }
 
 export const deleteCliente = async (req, res) => {
-    const id = req.params.id
+    
     try {
+        const id = req.params.id
         const cliente = await Cliente.destroy({
             where:{
                 Cedula: id
             }
         })
-        res.json({
+        return res.json({
             ok: true,
             status: 200,
             message: "Se borro el cliente correctamente",
             data: cliente
         })
     } catch (error) {
-        res.json({
+        return res.json({
             ok: false,
             status: 500,
             message: "No se borro el cliente",
@@ -105,10 +108,9 @@ export const deleteCliente = async (req, res) => {
 }
 
 export const updateCliente = async (req, res) => {
-    const id = req.params.id
-    console.log(id)
-    console.log(req.body)
+    
     try {
+        const id = req.params.id
         const [filasActualizadas]  = await Cliente.update(
             {
                 Cedula: req.body.cedula,
@@ -121,21 +123,21 @@ export const updateCliente = async (req, res) => {
                 }
             })
             if (filasActualizadas > 0) {
-                res.json({
+                return res.json({
                     ok: true,
                     status: 200,
                     message: "Se obtuvo el cliente correctamente",
                     data: filasActualizadas
                 });
             } else {
-                res.status(404).json({
+                return res.status(404).json({
                     ok: false,
                     status: 404,
                     message: "No se encontró el cliente con el ID proporcionado",
                 });
             }
     } catch (error) {
-        res.json({
+        return res.json({
             ok: false,
             status: 500,
             message: "No se actualizo el cliente",

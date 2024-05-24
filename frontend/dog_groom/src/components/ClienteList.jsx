@@ -15,6 +15,11 @@ const ClienteList = () => {
   const [raza, setRaza] = useState('');
   const [tamanno, setTamanno] = useState('');
 
+  // Datos Hora, Descripcion y Estado
+  const [hora, setHora] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [estado, setEstado] = useState('');
+
 
   useEffect(() => {
     // Aquí puedes cargar los datos desde una API o archivo local
@@ -27,6 +32,17 @@ const ClienteList = () => {
         { id: 3, nombreCliente: 'Marta Bolaños', cedula: '202810289' },
         { id: 4, nombreCliente: 'José Fernandez', cedula: '201920890' },
         { id: 5, nombreCliente: 'Junito Hernández', cedula: '208290882' },
+        { id: 6, nombreCliente: 'Edgar Alvarado', cedula: '208290882' },
+        { id: 7, nombreCliente: 'Allison Sumba', cedula: '208290882' },
+        { id: 8, nombreCliente: 'Fabian Bolaños', cedula: '208290882' },
+        { id: 9, nombreCliente: 'Javier Barrantes', cedula: '208290882' },
+        { id: 10, nombreCliente: 'Allan Castro', cedula: '208290882' },
+        { id: 11, nombreCliente: 'Antony Barrantes', cedula: '208290882' },
+        { id: 12, nombreCliente: 'Iaac Villalobos', cedula: '208290882' },
+        { id: 13, nombreCliente: 'Jesus Rodriguez', cedula: '208290882' },
+        { id: 14, nombreCliente: 'Victoria Campos', cedula: '208290882' },
+        { id: 15, nombreCliente: 'David Ramirez', cedula: '208290882' },
+        { id: 16, nombreCliente: 'Larissa Camacho', cedula: '208290882' },
       ];
 
       // Simulando retraso de red
@@ -53,14 +69,13 @@ const ClienteList = () => {
           <ul className="cliente-list">
             {clientes.map(cliente => (
               <li key={cliente.id} className="cliente-item">
-                <span className="cliente-nombre">{cliente.id}- {cliente.nombreCliente} - {cliente.cedula}</span>
+                <span className="cliente-nombre">{cliente.id} - {cliente.nombreCliente} - {cliente.cedula}</span>
               </li>
             ))}
           </ul>
         </div>
       </div>
       <div className="cliente-form-container">
-        <h2>Agregar Cliente</h2>
         <form onSubmit={handleAgregarCliente}>
           <div className="form-row">
             <div className="form-group">
@@ -99,7 +114,7 @@ const ClienteList = () => {
             <div className="form-group">
               <input
                 type="text"
-                id="NombreCliente"
+                id="NombrePerro"
                 placeholder="Nombre del Perro"
                 value={nombreMascota}
                 onChange={(e) => setNombreMascota(e.target.value)}
@@ -109,7 +124,7 @@ const ClienteList = () => {
             <div className="form-group">
               <input
                 type="text"
-                id="cedula"
+                id="raza"
                 placeholder="Raza"
                 value={raza}
                 onChange={(e) => setRaza(e.target.value)}
@@ -152,11 +167,71 @@ const ClienteList = () => {
               <button type="submit">+</button>
             </div>
           </div>
+
+          <div className="form-row">
+            <table className="cliente-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Raza</th>
+                  <th>Servicio</th>
+                  <th>Tamaño</th>
+                  <th>Precio</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* Aquí van las filas de la tabla dinámicamente */}
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <input
+                type="text"
+                id="hora"
+                placeholder="Hora"
+                value={hora}
+                onChange={(e) => setHora(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="text"
+                id="descripcion"
+                placeholder="Descripción"
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="text"
+                id="estado"
+                placeholder="Estaddo"
+                value={estado}
+                onChange={(e) => setEstado(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+          <div className="form-row">
+            <button type="submit">Agendar Cita</button>
+          </div>
         </form>
 
-        <button type="submit">Agendar Cita</button>
+
       </div>
     </section>
+
+
   );
 };
 
