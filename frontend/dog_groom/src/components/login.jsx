@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
-import './login.css'; // Archivo CSS para estilos
+import '../styles/login.css'; // Archivo CSS para estilos
+import { useNavigate } from 'react-router-dom'
 
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Aquí puedes añadir la lógica para enviar las credenciales al backend
     console.log('Username:', username);
     console.log('Password:', password);
+    
+    navigate('./citas')
+    window.location.reload()
+    
   };
 
    return (

@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('assets/Fondo.jpg');
+  background-image: url('../assets/Fondo.jpg');
   background-size: cover;
   background-position: center;
 }
@@ -42,7 +42,7 @@
     width: 10em; /* Ajusta el ancho de la imagen según sea necesario */
     height: 10em; /* Ajusta el alto de la imagen según sea necesario */
     z-index: 1; /* Asegura que la imagen esté sobre el contenido del contenedor */
-    background-image: url('assets/Logo.png');
+    background-image: url('../assets/Logo.png');
     background-size: cover;
 
   }
