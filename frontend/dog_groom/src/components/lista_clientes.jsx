@@ -37,7 +37,7 @@ const ListaClientes = () => (
             </div>
             <div className="info-item">
               <span className="info-label">Mascota:</span>
-              <span className="info-value">{cliente.email}</span>
+              <span className="info-value">{cliente.mascota}</span>
             </div>
             <div className="info-item">
               <span className="info-label">Raza:</span>
