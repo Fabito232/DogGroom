@@ -3,9 +3,10 @@ import { createEmpleado, loginEmpleado } from "../controllers/empleadoController
 import { renovarToken } from "../middleware/auth.js";
 import { validarDatosEmpleado } from "../middleware/validators.js";
 const router = Router();
-
-router.post('/empleados',validarDatosEmpleado, createEmpleado);
+import { verificarToken } from "../middleware/auth.js";
 router.post('/login', loginEmpleado);
+router.use(verificarToken);
+router.post('/empleados',validarDatosEmpleado, createEmpleado);
 router.post('/renovar-token', renovarToken);
 
 export default router
