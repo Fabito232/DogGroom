@@ -17,10 +17,10 @@ const storage = multer.diskStorage({
   });
 const upload = multer({ storage }).single('image');
 
-router.get('/mascotas', getListMascota);
-router.get('/mascotas/:id', getMascota);
+router.get('/mascotas', getListMascota)
+router.get('/mascotas/:id', getMascota)
 router.post('/mascotas',upload,validarDatosMascota, createMascota);
-router.delete('/mascotas/:id',deleteMascota);
-router.put('/mascotas/:id',upload,validarDatosMascota, updateMascota);
+router.delete('/mascotas/:id',deleteMascota)
+router.put('/mascotas/:id',validarDatosMascota, updateMascota )
 
 export default router

@@ -51,7 +51,7 @@ export const loginEmpleado = async (req, res) => {
                 message: "Contraseña incorrecta"
             });
         }
-        const token =  generarToken({ id: empleado.ID_Empleado, correo: empleado.Correo });
+        const token =  generarToken({ id: empleado.id, correo: empleado.correo });
 
         return res.json({
             token: token,
@@ -59,9 +59,9 @@ export const loginEmpleado = async (req, res) => {
             status: 200,
             message: "Inicio de sesión exitoso",
             data: {
-                id: empleado.ID_Empleado,
+                id: empleado.id,
                 nombre: empleado.Nombre,
-                correo: empleado.Correo,
+                correo: empleado.correo,
             }
         });
 
