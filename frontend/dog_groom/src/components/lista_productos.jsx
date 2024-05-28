@@ -1,130 +1,130 @@
 import React, { useState } from 'react';
 import '../styles/lista_productos.css';
 
-const Lista_productos = () => {
-    const [products, setProducts] = useState([
-        { id: 1, name: 'Producto 1', brand: 'Marca 1', quantity: 10, description: 'Descripción del Producto 1' },
-        { id: 2, name: 'Producto 2', brand: 'Marca 2', quantity: 20, description: 'Descripción del Producto 2' },
-        { id: 3, name: 'Producto 3', brand: 'Marca 3', quantity: 30, description: 'Descripción del Producto 3' },
+const ListaProductos = () => {
+    const [productos, setProductos] = useState([
+        { id: 1, nombre: 'Producto 1', marca: 'Marca 1', cantidad: 10, descripcion: 'Descripción del Producto 1' },
+        { id: 2, nombre: 'Producto 2', marca: 'Marca 2', cantidad: 20, descripcion: 'Descripción del Producto 2' },
+        { id: 3, nombre: 'Producto 3', marca: 'Marca 3', cantidad: 30, descripcion: 'Descripción del Producto 3' },
     ]);
-    const [editingProduct, setEditingProduct] = useState(null);
-    const [showAddForm, setShowAddForm] = useState(false);
-    const [newProduct, setNewProduct] = useState({
-        id: products.length + 1,
-        name: '',
-        brand: '',
-        quantity: 0,
-        description: ''
+    const [productoEditando, setProductoEditando] = useState(null);
+    const [mostrarFormularioAgregar, setMostrarFormularioAgregar] = useState(false);
+    const [nuevoProducto, setNuevoProducto] = useState({
+        id: productos.length + 1,
+        nombre: '',
+        marca: '',
+        cantidad: 0,
+        descripcion: ''
     });
 
-    const handleEdit = (product) => {
-        setEditingProduct({ ...product });
+    const manejarEditar = (producto) => {
+        setProductoEditando({ ...producto });
     };
 
-    const handleDelete = (id) => {
+    const manejarEliminar = (id) => {
         if (window.confirm("¿Estás seguro de que quieres eliminar este producto?")) {
-            const updatedProducts = products.filter(product => product.id !== id);
-            setProducts(updatedProducts);
+            const productosActualizados = productos.filter(producto => producto.id !== id);
+            setProductos(productosActualizados);
         }
     };
 
-    const handleSave = () => {
-        const updatedProducts = products.map(product => {
-            if (product.id === editingProduct.id) {
-                return editingProduct;
+    const manejarGuardar = () => {
+        const productosActualizados = productos.map(producto => {
+            if (producto.id === productoEditando.id) {
+                return productoEditando;
             }
-            return product;
+            return producto;
         });
-        setProducts(updatedProducts);
-        setEditingProduct(null);
+        setProductos(productosActualizados);
+        setProductoEditando(null);
     };
 
-    const handleCancel = () => {
-        setEditingProduct(null);
+    const manejarCancelar = () => {
+        setProductoEditando(null);
     };
 
-    const handleEditInputChange = (e) => {
+    const manejarCambioEntradaEdicion = (e) => {
         const { name, value } = e.target;
-        setEditingProduct({ ...editingProduct, [name]: value });
+        setProductoEditando({ ...productoEditando, [name]: value });
     };
 
-    const handleNewInputChange = (e) => {
+    const manejarCambioEntradaNuevo = (e) => {
         const { name, value } = e.target;
-        setNewProduct({ ...newProduct, [name]: value });
+        setNuevoProducto({ ...nuevoProducto, [name]: value });
     };
 
-    const handleAddProduct = () => {
-        setProducts([...products, { ...newProduct, id: products.length + 1 }]);
-        setShowAddForm(false);
-        setNewProduct({
-            id: products.length + 1,
-            name: '',
-            brand: '',
-            quantity: 0,
-            description: ''
+    const manejarAgregarProducto = () => {
+        setProductos([...productos, { ...nuevoProducto, id: productos.length + 1 }]);
+        setMostrarFormularioAgregar(false);
+        setNuevoProducto({
+            id: productos.length + 1,
+            nombre: '',
+            marca: '',
+            cantidad: 0,
+            descripcion: ''
         });
     };
 
-    const handleShowAddForm = () => {
-        setShowAddForm(true);
+    const manejarMostrarFormularioAgregar = () => {
+        setMostrarFormularioAgregar(true);
     };
 
-    const handleCancelAdd = () => {
-        setShowAddForm(false);
-        setNewProduct({
-            id: products.length + 1,
-            name: '',
-            brand: '',
-            quantity: 0,
-            description: ''
+    const manejarCancelarAgregar = () => {
+        setMostrarFormularioAgregar(false);
+        setNuevoProducto({
+            id: productos.length + 1,
+            nombre: '',
+            marca: '',
+            cantidad: 0,
+            descripcion: ''
         });
     };
 
     return (
-        <div className="container">
-            <div className="header">
+        <div className="contenedor">
+            <div className="cabecera">
                 <h1>Lista de Productos</h1>
-                <button className="add-button" onClick={handleShowAddForm}>Agregar</button>
+                <button className="boton-agregar" onClick={manejarMostrarFormularioAgregar}>Agregar</button>
             </div>
 
-            {showAddForm && (
-                <div className="add-product-form">
+            {mostrarFormularioAgregar && (
+                <div className="formulario-agregar-producto">
                     <h2>Agregar Nuevo Producto</h2>
                     <input
                         type="text"
-                        name="name"
+                        name="nombre"
                         placeholder="Nombre"
-                        value={newProduct.name}
-                        onChange={handleNewInputChange}
+                        value={nuevoProducto.nombre}
+                        onChange={manejarCambioEntradaNuevo}
                     />
                     <input
                         type="text"
-                        name="brand"
+                        name="marca"
                         placeholder="Marca"
-                        value={newProduct.brand}
-                        onChange={handleNewInputChange}
+                        value={nuevoProducto.marca}
+                        onChange={manejarCambioEntradaNuevo}
                     />
                     <input
                         type="number"
-                        name="quantity"
+                        name="cantidad"
                         placeholder="Cantidad"
-                        value={newProduct.quantity}
-                        onChange={handleNewInputChange}
+                        value={nuevoProducto.cantidad}
+                        onChange={manejarCambioEntradaNuevo}
                     />
                     <input
                         type="text"
-                        name="description"
+                        name="descripcion"
                         placeholder="Descripción"
-                        value={newProduct.description}
-                        onChange={handleNewInputChange}
+                        value={nuevoProducto.descripcion}
+                        onChange={manejarCambioEntradaNuevo}
                     />
-                    <button className="save-button" onClick={handleAddProduct}>Guardar</button>
-                    <button className="cancel-button" onClick={handleCancelAdd}>Cancelar</button>
+                    <button className="boton-guardar" onClick={manejarAgregarProducto}>Guardar</button>
+                    <button className="boton-cancelar" onClick={manejarCancelarAgregar}>Cancelar</button>
                 </div>
             )}
 
-            <div className="product-table-container">
-                <table className="product-table">
+            <div className="contenedor-tabla-productos">
+                <table className="tabla-productos">
                     <thead>
                         <tr>
                             <th style={{ width: '150px' }}>Nombre</th>
@@ -135,70 +135,70 @@ const Lista_productos = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {products.map((product) => (
-                            <tr key={product.id}>
+                        {productos.map((producto) => (
+                            <tr key={producto.id}>
                                 <td>
-                                    {editingProduct && editingProduct.id === product.id ? (
+                                    {productoEditando && productoEditando.id === producto.id ? (
                                         <input
                                             type="text"
-                                            name="name"
-                                            value={editingProduct.name}
-                                            onChange={handleEditInputChange}
-                                            className="edit-product-form"
+                                            name="nombre"
+                                            value={productoEditando.nombre}
+                                            onChange={manejarCambioEntradaEdicion}
+                                            className="formulario-editar-producto"
                                         />
                                     ) : (
-                                        product.name
+                                        producto.nombre
                                     )}
                                 </td>
                                 <td>
-                                    {editingProduct && editingProduct.id === product.id ? (
+                                    {productoEditando && productoEditando.id === producto.id ? (
                                         <input
                                             type="text"
-                                            name="brand"
-                                            value={editingProduct.brand}
-                                            onChange={handleEditInputChange}
-                                            className="edit-product-form"
+                                            name="marca"
+                                            value={productoEditando.marca}
+                                            onChange={manejarCambioEntradaEdicion}
+                                            className="formulario-editar-producto"
                                         />
                                     ) : (
-                                        product.brand
+                                        producto.marca
                                     )}
                                 </td>
                                 <td>
-                                    {editingProduct && editingProduct.id === product.id ? (
+                                    {productoEditando && productoEditando.id === producto.id ? (
                                         <input
                                             type="number"
-                                            name="quantity"
-                                            value={editingProduct.quantity}
-                                            onChange={handleEditInputChange}
-                                            className="edit-product-form"
+                                            name="cantidad"
+                                            value={productoEditando.cantidad}
+                                            onChange={manejarCambioEntradaEdicion}
+                                            className="formulario-editar-producto"
                                         />
                                     ) : (
-                                        product.quantity
+                                        producto.cantidad
                                     )}
                                 </td>
                                 <td>
-                                    {editingProduct && editingProduct.id === product.id ? (
+                                    {productoEditando && productoEditando.id === producto.id ? (
                                         <input
                                             type="text"
-                                            name="description"
-                                            value={editingProduct.description}
-                                            onChange={handleEditInputChange}
-                                            className="edit-product-form"
+                                            name="descripcion"
+                                            value={productoEditando.descripcion}
+                                            onChange={manejarCambioEntradaEdicion}
+                                            className="formulario-editar-producto"
                                         />
                                     ) : (
-                                        product.description
+                                        producto.descripcion
                                     )}
                                 </td>
                                 <td>
-                                    {editingProduct && editingProduct.id === product.id ? (
-                                        <div className="edit-buttons">
-                                            <button className="save-button" onClick={handleSave}>Guardar</button>
-                                            <button className="cancel-button" onClick={handleCancel}>Cancelar</button>
+                                    {productoEditando && productoEditando.id === producto.id ? (
+                                        <div className="botones-editar">
+                                            <button className="boton-guardar" onClick={manejarGuardar}>Guardar</button>
+                                            <button className="boton-cancelar" onClick={manejarCancelar}>Cancelar</button>
                                         </div>
                                     ) : (
                                         <>
-                                            <button className="edit-button" onClick={() => handleEdit(product)}>Editar</button>
-                                            <button className="delete-button" onClick={() => handleDelete(product.id)}>Eliminar</button>
+                                            <button className="boton-editar" onClick={() => manejarEditar(producto)}>Editar</button>
+                                            <button className="boton-eliminar" onClick={() => manejarEliminar(producto.id)}>Eliminar</button>
                                         </>
                                     )}
                                 </td>
@@ -211,7 +211,8 @@ const Lista_productos = () => {
     );
 };
 
-export default Lista_productos
+export default ListaProductos;
+
 
 
 

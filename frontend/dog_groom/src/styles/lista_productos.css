@@ -11,13 +11,11 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    box-sizing: border-box;
 }
 
-.container {
-    width: 100%;
+.contenedor {
+    width: 1200px; /* Incrementamos el ancho del contenedor */
     max-width: 1200px; /* Establecemos un ancho máximo para pantallas grandes */
-    min-width: 1200px; /* Establecemos un ancho mínimo para que no se reduzca más allá de su tamaño actual */
     height: auto; /* Permitimos que la altura se ajuste al contenido */
     margin: 20px auto;
     padding: 50px; /* Aumentamos el padding para más espacio interno */
@@ -29,10 +27,9 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-sizing: border-box;
 }
 
-.product-table-container {
+.contenedor-tabla-productos {
     max-height: 450px; /* Ajusta la altura máxima según tus necesidades */
     overflow-y: auto;
     border: 1px solid #ddd;
@@ -40,11 +37,11 @@ body {
     width: 100%;
 }
 
-.product-table-container::-webkit-scrollbar {
+.contenedor-tabla-productos::-webkit-scrollbar {
     width: 0px;
 }
 
-.header {
+.cabecera {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -60,7 +57,7 @@ h1 {
     text-align: center;
 }
 
-.add-button {
+.boton-agregar {
     background-color: #05701e;
     color: white;
     border: none;
@@ -72,11 +69,11 @@ h1 {
     right: 0;
 }
 
-.add-button:hover {
+.boton-agregar:hover {
     background-color: #218838;
 }
 
-.product-table {
+.tabla-productos {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
@@ -103,7 +100,7 @@ tbody tr:nth-child(even) {
     background-color: #fff;
 }
 
-.edit-button, .delete-button {
+.boton-editar, .boton-eliminar {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -113,7 +110,7 @@ tbody tr:nth-child(even) {
     vertical-align: middle; /* Alineamos verticalmente los botones */
 }
 
-.save-button, .cancel-button {
+.boton-guardar, .boton-cancelar {
     background-color: #007bff;
     color: white;
     border: none;
@@ -124,17 +121,17 @@ tbody tr:nth-child(even) {
     margin-right: 10px;
 }
 
-.delete-button {
+.boton-eliminar {
     background-color: #dc3545;
 }
 
-.save-button {
+.boton-guardar {
     background-color: #28a745;
 }
 
-.add-product-form input, .edit-product-form input {
+.formulario-agregar-producto input, .formulario-editar-producto input {
     display: block;
-    width: calc(100% - 44px); /* Same padding as buttons */
+    width: calc(100% - 44px);
     padding: 10px;
     margin-bottom: 10px;
     font-size: 16px;
@@ -144,54 +141,52 @@ tbody tr:nth-child(even) {
     border-radius: 5px;
 }
 
-.add-product-form, .edit-product-form {
+.formulario-agregar-producto {
     background-color: white;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     color: black;
     width: 100%;
-    box-sizing: border-box;
+    max-width: 100%;
 }
 
-.edit-buttons {
+.formulario-editar-producto {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: black;
+}
+
+.botones-editar {
     display: flex;
     flex-direction: column;
 }
 
-.edit-buttons .save-button {
+.botones-editar .boton-guardar {
     margin-bottom: 10px;
 }
 
-.edit-button {
+.boton-editar {
     background-color: #32b45e;
     color: white;
     margin-bottom: 10px;
 }
 
-.edit-button:hover {
+.boton-editar:hover {
     background-color: #0069d9;
 }
 
-.delete-button {
+.boton-eliminar {
     background-color: #dc3545;
     color: white;
 }
 
-.delete-button:hover {
+.boton-eliminar:hover {
     background-color: #c82333;
 }
 
-@media (max-width: 1200px) {
-    .container {
-        min-width: 100%;
-        padding: 20px;
-    }
-
-    .product-table-container, .add-product-form, .edit-product-form {
-        width: 100%;
-    }
-}
 
 
 
