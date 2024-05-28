@@ -3,10 +3,10 @@ import { createServicio, getServicio, getListServicio, deleteServicio, updateSer
 import { validarDatosServicio } from "../middleware/validators.js";
 const router = Router();
 
-router.get('/servicios', getListServicio);
-router.get('/servicios/:id', getServicio);
+router.get('/servicios', getListServicio)
+router.get('/servicios/:id', getServicio)
 router.post('/servicios',validarDatosServicio, createServicio);
 router.delete('/servicios/:id',deleteServicio)
-router.put('/servicios/:id',validarDatosServicio, updateServicio);
+router.put('/servicios/:id',validarDatosServicio, updateServicio )
 
 export default router
