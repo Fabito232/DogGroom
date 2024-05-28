@@ -10,11 +10,13 @@ const ListaClientes = () => (
     </header>
     <div className="cliente-lista">
       {[
-        { id: 1, image: 'https://via.placeholder.com/150', cedula: '12345', nombre: 'Juan Perez', telefono: '555-1234', email: 'juan@example.com', raza: 'Humano' },
-        { id: 2, image: 'https://via.placeholder.com/150', cedula: '67890', nombre: 'Maria Lopez', telefono: '555-5678', email: 'maria@example.com', raza: 'Humano' },
-        { id: 3, image: 'https://via.placeholder.com/150', cedula: '11223', nombre: 'Carlos Diaz', telefono: '555-1122', email: 'carlos@example.com', raza: 'Humano' },
-        { id: 4, image: 'https://via.placeholder.com/150', cedula: '33445', nombre: 'Ana Torres', telefono: '555-3344', email: 'ana@example.com', raza: 'Humano' },
-        { id: 5, image: 'https://via.placeholder.com/150', cedula: '55667', nombre: 'Luis Mora', telefono: '555-5566', email: 'luis@example.com', raza: 'Humano' }
+        { id: 1, image: 'https://via.placeholder.com/150', cedula: '12345', nombre: 'Juan Perez', telefono: '555-1234', mascota: 'Lasi', raza: 'Pastor' },
+        { id: 2, image: 'https://via.placeholder.com/150', cedula: '12345', nombre: 'Juan Perez', telefono: '555-1234', mascota: 'Lasi', raza: 'Pastor' },
+        { id: 3, image: 'https://via.placeholder.com/150', cedula: '12345', nombre: 'Juan Perez', telefono: '555-1234', mascota: 'Lasi', raza: 'Pastor' },
+        { id: 4, image: 'https://via.placeholder.com/150', cedula: '12345', nombre: 'Juan Perez', telefono: '555-1234', mascota: 'Lasi', raza: 'Pastor' },
+        { id: 5, image: 'https://via.placeholder.com/150', cedula: '12345', nombre: 'Juan Perez', telefono: '555-1234', mascota: 'Lasi', raza: 'Pastor' },
+        { id: 6, image: 'https://via.placeholder.com/150', cedula: '12345', nombre: 'Juan Perez', telefono: '555-1234', mascota: 'Lasi', raza: 'Pastor' }
+
       ].map(cliente => (
         <div key={cliente.id} className="cliente-card">
           <div className="image-container">
@@ -34,7 +36,7 @@ const ListaClientes = () => (
               <span className="info-value">{cliente.telefono}</span>
             </div>
             <div className="info-item">
-              <span className="info-label">Email:</span>
+              <span className="info-label">Mascota:</span>
               <span className="info-value">{cliente.email}</span>
             </div>
             <div className="info-item">

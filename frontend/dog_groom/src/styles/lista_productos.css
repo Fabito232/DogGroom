@@ -3,7 +3,7 @@ body {
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
-    background-image: url('Fondo1.png'); /* Agregamos la imagen de fondo */
+    background-image: url('../assets/Fondo1.png'); /* Agregamos la imagen de fondo */
     background-size: cover; /* Aseguramos que la imagen cubra todo el fondo */
     background-repeat: no-repeat; /* Evitamos que la imagen se repita */
     background-attachment: fixed; /* La imagen de fondo se mantiene fija al hacer scroll */
