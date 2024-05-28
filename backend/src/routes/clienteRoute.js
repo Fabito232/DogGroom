@@ -3,10 +3,10 @@ import { createCliente, getCliente, getListCliente, deleteCliente, updateCliente
 import { validarDatosCliente } from "../middleware/validators.js";
 
 const router = Router();
-router.get('/clientes', getListCliente)
-router.get('/clientes/:id', getCliente)
+router.get('/clientes', getListCliente);
+router.get('/clientes/:id', getCliente);
 router.post('/clientes',validarDatosCliente, createCliente);
 router.delete('/clientes/:id',deleteCliente)
-router.put('/clientes/:id',validarDatosCliente, updateCliente )
+router.put('/clientes/:id',validarDatosCliente, updateCliente);
 
 export default router
