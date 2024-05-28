@@ -6,7 +6,6 @@ import Login from './login'
 import Citas from './citas'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Lista_productos from './lista_productos';
 
 const App = () => {
   
@@ -18,10 +17,10 @@ const App = () => {
           <Route path="/" element={<Login/>}/>
           <Route path="/citas" element={<Citas />}/>
           <Route path="/agendarcita" element={<AgendarCita />}/>
-          <Route path="/productos" element={<Lista_productos />} />
         </Routes>
       </Router>
     </>
   )
 }
 export default App
+
