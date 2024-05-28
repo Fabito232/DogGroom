@@ -1,4 +1,5 @@
-//import { useState } from 'react'
+import { useState } from 'react'
+import AgendarCita from './AgendarCita';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import '../styles/App.css'
 import Login from './login'
@@ -14,7 +15,8 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<Login/>}/>
-          <Route path="/citas" element={<Citas />} />
+          <Route path="/citas" element={<Citas />}/>
+          <Route path="/agendarcita" element={<AgendarCita />}/>
         </Routes>
       </Router>
     </>
