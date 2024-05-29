@@ -6,8 +6,6 @@ import "dayjs/locale/es"
 
 dayjs.locale("es");
 
-
-
 const events =[
     {
         start: dayjs('2024-05-21T12:00:00').toDate(),
