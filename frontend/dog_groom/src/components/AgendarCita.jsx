@@ -1,18 +1,29 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import '../styles/AgendarCita.css';
 
 function AgendarCita() {
+  // Pruebas local
   const [clientes, setClientes] = useState([]);
+
+  // Datos cliente
   const [nombreCliente, setNombreCliente] = useState('');
   const [cedula, setCedula] = useState('');
   const [telefono, setTelefono] = useState('');
+
+  // Datos Mascota
   const [nombreMascota, setNombreMascota] = useState('');
   const [raza, setRaza] = useState('');
   const [tamanno, setTamanno] = useState('');
+
+  // Datos Hora, Descripcion y Estado
   const [hora, setHora] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [estado, setEstado] = useState('');
 
+
   useEffect(() => {
+    // Aquí puedes cargar los datos desde una API o archivo local
+    // Ejemplo con datos simulados
     const cargarClientes = async () => {
       // Simulando una llamada a una API con datos estáticos
       const datosSimulados = [
@@ -35,7 +46,7 @@ function AgendarCita() {
       ];
 
       // Simulando retraso de red
-      await new Promise((res) => setTimeout(res, 1000));
+      await new Promise(res => setTimeout(res, 1000));
 
       setClientes(datosSimulados);
     };
