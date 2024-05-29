@@ -1,7 +1,7 @@
 import { Calendar, dayjsLocalizer} from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from 'dayjs';
-import '../styles/citas.css' 
+//import '../styles/citas.css' 
 import "dayjs/locale/es"
 
 dayjs.locale("es");
