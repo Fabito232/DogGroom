@@ -3,11 +3,11 @@ import AgendarCita from './AgendarCita';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './login'
 import Citas from './citas';
-import AgendarCita from './AgendarCita';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ListaProductos from './lista_productos';
 import ListaClientes from './lista_clientes';
+import '../styles/lista_productos.css';
 const App = () => {
   
   return (

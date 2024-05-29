@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import '../styles/AgendarCita.css';
+import { useState, useEffect } from 'react';
 
 function AgendarCita() {
   // Pruebas local

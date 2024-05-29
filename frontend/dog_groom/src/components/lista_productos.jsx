@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../styles/lista_productos.css';
 
 const ListaProductos = () => {

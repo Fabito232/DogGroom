@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../services/empleadoService';
 import { toast } from 'react-toastify';
-import logo from '../assets/Logo.png';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -40,7 +39,7 @@ const Login = () => {
     <div className="relative min-h-screen flex items-center justify-center bg-primary bg-opacity-80 bg-fondo bg-cover"> 
       <div className="relative z-10 bg-amber-800 bg-opacity-90 rounded-3xl p-8 shadow-lg w-auto md:w-96">
         <div className="flex justify-center mb-4">
-          <div className="w-40 h-40 bg-cover rounded-full" style={{ backgroundImage: `url(${logo})` }}></div>
+          <div className="w-40 h-40 bg-cover rounded-full bg-logo"></div>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
