@@ -56,6 +56,11 @@ const citaDetalleSchema = Joi.object({
     montoAdicional: Joi.number().integer().min(0).required(),
 });
 
+const finanzasSchema = Joi.object({
+    fechaInicio: Joi.date().required(),
+    fechaFin: Joi.date().required(),
+});
+
 const listaCitasDSchema = Joi.array().items(citaDetalleSchema);
 
 const validarDatosProducto = (req, res, next) => {
@@ -132,6 +137,14 @@ const validarDatosTipoMa = (req, res, next) => {
     next();
 };
 
+const validarFinanzas = (req, res, next) => {
+    const { error } = finanzasSchema.validate(req.body);
+    if (error) {
+        return res.status(400).json({ error: error.details[0].message });
+    }
+    next();
+};
+
 export { 
     validarDatosProducto,
     validarDatosCita,
@@ -141,4 +154,5 @@ export {
     validarDatosEmpleado,
     validarDatosMascota,
     validarDatosTipoMa,
+    validarFinanzas
 };
