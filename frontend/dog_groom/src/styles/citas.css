@@ -90,4 +90,9 @@
   
   .rbc-day-bg{
     background: white;
+    cursor: pointer;
+  }
+
+.rbc-day-bg:hover {
+  background-color: lightgray;
 }

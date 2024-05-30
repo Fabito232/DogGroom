@@ -84,6 +84,7 @@ export const getListProducto = async (req, res) => {
 export const deleteProducto = async (req, res) => {
     try {
         const id = req.params.id
+        console.log(id, "jjj")
         const producto = await Producto.destroy({
             where:{
                 ID_Producto: id
