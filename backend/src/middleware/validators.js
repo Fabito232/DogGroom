@@ -1,5 +1,10 @@
 import Joi from 'joi';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const mascotaSchema = Joi.object({
     image: Joi.string().allow('', null).optional(),
     nombre: Joi.string().required(),
@@ -51,6 +56,11 @@ const citaDetalleSchema = Joi.object({
     montoAdicional: Joi.number().integer().min(0).required(),
 });
 
+const finanzasSchema = Joi.object({
+    fechaInicio: Joi.date().required(),
+    fechaFin: Joi.date().required(),
+});
+
 const listaCitasDSchema = Joi.array().items(citaDetalleSchema);
 
 const validarDatosProducto = (req, res, next) => {
@@ -64,6 +74,17 @@ const validarDatosProducto = (req, res, next) => {
 const validarDatosMascota = (req, res, next) => {
     const { error } = mascotaSchema.validate(req.body);
     if (error) {
+        
+        let fotoURL = null;
+        if (req.file) {
+          fotoURL = `/uploads/${req.file.filename}`;
+          console.log("fotourl:", fotoURL)
+        }
+        const fotoPath = join(__dirname, '../public' + fotoURL);
+        fs.unlink(fotoPath, (err) => {
+            if (err) console.error("Error al eliminar la imagen:", err);
+            console.log('Imagen eliminada');
+        });
         return res.status(400).json({ error: error.details[0].message });
     }
     next();
@@ -116,6 +137,14 @@ const validarDatosTipoMa = (req, res, next) => {
     next();
 };
 
+const validarFinanzas = (req, res, next) => {
+    const { error } = finanzasSchema.validate(req.body);
+    if (error) {
+        return res.status(400).json({ error: error.details[0].message });
+    }
+    next();
+};
+
 export { 
     validarDatosProducto,
     validarDatosCita,
@@ -125,4 +154,5 @@ export {
     validarDatosEmpleado,
     validarDatosMascota,
     validarDatosTipoMa,
+    validarFinanzas
 };
