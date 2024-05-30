@@ -3,7 +3,7 @@ export default {
   content: [
     "./src/components/login.jsx",
     "./src/components/AgendarCita.jsx",
-    "./src/components/AgregarCliente.jsx"
+    "./src/components/AgregarCliente.jsx",
   ],
   theme: {
     extend: {

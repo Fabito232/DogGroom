@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/AgendarCita.css';
 
 function AgendarCita() {
   // Pruebas local
@@ -19,7 +18,6 @@ function AgendarCita() {
   const [hora, setHora] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [estado, setEstado] = useState('');
-
 
   useEffect(() => {
     // Aquí puedes cargar los datos desde una API o archivo local
@@ -63,7 +61,7 @@ function AgendarCita() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-primary bg-opacity-80">
+    <div className="flex items-center justify-center min-h-screen bg-primary bg-opacity-80 bg-citas bg-cover">
       {/* Contenedor de lista de clientes */}
       <div className="w-1/3 bg-amber-800 bg-opacity-90 rounded-3xl p-8 m-4 overflow-auto">
         <ul className="list-none p-0">
@@ -110,120 +108,109 @@ function AgendarCita() {
             />
           </div>
 
-          <div className="fila-formulario">
-            <div className="grupo-componentes">
-              <input
-                type="text"
-                id="NombrePerro"
-                placeholder="Nombre del Perro"
-                value={nombreMascota}
-                onChange={(e) => setNombreMascota(e.target.value)}
-                required
-              />
-            </div>
-            <div className="grupo-componentes">
-              <input
-                type="text"
-                id="raza"
-                placeholder="Raza"
-                value={raza}
-                onChange={(e) => setRaza(e.target.value)}
-                required
-              />
-            </div>
-            <div className="grupo-componentes">
-              {/* Hay que hacerlo select */}
-              <input
-                type="text"
-                id="tamanno"
-                placeholder="Tamaño"
-                value={tamanno}
-                onChange={(e) => setTamanno(e.target.value)}
-                required
-              />
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <input
+              className="p-3 border border-gray-300 rounded w-full mb-2"
+              type="text"
+              id="NombrePerro"
+              placeholder="Nombre del Perro"
+              value={nombreMascota}
+              onChange={(e) => setNombreMascota(e.target.value)}
+              required
+            />
+            <input
+              className="p-3 border border-gray-300 rounded w-full mb-2"
+              type="text"
+              id="raza"
+              placeholder="Raza"
+              value={raza}
+              onChange={(e) => setRaza(e.target.value)}
+              required
+            />
+            <select
+              className="p-3 border border-gray-300 rounded w-full mb-2"
+              id="tamanno"
+              placeholder="Tamaño"
+              value={tamanno}
+              onChange={(e) => setTamanno(e.target.value)}
+              required
+            >
+              <option value="" disabled>
+                Tamaño
+              </option>
+              <option value="pequeño">Pequeño</option>
+              <option value="mediano">Mediano</option>
+              <option value="grande">Grande</option>
+            </select>
           </div>
 
-          <div className="fila-formulario">
-            <div className="grupo-componentes">
-              <select id="servicios" name="servicios">
-                <option value="" selected>Opciones...</option>
-                <option value="paquete1">Paquete 1</option>
-                <option value="paquete2">Paquete 2</option>
-                <option value="baño">Baño</option>
-              </select>
-            </div>
-            <div className="grupo-componentes">
-              <input
-                type="text"
-                id="precio"
-                placeholder="Precio"
-                value={tamanno}
-                onChange={(e) => setTamanno(e.target.value)}
-                required
-              />
-            </div>
-            <div className="grupo-componentes">
-              <button type="submit">+</button>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <select
+              className="p-3 border border-gray-300 rounded w-full mb-2"
+              id="servicios"
+              name="servicios"
+            >
+              <option value="" disabled>
+                Servicio
+              </option>
+              <option value="paquete1">Paquete 1</option>
+              <option value="paquete2">Paquete 2</option>
+              <option value="baño">Baño</option>
+            </select>
+            <input
+              className="p-3 border border-gray-300 rounded w-full mb-2"
+              type="text"
+              id="precio"
+              placeholder="Precio"
+              value={tamanno}
+              onChange={(e) => setTamanno(e.target.value)}
+              required
+            />
+            <button
+              className="p-3 bg-green-600 rounded-md text-white hover:bg-green-700 focus:outline-none mb-2"
+              type="submit"
+            >
+              +
+            </button>
           </div>
 
-          <div className="fila-formulario">
-            <table className="cliente-table">
-              <thead>
-                <tr>
-                  <th>Nombre</th>
-                  <th>Raza</th>
-                  <th>Servicio</th>
-                  <th>Tamaño</th>
-                  <th>Precio</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* Aquí van las filas de la tabla dinámicamente */}
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-              </tbody>
-            </table>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <input
+              className="p-3 border border-gray-300 rounded w-full mb-2"
+              type="text"
+              id="hora"
+              placeholder="Hora"
+              value={hora}
+              onChange={(e) => setHora(e.target.value)}
+              required
+            />
+            <input
+              className="p-3 border border-gray-300 rounded w-full mb-2"
+              type="text"
+              id="descripcion"
+              placeholder="Descripción"
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+              required
+            />
+            <input
+              className="p-3 border border-gray-300 rounded w-full mb-2"
+              type="text"
+              id="estado"
+              placeholder="Estado"
+              value={estado}
+              onChange={(e) => setEstado(e.target.value)}
+              required
+            />
           </div>
 
-          <div className="fila-formulario">
-            <div className="grupo-componentes">
-              <input
-                type="text"
-                id="hora"
-                placeholder="Hora"
-                value={hora}
-                onChange={(e) => setHora(e.target.value)}
-                required
-              />
-            </div>
-            <div className="grupo-componentes">
-              <input
-                type="text"
-                id="descripcion"
-                placeholder="Descripción"
-                value={descripcion}
-                onChange={(e) => setDescripcion(e.target.value)}
-                required
-              />
-            </div>
-            <div className="grupo-componentes">
-              <input
-                type="text"
-                id="estado"
-                placeholder="Estaddo"
-                value={estado}
-                onChange={(e) => setEstado(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-          <div className="fila-formulario">
-            <button type="submit">Agendar Cita</button>
+          <div className="flex flex-wrap mb-4">
+            <button
+              className="p-3 bg-blue-600 rounded-md text-white hover:bg-blue-700 focus:outline-none"
+              type="submit"
+            >
+              Agendar Cita
+            </button>
           </div>
         </form>
       </div>
