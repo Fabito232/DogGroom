@@ -4,6 +4,7 @@ import { Op } from 'sequelize';
 
 export const resumenFinanzas = async (req, res) => {
     const {fechaInicio , fechaFin} = req.body
+    let totalGanancias = 0
     try {
         const result = await Cita.findAll({
           attributes: [
@@ -16,17 +17,20 @@ export const resumenFinanzas = async (req, res) => {
           },
         })
 
-        const totalGanancias = result[0].dataValues.TotalGanancias
+        totalGanancias = result[0].dataValues.TotalGanancias
+        if(!totalGanancias) totalGanancias = 0
+        
         const distribucion = [
-          {nombre: 'Vivian', porcentaje: 45, monto: totalGanancias * 0.45 },
-          {nombre: 'Kathy', porcentaje: 35, monto: totalGanancias * 0.35},
-          {nombre: 'La Bandada', porcentaje: 20, monto: totalGanancias * 0.20}
+          {nombre: 'Vivian', porcentaje: "45%", monto: totalGanancias * 0.45 },
+          {nombre: 'Kathy', porcentaje: "35%", monto: totalGanancias * 0.35},
+          {nombre: 'La Bandada', porcentaje: "20%", monto: totalGanancias * 0.20},
+          {nombre: '', porcentaje: "Total", monto: totalGanancias},
         ]
         return res.json({
           ok: true,
           status: 200,
           message: "Resumen de finanzas obtenido correctamente",
-          data: {distribucion: distribucion, totalGanancias: totalGanancias}
+          data: distribucion
         })
       } catch (error) {
         return res.json({
