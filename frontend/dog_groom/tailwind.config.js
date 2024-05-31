@@ -3,7 +3,8 @@ export default {
   content: [
     "./src/components/login.jsx",
     "./src/components/AgendarCita.jsx",
-    "./src/components/Finanzas.jsx"
+    "./src/components/Finanzas.jsx",
+    "./src/components/Header.jsx"
   ],
   theme: {
     extend: {
@@ -11,7 +12,8 @@ export default {
         'fondo': "url('./src/assets/Fondo.jpg')",
         'logo': "url('./src/assets/Logo.png')",
         'perroFacturando': "url('./src/assets/perro-facturando-dinero.png')"
-      }
+      },
+      
     },
   },
   plugins: [],

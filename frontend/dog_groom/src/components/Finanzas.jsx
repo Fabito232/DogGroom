@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { resumenFinanzas, resumenControlAnual } from '../services/finanzasServices';
 import { toast } from 'react-toastify';
+import Header from './Header';
 
 const Finanzas = () => {
     const [fechaInicial, setFechaInicial] = useState('');
@@ -49,6 +50,8 @@ const Finanzas = () => {
 
     
     return (
+        <>
+        <Header></Header>
         <div className=" min-h-screen flex items-center justify-center bg-primary bg-opacity-80 bg-perroFacturando bg-cover">
             <div className="md:container md:mx-auto p-5">
                 <div className="container items-center bg-opacity-90 bg-white">
@@ -125,6 +128,7 @@ const Finanzas = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 
