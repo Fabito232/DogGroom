@@ -32,6 +32,17 @@ const ListaClientes = () => {
     setClienteEditando({ ...clienteEditando, [name]: value });
   };
 
+  const manejarCambioImagen = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setClienteEditando({ ...clienteEditando, image: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const manejarEliminar = (id) => {
     const confirmacion = window.confirm('¿Estás seguro de eliminar este cliente?');
     if (confirmacion) {
@@ -57,19 +68,33 @@ const ListaClientes = () => {
             <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-4 px-12 rounded ml-8">Agregar</button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 gap-4">
-            {clientes.map(cliente => (
-              <div key={cliente.id} className="flex bg-green-700 bg-opacity-90 border border-black w-full">
-                <div className="p-4 w-64">
-                  <img src={cliente.image || imgPerro} alt={cliente.nombre} className="h-full w-full object-cover rounded-lg" />
-                </div>
-                <div className="flex-grow flex flex-col justify-between p-4">
-                  <div>
-                    <div className="flex items-center mb-2">
-                      <div className="font-bold mr-2">Cédula:</div>
-                      {clienteEditando && clienteEditando.id === cliente.id ? (
-                        <input
-                          type="text"
-                          name="cedula"
+          {clientes.map(cliente => (
+            <div key={cliente.id} className="flex bg-green-700 bg-opacity-90 border border-black w-full">
+              <div className="p-4 w-64 relative">
+                <img
+                  src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image : cliente.image || imgPerro}
+                  alt={cliente.nombre}
+                  className="h-full w-full object-cover rounded-lg cursor-pointer"
+                  onClick={() => document.getElementById(`fileInput-${cliente.id}`).click()}
+                />
+                {clienteEditando && clienteEditando.id === cliente.id && (
+                  <input
+                    id={`fileInput-${cliente.id}`}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={manejarCambioImagen}
+                  />
+                )}
+              </div>
+              <div className="flex-grow flex flex-col justify-between p-4">
+                <div>
+                  <div className="flex items-center mb-2">
+                    <div className="font-bold mr-2">Cédula:</div>
+                    {clienteEditando && clienteEditando.id === cliente.id ? (
+                      <input
+                        type="text"
+                        name="cedula"
                           value={clienteEditando.cedula}
                           onChange={manejarCambioEntradaEdicion}
                           className="block w-full p-1 border border-gray-300 rounded"
