@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createTipoMascota, getTipoMascota, getListTipoMascota, deleteTipoMascota, updateTipoMascota } from "../controllers/TipoMascotaController.js";
+import { createTipoMascota, getTipoMascota, getListTipoMascota, deleteTipoMascota, updateTipoMascota } from "../controllers/tipoMascotaController.js";
 import { validarDatosTipoMa } from "../middleware/validators.js";
 const router = Router();
 

@@ -3,6 +3,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from 'dayjs';
 import '../styles/citas.css' 
 import "dayjs/locale/es"
+import Header from "./Header";
 
 dayjs.locale("es");
 
@@ -56,11 +57,16 @@ function Citas(){
     };
     
     return(
+        <>
+        
         <div className = "img-backendC" >
+        
             <div className = "contenedor" style={{
-                    height: "95vh",
-                    width: "95vw",
+                    height: "98%",
+                    width: "98%",
             }}>
+                <Header></Header>
+                
                 <Calendar
                     localizer={localizer}
                     events={events}
@@ -91,6 +97,7 @@ function Citas(){
                 />
             </div>
        </div>
+       </>
     )
 }
 export default Citas
