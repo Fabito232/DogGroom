@@ -2,13 +2,15 @@
 export default {
   content: [
     "./src/components/login.jsx",
-    "./src/components/AgendarCita.jsx"
+    "./src/components/AgendarCita.jsx",
+    "./src/components/Finanzas.jsx"
   ],
   theme: {
     extend: {
       backgroundImage: {
         'fondo': "url('./src/assets/Fondo.jpg')",
-        'logo': "url('./src/assets/Logo.png')"
+        'logo': "url('./src/assets/Logo.png')",
+        'perroFacturando': "url('./src/assets/perro-facturando-dinero.png')"
       }
     },
   },

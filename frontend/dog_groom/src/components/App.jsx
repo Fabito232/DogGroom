@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ListaProductos from './lista_productos';
 import ListaClientes from './lista_clientes';
 import '../styles/lista_productos.css';
+import Finanzas from './Finanzas';
 const App = () => {
   
   return (
@@ -20,6 +21,7 @@ const App = () => {
           <Route path="/agendarcita" element={<AgendarCita />}/>
           <Route path='/productos' element={<ListaProductos/>}/>
           <Route path='/clientes' element={<ListaClientes/>}/>
+          <Route path='/f' element={<Finanzas/>}/>
         </Routes>
       </Router>
     </>
