@@ -3,9 +3,9 @@ export default {
   content: [
     "./src/components/login.jsx",
     "./src/components/AgendarCita.jsx",
-    "./src/components/lista_productos.jsx",
-    "./src/components/agregar_producto.jsx",
-    "./src/components/lista_clientes.jsx",
+    "./src/components/ListaProductos.jsx",
+    "./src/components/AgregarProducto.jsx",
+    "./src/components/ListaClientes.jsx",
     "./src/components/Finanzas.jsx",
     "./src/components/Header.jsx"
   ],

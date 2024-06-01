@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from "./Header";
 
 const ListaProductos = () => {
     const [productos, setProductos] = useState([
@@ -53,6 +54,7 @@ const ListaProductos = () => {
     return (
         <div className="relative min-h-screen flex items-start justify-center bg-primary bg-fondo bg-cover">
             <div className="relative z-10 shadow-lg w-full md:w-160 h-full md:h-auto">
+            <Header />
                 <div className="rounded-xl shadow-md p-20 mb-2 overflow-auto">
                     <div className="flex items-center mb-4">
                         <h1 className="bg-gray-300 rounded-lg text-6xl font-bold flex-1 text-center">Lista de Productos</h1>

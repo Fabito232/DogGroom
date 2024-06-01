@@ -52,7 +52,7 @@ const Header = () => {
               </li>
               <li>
                 <a
-                  href="/f"
+                  href="/productos"
                   className="block px-3 py-2 hover:text-gray-400"
                 >
                   Inventario

@@ -5,11 +5,11 @@ import Login from './login'
 import Citas from './citas';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ListaProductos from './lista_productos';
-import AgregarProducto from './agregar_producto';
-import ListaClientes from './lista_clientes';
+import ListaProductos from './ListaProductos';
+import AgregarProducto from './AgregarProducto';
+import ListaClientes from './ListaClientes';
 import Finanzas from './Finanzas';
-const App = () => {
+const App = () => {  
   
   return (
     <>
