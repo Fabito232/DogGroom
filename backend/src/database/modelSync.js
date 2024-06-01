@@ -3,7 +3,7 @@ import Cliente from "../models/clienteModel.js";
 import TipoMascota from "../models/tipoMascota.js";
 import Mascota from "../models/mascotaModel.js";
 import Cita from "../models/citaModel.js";
-import CitaDetalle from "../models/citaDetalle.js";
+import CitaDetalle from "../models/citaDetalleModel.js";
 import Servicio from "../models/servicioModel.js";
 import Empleado from "../models/empleadoModel.js";
 import Producto from "../models/productoModel.js";

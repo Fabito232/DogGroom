@@ -1,4 +1,4 @@
-import CitaDetalle from '../models/citaDetalle.js';
+import CitaDetalle from '../models/citaDetalleModel.js';
 import Cita from '../models/citaModel.js'
 import Cliente from '../models/clienteModel.js';
 import Mascota from '../models/mascotaModel.js';

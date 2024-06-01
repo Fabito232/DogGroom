@@ -8,8 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ListaProductos from './lista_productos';
 import AgregarProducto from './agregar_producto';
 import ListaClientes from './lista_clientes';
-
-
+import Finanzas from './Finanzas';
 const App = () => {
   
   return (
@@ -23,6 +22,7 @@ const App = () => {
           <Route path='/productos' element={<ListaProductos/>}/>
           <Route path='/agregarProducto' element={<AgregarProducto/>}/>
           <Route path='/clientes' element={<ListaClientes/>}/>
+          <Route path='/f' element={<Finanzas/>}/>
         </Routes>
       </Router>
     </>
