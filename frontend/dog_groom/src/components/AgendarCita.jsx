@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function AgendarCita() {
   // Pruebas local
@@ -18,7 +18,6 @@ function AgendarCita() {
   const [hora, setHora] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [estado, setEstado] = useState('');
-
 
   useEffect(() => {
     // Aquí puedes cargar los datos desde una API o archivo local
@@ -62,7 +61,7 @@ function AgendarCita() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-primary bg-opacity-80">
+    <div className="flex items-center justify-center min-h-screen bg-primary bg-opacity-80 bg-citas bg-cover">
       {/* Contenedor de lista de clientes */}
       <div className="w-1/3 bg-amber-800 bg-opacity-90 rounded-3xl p-8 m-4 overflow-auto">
         <ul className="list-none p-0">

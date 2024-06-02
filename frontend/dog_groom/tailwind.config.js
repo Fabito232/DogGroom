@@ -2,10 +2,11 @@
 export default {
   content: [
     "./src/components/login.jsx",
-    "./src/components/AgendarCita.jsx",
+    "./src/components/AgendarCita.jsx"
     "./src/components/ListaProductos.jsx",
     "./src/components/AgregarProducto.jsx",
     "./src/components/ListaClientes.jsx",
+    "./src/components/AgregarCliente.jsx",
     "./src/components/Finanzas.jsx",
     "./src/components/Header.jsx"
   ],
@@ -13,12 +14,15 @@ export default {
     extend: {
       backgroundImage: {
         'fondo': "url('./src/assets/Fondo.jpg')",
-        'logo': "url('./src/assets/Logo.png')",
+        'logo': "url('./src/assets/Logo.png')"
         'perroFacturando': "url('./src/assets/perro-facturando-dinero.png')"
       },
-      
+      colors: {
+        transparent: 'transparent',
+        current: 'currentColor',
+        customGreen: '#81B850'
+      }
     },
   },
   plugins: [],
 }
-
