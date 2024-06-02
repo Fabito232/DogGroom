@@ -28,8 +28,8 @@ function AgregarCliente() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-primary bg-citas bg-cover">
-            <div className="bg-customGreen bg-opacity-95 rounded-3xl p-10 m-6 flex items-center justify-center">
+        <div className="flex items-center justify-center min-h-screen bg-primary bg-agregarCliente bg-cover">
+            <div className="bg-yellow-800 bg-opacity-95 rounded-3xl p-10 m-6 flex items-center justify-center">
                 <form onSubmit={handleAgregarCliente} className="space-y-6">
                     <div className="grid md:grid-cols-3 gap-6">
                         <input
@@ -94,28 +94,27 @@ function AgregarCliente() {
                             <option value="grande">Grande</option>
                         </select>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-6 mb-6">
-                        <div className="flex justify-center">
-                            <input
-                                type="file"
-                                id="imagenMascota"
-                                className="hidden"
-                                onChange={handleImageChange}
-                                required
-                            />
-                            <label
-                                htmlFor="imagenMascota"
-                                className="p-4 text-lg bg-lime-700 rounded-md text-black font-bold hover:bg-lime-800 focus:outline-none cursor-pointer"
-                            >
-                                Subir Imagen
-                            </label>
-                        </div>
-                        <div className="flex justify-center">
-                            {fotoUrl && (
-                                <img src={fotoUrl} alt="Imagen de la Mascota" className="rounded-lg w-72 h-40 object-cover" />
+
+                    <div className="flex justify-center items-center mb-6">
+                        <input
+                            type="file"
+                            id="imagenMascota"
+                            className="hidden"
+                            onChange={handleImageChange}
+                            required
+                        />
+                        <label
+                            htmlFor="imagenMascota"
+                            className="w-80 h-48 flex flex-col justify-center items-center border-2 border-dashed border-gray-300 rounded-md p-4 cursor-pointer bg-gray-100 hover:bg-gray-200 focus:outline-none"
+                        >
+                            {fotoUrl ? (
+                                <img src={fotoUrl} alt="Imagen de la Mascota" className="rounded-lg w-full h-full object-cover" />
+                            ) : (
+                                <span className="text-lg text-gray-600">Haz clic para subir una imagen</span>
                             )}
-                        </div>
+                        </label>
                     </div>
+
                     <div className="flex justify-center space-x-4 mb-6">
                         <button
                             className="p-4 text-lg bg-green-600 rounded-md text-black font-bold hover:bg-green-700 focus:outline-none"
@@ -133,9 +132,7 @@ function AgregarCliente() {
                 </form>
             </div>
         </div>
-
     )
-
 }
 
 export default AgregarCliente;

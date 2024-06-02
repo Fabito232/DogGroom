@@ -10,7 +10,8 @@ export default {
       backgroundImage: {
         'fondo': "url('./src/assets/Fondo.jpg')",
         'logo': "url('./src/assets/Logo.png')",
-        'citas': "url('./src/assets/Citas.jpg')"
+        'citas': "url('./src/assets/Citas.jpg')",
+        'agregarCliente' : "url('./src/assets/fondoAgregarCliente.jpeg')"
       },
       colors: {
         transparent: 'transparent',
