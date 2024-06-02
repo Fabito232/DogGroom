@@ -43,8 +43,13 @@ const Header = () => {
                 </a>
               </li>
               <li>
+                <a href="/agendarCita" className="block px-3 py-2 hover:text-gray-400">
+                  Citas
+                </a>
+              </li>
+              <li>
                 <a
-                  href="/agendarcita"
+                  href="/clientes"
                   className="block px-3 py-2 hover:text-gray-400"
                 >
                   Clientes

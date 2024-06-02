@@ -2,7 +2,7 @@
 export default {
   content: [
     "./src/components/login.jsx",
-    "./src/components/AgendarCita.jsx"
+    "./src/components/AgendarCita.jsx",
     "./src/components/ListaProductos.jsx",
     "./src/components/AgregarProducto.jsx",
     "./src/components/ListaClientes.jsx",
@@ -14,7 +14,9 @@ export default {
     extend: {
       backgroundImage: {
         'fondo': "url('./src/assets/Fondo.jpg')",
-        'logo': "url('./src/assets/Logo.png')"
+        'fondo1': "url('./src/assets/Fondo1.jpg')",
+        'fondo2': "url('./src/assets/Fondo2.png')",
+        'logo': "url('./src/assets/Logo.png')",
         'perroFacturando': "url('./src/assets/perro-facturando-dinero.png')"
       },
       colors: {

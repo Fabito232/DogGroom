@@ -54,10 +54,10 @@ const AgregarProducto = () => {
     };
 
     return (
-        <div className="relative min-h-screen flex flex-col bg-primary bg-opacity-80 bg-fondo bg-cover">
+        <div className="relative min-h-screen flex flex-col bg-primary bg-opacity-80 bg-fondo1 bg-cover">
             <Header />
             <div className="flex-grow flex items-center justify-center">
-                <div className="relative z-10 bg-amber-800 bg-opacity-90 rounded-3xl p-16 shadow-lg w-full md:w-160" style={{ overflowY: 'hidden' }}>
+                <div className="relative z-10 bg-amber-800 bg-opacity-90 rounded-3xl p-16 shadow-lg w-3/4" style={{ overflowY: 'hidden' }}>
                     <div className="bg-white rounded-lg shadow-md p-8 mb-2 overflow-auto">
                         <h2 className="text-6xl font-bold text-center mb-12">Agregar Producto</h2>
                         <div className="mt-4">

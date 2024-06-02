@@ -16,7 +16,7 @@ const ListaProductos = () => {
     const navigate = useNavigate();
     const [productoEditando, setProductoEditando] = useState(null);
 
-    const manejarMostrarFormularioAgregar = () => {
+    const manejarAgregar = () => {
         navigate('/agregarProducto');
     };
 
@@ -52,13 +52,13 @@ const ListaProductos = () => {
     };
 
     return (
-        <div className="relative min-h-screen flex items-start justify-center bg-primary bg-fondo bg-cover">
+        <div className="relative min-h-screen flex items-start justify-center bg-primary bg-fondo1 bg-cover">
             <div className="relative z-10 shadow-lg w-full md:w-160 h-full md:h-auto">
             <Header />
                 <div className="rounded-xl shadow-md p-20 mb-2 overflow-auto">
                     <div className="flex items-center mb-4">
                         <h1 className="bg-gray-300 rounded-lg text-6xl font-bold flex-1 text-center">Lista de Productos</h1>
-                        <button className="bg-green-700 hover:bg-green-900 text-black font-bold py-3 px-12 rounded ml-8" onClick={manejarMostrarFormularioAgregar}>Agregar</button>
+                        <button className="bg-green-700 hover:bg-green-900 text-black font-bold py-4 px-12 rounded ml-8" onClick={manejarAgregar}>Agregar</button>
                     </div>
                     <div className="overflow-auto max-h-[650px] mt-8" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none'}}>
                         <table className="w-full table-auto border-collapse" >

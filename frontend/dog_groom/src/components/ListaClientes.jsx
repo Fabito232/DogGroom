@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import imgPerro from '../assets/img_perro.jpg';
 import Header from "./Header";
 
@@ -11,8 +12,13 @@ const ListaClientes = () => {
     { id: 5, image: imgPerro, cedula: '55667', nombre: 'Luis Mora', telefono: '555-5566', mascota: 'Lasi', raza: 'Pastor' }
   ]);
 
+  const navigate = useNavigate();
   const [clienteEditando, setClienteEditando] = useState(null);
   const [isGuardarDisabled, setIsGuardarDisabled] = useState(true);
+
+  const manejarAgregar = () => {
+    navigate('/agregarCliente');
+  };
 
   const manejarEditar = (cliente) => {
     setClienteEditando(cliente);
@@ -61,14 +67,14 @@ const ListaClientes = () => {
   }, [clienteEditando]);
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-fondo bg-cover">
+    <div className="relative min-h-screen flex flex-col bg-fondo2 bg-cover">
       <Header />
       <div className="flex-grow flex items-start justify-start p-12">
         <div className="shadow-lg w-full md:w-200 md:h-auto">
           <div className="shadow-md p-16 mb-8 overflow-auto max-h-[790px]" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
             <div className="flex items-center justify-between mb-4">
               <h1 className="bg-gray-300 rounded-lg text-6xl font-bold flex-1 text-center">Lista de Clientes</h1>
-              <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-4 px-12 rounded ml-8">Agregar</button>
+              <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-4 px-12 rounded ml-8" onClick={manejarAgregar}>Agregar</button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 gap-4">
               {clientes.map(cliente => (
