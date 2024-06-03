@@ -11,7 +11,7 @@ Producto.init({
         allowNull: false
     },
     Nombre: {
-        type: DataTypes.STRING(5),
+        type: DataTypes.STRING(),
         allowNull: false
     },
     Marca: {

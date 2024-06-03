@@ -5,7 +5,7 @@ import { validarDatosEmpleado } from "../middleware/validators.js";
 const router = Router();
 import { verificarToken } from "../middleware/auth.js";
 router.post('/login', loginEmpleado);
-router.use(verificarToken);
+//router.use(verificarToken);
 router.post('/empleados',validarDatosEmpleado, createEmpleado);
 router.post('/renovar-token', renovarToken);
 

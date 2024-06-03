@@ -3,15 +3,20 @@ import Mascota from "../models/mascotaModel.js";
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { maxHeaderSize } from "http";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const createMascota = async (req, res) => {
     let fotoURL = null;
+    console.log(req.file)
+    console.log(req.body, "bbb")
     if (req.file) {
       fotoURL = `/uploads/${req.file.filename}`;
+      console.log("fotourl:", fotoURL)
     }
+    
     try {
         const mascota = await Mascota.create({
             Nombre: req.body.nombre,
@@ -118,6 +123,12 @@ export const deleteMascota = async (req, res) => {
                     ID_Mascota: id
                 }
             });
+        }else{
+            await Mascota.destroy({
+                where: {
+                    ID_Mascota: id
+                }
+            });
         }
         return res.json({
             ok: true,
@@ -142,11 +153,11 @@ export const updateMascota = async (req, res) => {
     try {
         const id = req.params.id
         let fotoURL = null;
+        let filasActualizadas;
         if (req.file) {
           fotoURL = `/uploads/${req.file.filename}`;
-        }
 
-        const [filasActualizadas]  = await Mascota.update(
+          filasActualizadas  = await Mascota.update(
             {
                 Nombre: req.body.nombre,
                 Raza: req.body.raza,
@@ -159,6 +170,22 @@ export const updateMascota = async (req, res) => {
                     ID_Mascota: id
                 }
             })
+        }else{
+            filasActualizadas  = await Mascota.update(
+                {
+                    Nombre: req.body.nombre,
+                    Raza: req.body.raza,
+                    ID_Cliente: req.body.cedula,
+                    ID_TipoMascota: req.body.ID_TipoMascota
+                },
+                {
+                    where:{
+                        ID_Mascota: id
+                    }
+                })
+        }
+
+      
             if (filasActualizadas > 0) {
                 return res.json({
                     ok: true,
