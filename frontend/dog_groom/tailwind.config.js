@@ -17,7 +17,8 @@ export default {
         'fondo1': "url('./src/assets/Fondo1.jpg')",
         'fondo2': "url('./src/assets/Fondo2.png')",
         'logo': "url('./src/assets/Logo.png')",
-        'perroFacturando': "url('./src/assets/perro-facturando-dinero.png')"
+        'perroFacturando': "url('./src/assets/perro-facturando-dinero.png')",
+        'agregarCliente' : "url('./src/assets/fondoAgregarCliente.jpeg')"
       },
       colors: {
         transparent: 'transparent',
