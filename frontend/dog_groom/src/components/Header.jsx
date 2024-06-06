@@ -32,9 +32,8 @@ const Header = () => {
             </button>
           </div>
           <div
-            className={`${
-              isOpen ? 'block' : 'hidden'
-            } md:flex md:items-center md:space-x-4`}
+            className={`${isOpen ? 'block' : 'hidden'
+              } md:flex md:items-center md:space-x-4`}
           >
             <ul className="md:flex md:space-x-4">
               <li>
