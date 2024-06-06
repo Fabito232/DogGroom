@@ -13,7 +13,7 @@ export const crearMascota = async (mascota) => {
     }
 }
 
-export const obtenerMarcotas = async () => {
+export const obtenerMascotas = async () => {
     try {
         const response = await api.get('/mascotas');
         return response.data;

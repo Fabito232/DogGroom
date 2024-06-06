@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Header from "./Header";
+import { obtenerClientes } from '../services/clienteService';
 
 function AgendarCita() {
   // Pruebas local
@@ -21,27 +22,31 @@ function AgendarCita() {
   const [descripcion, setDescripcion] = useState('');
   const [estado, setEstado] = useState('');
 
+  const cargarClientes = async () => {
+    try {
+      const resClientes = await obtenerClientes();
+      console.log(resClientes)
+      const listaClientes = resClientes.data.map(cliente => ({
+        id: cliente.Cedula,
+        cedula: cliente.Cedula,
+        nombreCliente: cliente.Nombre,
+        telefono: cliente.Telefono,
+        mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '-',
+        raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '-',
+        image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : '-',
+        idMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
+        ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '-'
+      }))
+      setClientes(listaClientes)
+      console.log(listaClientes)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
-    // Aquí puedes cargar los datos desde una API o archivo local
-    // Ejemplo con datos simulados
-    const cargarClientes = async () => {
-      // Simulando una llamada a una API con datos estáticos
-      const datosSimulados = [
-        { id: 1, nombreCliente: 'Juan Perez', cedula: '208270199', telefono: '123456789' },
-        { id: 2, nombreCliente: 'Fabiola Muñoz', cedula: '209010829', telefono: '987654321' },
-        { id: 3, nombreCliente: 'Antony Barrantes', cedula: '403380157', telefono: '88953371' },
-        { id: 4, nombreCliente: 'Sergio Hernandez', cedula: '703570492', telefono: '78453269' },
-      ];
-
-      // Simulando retraso de red
-      await new Promise(res => setTimeout(res, 1000));
-
-      setClientes(datosSimulados);
-    };
-
-    cargarClientes();
-  }, []);
+    cargarClientes()
+  }, [])
 
   const handleAgregarCliente = (e) => {
     e.preventDefault();
