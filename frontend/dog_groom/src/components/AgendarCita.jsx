@@ -79,7 +79,7 @@ function AgendarCita() {
                     className="bg-black my-2 p-2 rounded-md text-white cursor-pointer"
                     onClick={() => handleSeleccionarCliente(cliente)}
                   >
-                    {cliente.nombreCliente} - {cliente.cedula}
+                    {cliente.cedula} - {cliente.nombreCliente}
                   </li>
                 ))}
               </ul>
