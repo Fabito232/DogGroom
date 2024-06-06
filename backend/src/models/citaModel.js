@@ -17,7 +17,7 @@ Cita.init({
     },
     Descripcion: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: false
     },
     Estado: {
         type: DataTypes.BOOLEAN,
@@ -38,8 +38,7 @@ Cita.init({
 }, {
     sequelize,
     freezeTableName: true,
-    createdAt: false,
-    updatedAt: false
+
 });
 
 Cliente.hasMany(Cita, {foreignKey: 'ID_Cliente'});
