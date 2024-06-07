@@ -4,6 +4,7 @@ import imgPerro from '../assets/img_perro.jpg';
 import Header from "./Header";
 import { obtenerClientes, actualizarCliente, borrarCliente } from '../services/clienteService';
 import { obtenerMascotas, actualizarMascota, borrarMascota } from '../services/mascotaService';
+import { URL_Hosting } from '../services/api';
 
 const ListaClientes = () => {
   const [clientes, setClientes] = useState([
@@ -49,6 +50,7 @@ const ListaClientes = () => {
   };
 
   const manejarEditar = async (cliente) => {
+    console.log("Cliente editado",cliente)
     setClienteEditando(cliente);
   };
 
@@ -71,7 +73,7 @@ const ListaClientes = () => {
     console.log(resCliente)
     if(resCliente.ok){
       console.log(clienteEditando.image)
-      const resMascota = await actualizarMascota(mascota, 26);
+      const resMascota = await actualizarMascota(mascota, clienteEditando.idMascota);
       console.log(resMascota)
     }
   
@@ -101,7 +103,6 @@ const ListaClientes = () => {
     //   };
     //   reader.readAsDataURL(file);
     // }
-
   };
 
   const manejarEliminar = async (id) => {
@@ -137,7 +138,7 @@ const ListaClientes = () => {
                 <div key={cliente.id} className="flex bg-amber-700 bg-opacity-90 border border-black w-full">
                   <div className="p-4 w-64 relative">
                     <img
-                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image :'http://localhost:4000'+ cliente.image || imgPerro}
+                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image :URL_Hosting + cliente.image || imgPerro}
                       alt={cliente.nombre}
                       className="h-full w-full object-cover rounded-lg cursor-pointer"
                       onClick={() => document.getElementById(`fileInput-${cliente.id}`).click()}
