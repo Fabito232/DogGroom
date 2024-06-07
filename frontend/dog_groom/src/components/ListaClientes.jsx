@@ -139,7 +139,7 @@ const ListaClientes = () => {
                 <div key={cliente.id} className="flex bg-amber-700 bg-opacity-90 border border-black w-full">
                   <div className="p-4 w-64 relative">
                     <img
-                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image :URL_Hosting+ cliente.image || imgPerro}
+                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image :URL_Hosting + cliente.image || imgPerro}
                       alt={cliente.nombre}
                       className="h-full w-full object-cover rounded-lg cursor-pointer"
                       onClick={() => document.getElementById(`fileInput-${cliente.id}`).click()}

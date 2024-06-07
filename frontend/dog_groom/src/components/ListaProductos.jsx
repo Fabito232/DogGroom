@@ -8,37 +8,35 @@ const ListaProductos = () => {
     const [productoEditando, setProductoEditando] = useState(null);
     const navigate = useNavigate();
 
-
     const cargarProducto = async () => {
         try {
             const resProducto = await obtenerProductos();
-            console.log(resProducto)
-            if(resProducto.ok){
-                const listaProducto = resProducto.data.map( producto =>({
+            console.log(resProducto);
+            if(resProducto.ok) {
+                const listaProducto = resProducto.data.map(producto => ({
                     id: producto.ID_Producto,
                     nombre: producto.Nombre,
                     marca: producto.Marca,
                     descripcion: producto.Descripcion,
                     cantidad: producto.Cantidad
-                }))
-                setProductos(listaProducto)
+                }));
+                setProductos(listaProducto);
             }
-         
         } catch (error) {
-            console.log(error.message)
+            console.log(error.message);
         }
-    }
+    };
 
-    useEffect(() =>{
+    useEffect(() => {
         cargarProducto();
-    },[])
+    }, []);
 
     const manejarAgregar = () => {
         navigate('/agregarProducto');
     };
 
     const manejarEditar = (producto) => {
-        console.log("producto editado",producto)
+        console.log("producto editado", producto);
         setProductoEditando(producto);
     };
 
@@ -48,19 +46,19 @@ const ListaProductos = () => {
     };
 
     const manejarGuardar = async () => {
-        console.log(productoEditando)
+        console.log(productoEditando);
         const producto = {
             nombre: productoEditando.nombre,
             marca: productoEditando.marca,
             descripcion: productoEditando.descripcion,
             cantidad: productoEditando.cantidad
-        }
-        console.log(producto)
+        };
+        console.log(producto);
         try {
             const resProducto = await actualizarProducto(producto, productoEditando.id);
-            console.log(resProducto)
+            console.log(resProducto);
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
 
         const productosActualizados = productos.map(producto => {
@@ -80,7 +78,7 @@ const ListaProductos = () => {
     const manejarEliminar = async (id) => {
         if (window.confirm("¿Estás seguro de que quieres eliminar este producto?")) {
             const resProducto = await borrarProducto(id);
-            console.log(resProducto)
+            console.log(resProducto);
             const productosActualizados = productos.filter(producto => producto.id !== id);
             setProductos(productosActualizados);
         }
@@ -89,14 +87,14 @@ const ListaProductos = () => {
     return (
         <div className="relative min-h-screen flex items-start justify-center bg-primary bg-fondo1 bg-cover">
             <div className="relative z-10 shadow-lg w-full md:w-160 h-full md:h-auto">
-            <Header />
+                <Header />
                 <div className="rounded-xl shadow-md p-20 mb-2 overflow-auto">
                     <div className="flex items-center mb-4">
                         <h1 className="bg-gray-300 rounded-lg text-6xl font-bold flex-1 text-center">Lista de Productos</h1>
                         <button className="bg-green-700 hover:bg-green-900 text-black font-bold py-4 px-12 rounded ml-8" onClick={manejarAgregar}>Agregar</button>
                     </div>
-                    <div className="overflow-auto max-h-[650px] mt-8" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none'}}>
-                        <table className="w-full table-auto border-collapse" >
+                    <div className="overflow-auto max-h-[650px] mt-8" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
+                        <table className="w-full table-auto border-collapse">
                             <thead>
                                 <tr className="bg-gray-300">
                                     <th className="border border-gray-800 py-6 px-6">Nombre</th>
@@ -107,8 +105,8 @@ const ListaProductos = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {productos.map((producto) => (
-                                    <tr key={producto.id} className={producto.id % 2 === 0 ? 'bg-white' : "bg-amber-800"}>
+                                {productos.map((producto, index) => (
+                                    <tr key={producto.id} className={index % 2 === 0 ? 'bg-white' : 'bg-lime-400'}>
                                         <td className="border border-gray-800 py-4 px-6">
                                             {productoEditando && productoEditando.id === producto.id ? (
                                                 <input
