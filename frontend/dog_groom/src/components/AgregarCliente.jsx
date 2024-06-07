@@ -1,11 +1,13 @@
 import { useState } from "react";
 import Header from "./Header";
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import { crearCliente } from "../services/clienteService";
 import { crearMascota } from "../services/mascotaService";
 
 function AgregarCliente() {
     const [cliente, setCliente] = useState([]);
+    const navigate = useNavigate();
 
     const [cedulaCliente, setCedulaCliente] = useState('');
     const [nombreCliente, setNombreCliente] = useState('');
@@ -60,6 +62,10 @@ function AgregarCliente() {
             setFotoUrl(URL.createObjectURL(file));
         }
     };
+
+    const manejarCancelar = () => {
+        navigate('/clientes');
+      };
 
     return (
         <div className="relaive flex flex-col min-h-screen bg-primary bg-agregarCliente bg-cover">
@@ -161,7 +167,8 @@ function AgregarCliente() {
                             </button>
                             <button
                                 className="p-4 text-lg bg-red-600 rounded-md text-black font-bold hover:bg-red-700 focus:outline-none"
-                                type="button"
+                                type="button" 
+                                onClick={manejarCancelar}
                             >
                                 Cancelar
                             </button>

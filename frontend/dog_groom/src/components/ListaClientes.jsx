@@ -25,7 +25,7 @@ const ListaClientes = () => {
         telefono: cliente.Telefono,
         mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '-',
         raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '-',
-        image:  cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : '-',
+        image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : '-',
         idMascota:cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
         ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '-'
       }))
@@ -92,16 +92,13 @@ const ListaClientes = () => {
 
   const manejarCambioImagen = (e) => {
     const file = e.target.files[0];
-    console.log("files:" , file)
-    setClienteEditando({ ...clienteEditando, image: file});
-    // if (file) {
-    //   const reader = new FileReader();
-    //   reader.onload = () => {
-    //     setClienteEditando({ ...clienteEditando, image: reader.result });
-    //   };
-    //   reader.readAsDataURL(file);
-    // }
-
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setClienteEditando({ ...clienteEditando, image: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const manejarEliminar = async (id) => {
@@ -137,7 +134,7 @@ const ListaClientes = () => {
                 <div key={cliente.id} className="flex bg-amber-700 bg-opacity-90 border border-black w-full">
                   <div className="p-4 w-64 relative">
                     <img
-                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image :'http://localhost:4000'+ cliente.image || imgPerro}
+                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image :'https://doggroom.onrender.com'+ cliente.image || imgPerro}
                       alt={cliente.nombre}
                       className="h-full w-full object-cover rounded-lg cursor-pointer"
                       onClick={() => document.getElementById(`fileInput-${cliente.id}`).click()}
