@@ -55,9 +55,8 @@ function AgregarCliente() {
             } catch (error) {
                 toast.error(error.message, { autoClose: 1500, theme: "colored" });
             }
+            navigate('/clientes');
         }
-
-
     };
 
     const handleImageChange = (e) => {

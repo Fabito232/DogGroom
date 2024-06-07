@@ -130,7 +130,7 @@ const ListaClientes = () => {
           <div className="shadow-md p-4 md:p-16 mb-8 overflow-auto max-h-[790px]" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
             <div className="flex flex-col md:flex-row items-center justify-between mb-4">
               <h1 className="bg-gray-300 rounded-lg text-3xl md:text-6xl font-bold flex-1 text-center mb-4 md:mb-0">Lista de Clientes</h1>
-              <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 md:py-4 px-6 md:px-12 rounded" onClick={manejarAgregar}>Agregar</button>
+              <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 md:py-4 px-6 md:px-12 rounded ml-8" onClick={manejarAgregar}>Agregar</button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {clientes.map(cliente => (

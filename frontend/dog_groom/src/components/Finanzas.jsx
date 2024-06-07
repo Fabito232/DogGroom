@@ -119,7 +119,7 @@ const Finanzas = () => {
                         <tbody>
                             {finanzasAnual.map((item, index) => (
                                 <tr key= {index} className="odd:bg-white even:bg-gray-100">
-                                  <td className="border border-slate-300 p-2">{item.descripcion}o</td>
+                                  <td className="border border-slate-300 p-2">{item.descripcion}</td>
                                   <td className="border border-slate-300 p-2">${item.monto}</td>
                                 </tr>
                             ))}
