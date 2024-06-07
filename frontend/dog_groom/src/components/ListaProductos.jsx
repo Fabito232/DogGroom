@@ -1,27 +1,45 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from "./Header";
+import { actualizarProducto, borrarProducto, obtenerProductos } from '../services/productoService.js';
 
 const ListaProductos = () => {
-    const [productos, setProductos] = useState([
-        { id: 1, nombre: 'Producto 1', marca: 'Marca 1', cantidad: 10, descripcion: 'Descripción del Producto 1' },
-        { id: 2, nombre: 'Producto 2', marca: 'Marca 2', cantidad: 20, descripcion: 'Descripción del Producto 2' },
-        { id: 3, nombre: 'Producto 3', marca: 'Marca 3', cantidad: 30, descripcion: 'Descripción del Producto 3' },
-        { id: 4, nombre: 'Producto 4', marca: 'Marca 4', cantidad: 40, descripcion: 'Descripción del Producto 4' },
-        { id: 5, nombre: 'Producto 5', marca: 'Marca 5', cantidad: 50, descripcion: 'Descripción del Producto 5' },
-        { id: 6, nombre: 'Producto 6', marca: 'Marca 6', cantidad: 60, descripcion: 'Descripción del Producto 6' },
-        { id: 7, nombre: 'Producto 7', marca: 'Marca 7', cantidad: 70, descripcion: 'Descripción del Producto 7' }
-    ]);
-
-    const navigate = useNavigate();
+    const [productos, setProductos] = useState([]);
     const [productoEditando, setProductoEditando] = useState(null);
+    const navigate = useNavigate();
+
+
+    const cargarProducto = async () => {
+        try {
+            const resProducto = await obtenerProductos();
+            console.log(resProducto)
+            if(resProducto.ok){
+                const listaProducto = resProducto.data.map( producto =>({
+                    id: producto.ID_Producto,
+                    nombre: producto.Nombre,
+                    marca: producto.Marca,
+                    descripcion: producto.Descripcion,
+                    cantidad: producto.Cantidad
+                }))
+                setProductos(listaProducto)
+            }
+         
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    useEffect(() =>{
+        cargarProducto();
+    },[])
 
     const manejarAgregar = () => {
         navigate('/agregarProducto');
     };
 
     const manejarEditar = (producto) => {
-        setProductoEditando({ ...producto });
+        console.log("producto editado",producto)
+        setProductoEditando(producto);
     };
 
     const manejarCambioEntradaEdicion = (e) => {
@@ -29,7 +47,22 @@ const ListaProductos = () => {
         setProductoEditando({ ...productoEditando, [name]: value });
     };
 
-    const manejarGuardar = () => {
+    const manejarGuardar = async () => {
+        console.log(productoEditando)
+        const producto = {
+            nombre: productoEditando.nombre,
+            marca: productoEditando.marca,
+            descripcion: productoEditando.descripcion,
+            cantidad: productoEditando.cantidad
+        }
+        console.log(producto)
+        try {
+            const resProducto = await actualizarProducto(producto, productoEditando.id);
+            console.log(resProducto)
+        } catch (error) {
+            console.log(error)
+        }
+
         const productosActualizados = productos.map(producto => {
             if (producto.id === productoEditando.id) {
                 return productoEditando;
@@ -44,8 +77,10 @@ const ListaProductos = () => {
         setProductoEditando(null);
     };
 
-    const manejarEliminar = (id) => {
+    const manejarEliminar = async (id) => {
         if (window.confirm("¿Estás seguro de que quieres eliminar este producto?")) {
+            const resProducto = await borrarProducto(id);
+            console.log(resProducto)
             const productosActualizados = productos.filter(producto => producto.id !== id);
             setProductos(productosActualizados);
         }
