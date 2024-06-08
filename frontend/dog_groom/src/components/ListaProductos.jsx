@@ -12,7 +12,7 @@ const ListaProductos = () => {
         try {
             const resProducto = await obtenerProductos();
             console.log(resProducto);
-            if(resProducto.ok) {
+            if (resProducto.ok) {
                 const listaProducto = resProducto.data.map(producto => ({
                     id: producto.ID_Producto,
                     nombre: producto.Nombre,
@@ -96,7 +96,7 @@ const ListaProductos = () => {
                     <div className="overflow-auto max-h-[650px] mt-8" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
                         <table className="w-full table-auto border-collapse">
                             <thead>
-                                <tr className="bg-gray-300">
+                                <tr className="bg-lime-600">
                                     <th className="border border-gray-800 py-6 px-6">Nombre</th>
                                     <th className="border border-gray-800 py-6 px-6">Marca</th>
                                     <th className="border border-gray-800 py-6 px-6">Cantidad</th>
@@ -106,7 +106,7 @@ const ListaProductos = () => {
                             </thead>
                             <tbody>
                                 {productos.map((producto, index) => (
-                                    <tr key={producto.id} className={index % 2 === 0 ? 'bg-white' : 'bg-lime-400'}>
+                                    <tr key={producto.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-200'}>
                                         <td className="border border-gray-800 py-4 px-6">
                                             {productoEditando && productoEditando.id === producto.id ? (
                                                 <input
@@ -161,14 +161,14 @@ const ListaProductos = () => {
                                         </td>
                                         <td className="border border-gray-800 py-4 px-6">
                                             {productoEditando && productoEditando.id === producto.id ? (
-                                                <div className="flex flex-col space-y-2">
-                                                    <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={manejarGuardar}>Guardar</button>
-                                                    <button className="bg-red-700 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded" onClick={manejarCancelar}>Cancelar</button>
+                                                <div className="flex flex-row space-x-2">
+                                                    <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full" onClick={manejarGuardar}>Guardar</button>
+                                                    <button className="bg-red-700 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded w-full" onClick={manejarCancelar}>Cancelar</button>
                                                 </div>
                                             ) : (
-                                                <div className="flex flex-col space-y-2">
-                                                    <button className="bg-green-500 hover:bg-green-700 text-white font-bold w-full py-2 px-4 rounded-md" onClick={() => manejarEditar(producto)}>Editar</button>
-                                                    <button className="bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded" onClick={() => manejarEliminar(producto.id)}>Eliminar</button>
+                                                <div className="flex flex-row space-x-2">
+                                                    <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full" onClick={() => manejarEditar(producto)}>Editar</button>
+                                                    <button className="bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded w-full" onClick={() => manejarEliminar(producto.id)}>Eliminar</button>
                                                 </div>
                                             )}
                                         </td>

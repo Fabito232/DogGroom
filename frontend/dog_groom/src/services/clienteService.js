@@ -30,7 +30,7 @@ export const borrarCliente = async (id) => {
     }
 }
 
-export const actualizarCliente = async (cliente,id) => {
+export const actualizarCliente = async (cliente, id) => {
     try {
         const response = await api.put(`/clientes/${id}`, cliente);
         return response.data;

@@ -16,78 +16,51 @@ function AgendarCita() {
   const [raza, setRaza] = useState('');
   const [tamanno, setTamanno] = useState('');
 
-  // Datos Hora, Descripcion y Estado
+  // Datos Precio, Hora, Descripcion y Estado
+  const [precio, setPrecio] = useState('');
   const [hora, setHora] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [estado, setEstado] = useState('');
 
-
-  // useEffect(() => {
-  //   // Aquí puedes cargar los datos desde una API o archivo local
-  //   // Ejemplo con datos simulados
-  //   const cargarClientes = async () => {
-  //     // Simulando una llamada a una API con datos estáticos
-  //     const datosSimulados = [
-  //       { id: 1, nombreCliente: 'Juan Perez', cedula: '208270199' },
-  //       { id: 2, nombreCliente: 'Fabiola Muñoz', cedula: '209010829' },
-  //       { id: 3, nombreCliente: 'Marta Bolaños', cedula: '202810289' },
-  //       { id: 4, nombreCliente: 'José Fernandez', cedula: '201920890' },
-  //       { id: 5, nombreCliente: 'Junito Hernández', cedula: '208290882' },
-  //       { id: 6, nombreCliente: 'Edgar Alvarado', cedula: '208290882' },
-  //       { id: 7, nombreCliente: 'Allison Sumba', cedula: '208290882' },
-  //       { id: 8, nombreCliente: 'Fabian Bolaños', cedula: '208290882' },
-  //       { id: 9, nombreCliente: 'Javier Barrantes', cedula: '208290882' },
-  //       { id: 10, nombreCliente: 'Allan Castro', cedula: '208290882' },
-  //       { id: 11, nombreCliente: 'Antony Barrantes', cedula: '208290882' },
-  //       { id: 12, nombreCliente: 'Iaac Villalobos', cedula: '208290882' },
-  //       { id: 13, nombreCliente: 'Jesus Rodriguez', cedula: '208290882' },
-  //       { id: 14, nombreCliente: 'Victoria Campos', cedula: '208290882' },
-  //       { id: 15, nombreCliente: 'David Ramirez', cedula: '208290882' },
-  //       { id: 16, nombreCliente: 'Larissa Camacho', cedula: '208290882' },
-  //     ];
-
-  //     // Simulando retraso de red
-  //     await new Promise(res => setTimeout(res, 1000));
-
-  //     setClientes(datosSimulados);
-  //   };
-
-  //   cargarClientes();
-  // }, []);
-
-
-  const cargarClientes = async () =>{
+  const cargarClientes = async () => {
     try {
-    const resClientes = await obtenerClientes();
+      const resClientes = await obtenerClientes();
       console.log(resClientes)
-    const listaClientes = resClientes.data.map(cliente => ({
-      id: cliente.Cedula,
-      cedula: cliente.Cedula,
-      nombreCliente: cliente.Nombre,
-      telefono: cliente.Telefono,
-      mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '-',
-      raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '-',
-      image:  cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : '-',
-      idMascota:cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
-      ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '-'
-    }))
-    setClientes(listaClientes)
-    console.log(listaClientes)
+      const listaClientes = resClientes.data.map(cliente => ({
+        id: cliente.Cedula,
+        cedula: cliente.Cedula,
+        nombreCliente: cliente.Nombre,
+        telefono: cliente.Telefono,
+        mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '-',
+        raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '-',
+        image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : '-',
+        idMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
+        ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '-'
+      }))
+      setClientes(listaClientes)
+      console.log(listaClientes)
     } catch (error) {
-    console.log(error)
+      console.log(error)
     }
   }
 
-  useEffect(  () => {
+  useEffect(() => {
     cargarClientes()
   }, [])
 
   const handleAgregarCliente = (e) => {
     e.preventDefault();
-    const nuevoCliente = { id: clientes.length + 1, nombreCliente, cedula };
+    const nuevoCliente = { id: clientes.length + 1, nombreCliente, cedula, telefono };
     setClientes([...clientes, nuevoCliente]);
     setNombreCliente('');
     setCedula('');
+    setTelefono('');
+  };
+
+  const handleSeleccionarCliente = (cliente) => {
+    setNombreCliente(cliente.nombreCliente);
+    setCedula(cliente.cedula);
+    setTelefono(cliente.telefono);
   };
 
   return (
@@ -101,10 +74,12 @@ function AgendarCita() {
             <div className="overflow-y-auto" style={{ maxHeight: '400px', scrollbarWidth: 'none' }}>
               <ul className="list-none p-0">
                 {clientes.map((cliente) => (
-                  <li key={cliente.id} className="bg-black my-2 p-2 rounded-md text-white">
-                    <span>
-                      {cliente.nombreCliente} - {cliente.cedula}
-                    </span>
+                  <li
+                    key={cliente.id}
+                    className="bg-black my-2 p-2 rounded-md text-white cursor-pointer"
+                    onClick={() => handleSeleccionarCliente(cliente)}
+                  >
+                    {cliente.cedula} - {cliente.nombreCliente}
                   </li>
                 ))}
               </ul>
@@ -116,21 +91,21 @@ function AgendarCita() {
             <form onSubmit={handleAgregarCliente} className="space-y-4 w-full">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <input
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
-                  type="text"
-                  id="NombreCliente"
-                  placeholder="Nombre del Cliente"
-                  value={nombreCliente}
-                  onChange={(e) => setNombreCliente(e.target.value)}
-                  required
-                />
-                <input
                   className="p-3 border border-gray-300 rounded mb-2"
                   type="text"
                   id="cedula"
                   placeholder="Cédula"
                   value={cedula}
                   onChange={(e) => setCedula(e.target.value)}
+                  required
+                />
+                <input
+                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                  type="text"
+                  id="NombreCliente"
+                  placeholder="Nombre del Cliente"
+                  value={nombreCliente}
+                  onChange={(e) => setNombreCliente(e.target.value)}
                   required
                 />
                 <input
@@ -198,8 +173,8 @@ function AgendarCita() {
                   type="text"
                   id="precio"
                   placeholder="Precio"
-                  value={tamanno}
-                  onChange={(e) => setTamanno(e.target.value)}
+                  value={precio}
+                  onChange={(e) => setPrecio(e.target.value)}
                   required
                 />
                 <button

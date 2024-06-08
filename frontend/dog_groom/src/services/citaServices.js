@@ -30,7 +30,7 @@ export const borrarCita = async (id) => {
     }
 }
 
-export const actualizarCita = async (cita,id) => {
+export const actualizarCita = async (cita, id) => {
     try {
         const response = await api.put(`/citas/${id}`, cita);
         return response.data;
