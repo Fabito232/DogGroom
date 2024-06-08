@@ -1,4 +1,4 @@
-/*import request from 'supertest';
+import request from 'supertest';
 import index from '../../backend/src/index'; 
 import Empleado from '../../backend/src/models/empleadoMode';
 
@@ -76,4 +76,4 @@ describe('loginEmpleado', () => {
     expect(response.status).toBe(500);
     expect(response.body.message).toBe('Error al obtener el Empleado');
   });
-});*/
+});

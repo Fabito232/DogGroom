@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import imgPerro from '../assets/img_perro.jpg';
 import Header from "./Header";
+import { obtenerClientes, actualizarCliente, borrarCliente } from '../services/clienteService';
+import { obtenerMascotas, actualizarMascota, borrarMascota } from '../services/mascotaService';
 
 const ListaClientes = () => {
   const [clientes, setClientes] = useState([
@@ -12,6 +14,32 @@ const ListaClientes = () => {
     { id: 5, image: imgPerro, cedula: '55667', nombre: 'Luis Mora', telefono: '555-5566', mascota: 'Lasi', raza: 'Pastor' }
   ]);
 
+  const cargarClientes = async () =>{
+      try {
+      const resClientes = await obtenerClientes();
+        console.log(resClientes)
+      const listaClientes = resClientes.data.map(cliente => ({
+        id: cliente.Cedula,
+        cedula: cliente.Cedula,
+        nombre: cliente.Nombre,
+        telefono: cliente.Telefono,
+        mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '-',
+        raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '-',
+        image:  cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : '-',
+        idMascota:cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
+        ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '-'
+      }))
+      setClientes(listaClientes)
+      console.log(listaClientes)
+      } catch (error) {
+      console.log(error)
+      }
+  }
+
+  useEffect(  () => {
+    cargarClientes()
+  }, [])
+
   const navigate = useNavigate();
   const [clienteEditando, setClienteEditando] = useState(null);
   const [isGuardarDisabled, setIsGuardarDisabled] = useState(true);
@@ -20,11 +48,34 @@ const ListaClientes = () => {
     navigate('/agregarCliente');
   };
 
-  const manejarEditar = (cliente) => {
+  const manejarEditar = async (cliente) => {
     setClienteEditando(cliente);
   };
 
-  const manejarGuardar = () => {
+  const manejarGuardar = async () => {
+    console.log("editar:" + clienteEditando.ID_TipoMascota)
+    const cliente = {
+      cedula: clienteEditando.cedula,
+      nombre: clienteEditando.nombre,
+      telefono: clienteEditando.telefono
+    }
+    const mascota = {
+        nombre: clienteEditando.mascota,
+        raza: clienteEditando.raza,
+        image: clienteEditando.image,
+        cedula: clienteEditando.cedula,
+        ID_TipoMascota: clienteEditando.ID_TipoMascota
+    }
+
+    const resCliente = await actualizarCliente(cliente, clienteEditando.id);
+    console.log(resCliente)
+    if(resCliente.ok){
+      console.log(clienteEditando.image)
+      const resMascota = await actualizarMascota(mascota, 26);
+      console.log(resMascota)
+    }
+  
+
     if (isGuardarDisabled) return;
     setClientes(clientes.map(cliente => cliente.id === clienteEditando.id ? clienteEditando : cliente));
     setClienteEditando(null);
@@ -41,18 +92,23 @@ const ListaClientes = () => {
 
   const manejarCambioImagen = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setClienteEditando({ ...clienteEditando, image: reader.result });
-      };
-      reader.readAsDataURL(file);
-    }
+    console.log("files:" , file)
+    setClienteEditando({ ...clienteEditando, image: file});
+    // if (file) {
+    //   const reader = new FileReader();
+    //   reader.onload = () => {
+    //     setClienteEditando({ ...clienteEditando, image: reader.result });
+    //   };
+    //   reader.readAsDataURL(file);
+    // }
+
   };
 
-  const manejarEliminar = (id) => {
+  const manejarEliminar = async (id) => {
     const confirmacion = window.confirm('¿Estás seguro de eliminar este cliente?');
     if (confirmacion) {
+      const resCliente = await borrarCliente(id)
+      console.log(resCliente)
       setClientes(clientes.filter(cliente => cliente.id !== id));
     }
   };
@@ -81,7 +137,7 @@ const ListaClientes = () => {
                 <div key={cliente.id} className="flex bg-amber-700 bg-opacity-90 border border-black w-full">
                   <div className="p-4 w-64 relative">
                     <img
-                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image : cliente.image || imgPerro}
+                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image :'https://doggroom.onrender.com'+ cliente.image || imgPerro}
                       alt={cliente.nombre}
                       className="h-full w-full object-cover rounded-lg cursor-pointer"
                       onClick={() => document.getElementById(`fileInput-${cliente.id}`).click()}
@@ -168,6 +224,7 @@ const ListaClientes = () => {
                           <div className="bg-white p-1 rounded flex-grow">{cliente.raza}</div>
                         )}
                       </div>
+                      
                     </div>
                     <div className="flex justify-between space-x-4 mt-4">
                       {clienteEditando && clienteEditando.id === cliente.id ? (

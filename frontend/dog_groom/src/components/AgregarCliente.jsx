@@ -1,5 +1,8 @@
 import { useState } from "react";
 import Header from "./Header";
+import { toast } from 'react-toastify';
+import { crearCliente } from "../services/clienteService";
+import { crearMascota } from "../services/mascotaService";
 
 function AgregarCliente() {
     const [cliente, setCliente] = useState([]);
@@ -14,9 +17,40 @@ function AgregarCliente() {
     const [fotoMascota, SetFotoMascota] = useState(null);
     const [fotoUrl, setFotoUrl] = useState('');
 
-    const handleAgregarCliente = (e) => {
+    const handleAgregarCliente = async (e) => {
         e.preventDefault();
-        // Crear la lógica para agregarlo
+
+        const cliente = {
+            cedula: cedulaCliente,
+            nombre: nombreCliente,
+            telefono: telefonoCliente
+        }
+
+        const mascota = {
+            nombre: nombreMascota,
+            raza: razaMascota,
+            image: fotoMascota,
+            cedula: cedulaCliente,
+            ID_TipoMascota: 1
+        }
+        try {
+            console.log(cliente, " \n", mascota )
+            const resCliente = await crearCliente(cliente);
+            console.log(resCliente)
+            if(resCliente.ok){
+                const resMascota = await crearMascota(mascota);
+                if(resMascota.ok) {
+                    toast.success("Se guardó con éxito el cliente", { autoClose: 1500, theme: "colored"});
+                }else{
+                    toast.error(resMascota.message, { autoClose: 1500, theme: "colored"});
+                }
+                console.log('MASCOTA:' , resMascota)   
+            }else{
+                toast.error(resCliente.message, { autoClose: 1500, theme: "colored"});
+            }
+        } catch (error) {
+            toast.error(error.message, { autoClose: 1500, theme: "colored"});
+        }
     };
 
     const handleImageChange = (e) => {
@@ -90,7 +124,7 @@ function AgregarCliente() {
                                 onChange={(e) => setTamanoMascota(e.target.value)}
                                 required
                             >
-                                <option value="" disabled>Tamaño</option>
+                                <option value="d" disabled>Tamaño</option>
                                 <option value="pequeño">Pequeño</option>
                                 <option value="mediano">Mediano</option>
                                 <option value="grande">Grande</option>
@@ -102,6 +136,7 @@ function AgregarCliente() {
                                 type="file"
                                 id="imagenMascota"
                                 className="hidden"
+
                                 onChange={handleImageChange}
                                 required
                             />

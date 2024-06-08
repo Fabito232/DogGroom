@@ -1,51 +1,68 @@
-import { Calendar, dayjsLocalizer} from "react-big-calendar";
+// src/components/Citas.js
+import { Calendar, dayjsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from 'dayjs';
-import '../styles/citas.css' 
-import "dayjs/locale/es"
+import '../styles/citas.css'
+import "dayjs/locale/es";
 import Header from "./Header";
 import { obtenerCitas } from "../services/citaServices";
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const localizer = dayjsLocalizer(dayjs);
 
 function Citas() {
   const [events, setEvents] = useState([]);
+  const location = useLocation();
+  const nuevaCita = location.state?.nuevaCita;
 
   useEffect(() => {
     const fetchCitas = async () => {
-      const citas = await obtenerCitas();
-      const events = citas.map(cita => ({
-        start: dayjs(cita.hora).toDate(),
-        end: dayjs(cita.hora).add(1, 'hour').toDate(),
-        title: `${cita.nombreCliente} - ${cita.nombreMascota}`,
-        descripcion: cita.descripcion,
-        telefono: cita.telefono,
-        estado: cita.estado,
-        cedula: cita.cedula,
-        raza: cita.raza,
-        tamanno: cita.tamanno
-      }));
-      setEvents(events);
+      try {
+        const resCitas = await obtenerCitas();
+        if (resCitas && resCitas.data) {
+          const citasTransformadas = resCitas.data.map(cita => ({
+            start: dayjs(cita.FechaYHora).toDate(),
+            end: dayjs(cita.FechaYHora).add(1, 'hour').toDate(), 
+            title: cita.Cliente.Nombre
+          }));
+          setEvents(citasTransformadas);
+        } else {
+          console.error("La respuesta de obtenerCitas no contiene datos.");
+        }
+      } catch (error) {
+        console.error("Error al obtener citas:", error);
+      }
     };
     fetchCitas();
   }, []);
 
+  useEffect(() => {
+    if (nuevaCita) {
+      const nuevaCitaTransformada = {
+        start: dayjs(nuevaCita.fechaYHora).toDate(),
+        end: dayjs(nuevaCita.fechaYHora).add(1, 'hour').toDate(),
+        title: nuevaCita.Cliente.Nombre
+      };
+      setEvents(prevEvents => [...prevEvents, nuevaCitaTransformada]);
+    }
+  }, [nuevaCita]);
+
   const handleEventClick = (event) => {
     alert(`
       Cliente: ${event.title}
-      Cédula: ${event.cedula}
-      Teléfono: ${event.telefono}
-      Mascota: ${event.nombreMascota}
-      Raza: ${event.raza}
-      Tamaño: ${event.tamanno}
-      Descripción: ${event.descripcion}
-      Estado: ${event.estado}
+      Fecha y Hora: ${dayjs(event.start).format('DD/MM/YYYY HH:mm')}
     `);
   };
 
   const handleSelectSlot = ({ start }) => {
     console.log(start);
+  };
+
+  const components = {
+    event: props => {
+      return <div>{props.title}</div>;
+    }
   };
 
   return (
@@ -55,6 +72,7 @@ function Citas() {
         <Calendar
           localizer={localizer}
           events={events}
+          components={components}
           selectable={true}
           onSelectEvent={handleEventClick}
           onSelectSlot={handleSelectSlot}
@@ -66,7 +84,7 @@ function Citas() {
           }}
           messages={{
             next: "Siguiente",
-            previous: "Atras",
+            previous: "Atrás",
             today: "Hoy",
             month: "Mes",
             week: "Semana",

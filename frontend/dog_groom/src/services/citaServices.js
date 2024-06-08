@@ -1,5 +1,5 @@
 import api from "./api";
-
+import axios from 'axios';
 export const crearCita = async (cita) => {
   try {
     const response = await api.post('/citas', cita);
@@ -12,11 +12,11 @@ export const crearCita = async (cita) => {
 
 export const obtenerCitas = async () => {
   try {
-    const response = await api.get('/citas');
+    const response = await axios.get('/api/citas'); 
     return response.data;
   } catch (error) {
-    console.log(error.response);
-    return error.response.data;
+    console.error("Error al obtener citas:", error);
+    return { ok: false, message: "Error al obtener citas" };
   }
 };
 

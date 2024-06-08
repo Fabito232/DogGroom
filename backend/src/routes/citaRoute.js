@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { crearCita, crearCitaAgenda ,getCita, getListCita, deleteCita, updateCita } from "../controllers/citaController.js";
+import { createCita ,getCita, getListCita, deleteCita, updateCita } from "../controllers/citaController.js";
 import { validarDatosCita } from "../middleware/validators.js";
 const router = Router();
 import { fileURLToPath } from 'url';
@@ -20,10 +20,11 @@ const storage = multer.diskStorage({
 const upload = multer({ storage }).single('image');
 router.get('/citas', getListCita);
 router.get('/citas/:id', getCita);
-router.post('/citas',validarDatosCita, crearCita);
+router.post('/citas',validarDatosCita, createCita);
 router.delete('/citas/:id',deleteCita);
+
 router.put('/citas/:id',validarDatosCita, updateCita );
-router.put('/citas', upload, crearCitaAgenda)
+
 
 
 export default router
