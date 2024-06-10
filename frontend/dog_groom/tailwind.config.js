@@ -8,7 +8,9 @@ export default {
     "./src/components/ListaClientes.jsx",
     "./src/components/AgregarCliente.jsx",
     "./src/components/Finanzas.jsx",
-    "./src/components/Header.jsx"
+    "./src/components/Header.jsx",
+    "./src/components/AgregarGasto.jsx",
+    "./src/components/ListaGastos.jsx",
   ],
   theme: {
     extend: {

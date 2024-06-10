@@ -2,17 +2,20 @@ import { useState, useEffect } from 'react';
 import { resumenFinanzas, resumenControlAnual } from '../services/finanzasServices';
 import { toast } from 'react-toastify';
 import Header from './Header';
+import ListaGastos from './ListaGastos';
 
 const Finanzas = () => {
     const [fechaInicial, setFechaInicial] = useState('');
     const [fechaFinal, setFechaFinal] = useState('');
     const [finanzas, setFinanzas] = useState([{ porcentaje: '', nombre: '', monto: 0 }]);
     const [finanzasAnual, setFinanzasAnual] = useState([]);
+    const [actualizarFinanzas, setActualizarFinanzas] = useState(false)
 
     const resumenCAnual = async() => {  
         try {
             const response = await resumenControlAnual()
             setFinanzasAnual(response.data)
+            setActualizarFinanzas(false);
         } catch (error) {
             console.log(error)
         }
@@ -46,9 +49,12 @@ const Finanzas = () => {
 
     useEffect(() => {
         resumenCAnual();
-    }, [finanzas])
+    }, [finanzas, actualizarFinanzas])
 
-    
+    const actualizarFinanzasAnuales = () => {
+        setActualizarFinanzas(true);
+    }
+
     return (
         <>
         <Header></Header>
@@ -119,13 +125,16 @@ const Finanzas = () => {
                         <tbody>
                             {finanzasAnual.map((item, index) => (
                                 <tr key= {index} className="odd:bg-white even:bg-gray-100">
-                                  <td className="border border-slate-300 p-2">{item.descripcion}o</td>
+                                  <td className="border border-slate-300 p-2">{item.descripcion}</td>
                                   <td className="border border-slate-300 p-2">${item.monto}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
+                <ListaGastos
+                actualizarFinanzasAnuales= {actualizarFinanzasAnuales}
+                ></ListaGastos>
             </div>
         </div>
         </>
