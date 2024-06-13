@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { resumenFinanzas, resumenControlAnual } from '../services/finanzasServices';
-import { toast } from 'react-toastify';
 import Header from './Header';
 import ListaGastos from './ListaGastos';
+import { notificarExito, notificarError } from '../utilis/notificaciones';
 
 const Finanzas = () => {
     const [fechaInicial, setFechaInicial] = useState('');
@@ -23,21 +23,22 @@ const Finanzas = () => {
 
     const resumenF = async() => {  
         try {
+            console.log("Click", fechaInicial, fechaFinal)
             const fechas = {
                 fechaInicio: fechaInicial,
                 fechaFin: fechaFinal
             }
 
             if(!fechas.fechaInicio || !fechas.fechaFin){
-                toast.error('Debe selecionar el rango de fechas, tanto Fecha inicial y final', { autoClose: 1500, theme: "colored"});
+                notificarError('Debe selecionar el rango de fechas, tanto Fecha inicial y final');
             }else{
                 const response = await resumenFinanzas(fechas)
-                toast.success(`Resumen de finanzas existoso`, { autoClose: 1500, theme: "colored"});
+                notificarExito('Resumen de finanzas existoso');
                 console.log(response.data)
                 setFinanzas(response.data)
             }
         } catch (error) {
-            console.log(error)
+            notificarError(error)
         }
     }
 

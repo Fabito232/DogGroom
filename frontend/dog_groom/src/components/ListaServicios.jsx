@@ -1,58 +1,67 @@
 import { useState, useEffect } from 'react';
-import AgregarGasto from './AgregarGasto';
-import { obtenerGastos, crearGasto, actualizarGasto, borrarGasto } from '../services/finanzasServices';
+import { obtenerServicios, actualizarServicio, borrarServicio, crearServicio } from '../services/paqueteServices';
 import PropTypes from 'prop-types'
 import { useConfirm } from './ModalConfirmacion';
 import { notificarError, notificarExito } from '../utilis/notificaciones';
+import AgregarServicio from './AgregarServicio';
+import { obtenerTipoMascotas } from '../services/tipoAnimal';
+import Header from './Header';
 
-const ListaGastos = ({actualizarFinanzasAnuales}) => {
+const ListaServicios = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [gastos, setGastos] = useState([]);
+  const [servicios, setServicios] = useState([]);
+  const [tiposMascota, setTiposMascota] = useState([]);
   const [buscarPalabra, setBuscarPalabra] = useState('');
-  const [gastosFiltrados, setGastosFiltrados] = useState([]);
+  const [serviciosFiltrados, setServiciosFiltrados] = useState([]);
   const [modo, setModo] = useState('agregar');
-  const [gastoActual, setGastoActual] = useState(null);
+  const [servicioActual, setServicioActual] = useState(null);
   const [paginaActual, setPaginaActual] = useState(1);
-  const [gastosPorPagina] = useState(5); // Cantidad de gastos por página
+  const [servicioPorPagina] = useState(5); // Cantidad de servicios por página
 
   const openConfirmModal = useConfirm();
 
   useEffect(() => {
-    setGastosFiltrados(
-      gastos.filter((gasto) =>
-        gasto.descripcion.toLowerCase().includes(buscarPalabra.toLowerCase())
+    setServiciosFiltrados(
+      servicios.filter((servicio) =>
+        servicio.descripcion.toLowerCase().includes(buscarPalabra.toLowerCase())
       )
     );
-  }, [gastos, buscarPalabra]);
+  }, [servicios, buscarPalabra]);
 
   useEffect(() => {
-    cargarGastos();
+    cargarServicios();
   }, []);
 
-  const cargarGastos = async () => {
+  const cargarServicios = async () => {
     try {
-      const resGasto = await obtenerGastos();
-
-      if (resGasto.ok) {
-        const listaGastos = resGasto.data.map(gasto => ({
-          id: gasto.ID_Gasto,
-          descripcion: gasto.Descripcion,
-          monto: gasto.Monto,
-          fecha: gasto.Fecha
+      const resServicio = await obtenerServicios();
+      const resTipoAnimal = await obtenerTipoMascotas();
+    
+      if (resServicio.ok) {
+        const ListaServicios = resServicio.data.map(servicio => ({
+          id: servicio.ID_Servicio,
+          descripcion: servicio.Descripcion,
+          precio: servicio.Precio,
+          tipoMascota: servicio.TipoMascota
         }));
 
-        setGastos(listaGastos);
+        setServicios(ListaServicios);
+        console.log(resServicio);
       } else {
-        console.log(resGasto);
+        console.log(resServicio);
+      }
+
+      if(resTipoAnimal.ok){  
+        setTiposMascota(resTipoAnimal.data)
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const abrirModal = (modo, gasto = null) => {
+  const abrirModal = (modo, servicio = null) => {
     setModo(modo);
-    setGastoActual(gasto);
+    setServicioActual(servicio);
     setModalIsOpen(true);
   };
 
@@ -60,70 +69,83 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
     setModalIsOpen(false);
   };
 
-  const agregarGasto = async (gasto) => {
+  const agregarServicio = async (servicio) => {
     try {
-      const resGasto = await crearGasto(gasto);
-      if (resGasto.ok) {
-        const nuevoGasto = {
-          id: resGasto.data.ID_Gasto,
-          ...gasto,
+
+        console.log("antes",servicio)
+        const nuevoServicio = {
+            descripcion: servicio.descripcion,
+            precio: servicio.precio,
+            ID_TipoMascota: servicio.tipoMascota.ID_TipoMascota
+        }
+        console.log("despues",nuevoServicio)
+      const resServicio = await crearServicio(nuevoServicio);
+      
+      if (resServicio.ok) {
+        console.log(resServicio)
+        const nuevoServicio = {
+          id: resServicio.data.ID_Servicio,
+          ...servicio,
         };
-        setGastos([...gastos, nuevoGasto]);
+        console.log("sss",nuevoServicio)
+        setServicios([...servicios, nuevoServicio]);
         setModalIsOpen(false);
-        notificarExito(resGasto.message)
+        notificarExito(resServicio.message)
       } else {
-        notificarError(resGasto)
+        notificarError(resServicio)
       }
     } catch (error) {
       notificarError(error)
     }
-    actualizarFinanzasAnuales();
   };
 
-  const editarGasto = async (gastoEditado) => {
+  const editarServicio = async (servicioEditado) => {
     try {
-      console.log(gastoEditado);
-      const resGasto = await actualizarGasto(gastoEditado, gastoEditado.id);
-      if (resGasto.ok) {
-        const updatedGastos = gastos.map((gasto) =>
-          gasto.id === gastoEditado.id ? gastoEditado : gasto
+      console.log(servicioEditado);
+      const servicioActualizado = {
+        descripcion: servicioEditado.descripcion,
+        precio: servicioEditado.precio,
+        ID_TipoMascota: servicioEditado.tipoMascota.ID_TipoMascota
+      }
+      const resServicio = await actualizarServicio(servicioActualizado, servicioEditado.id);
+      if (resServicio.ok) {
+        const servicioActualizado = servicios.map((servicio) =>
+          servicio.id === servicioEditado.id ? servicioEditado : servicio
         );
-        setGastos(updatedGastos);
+        setServicios(servicioActualizado);
         setModalIsOpen(false);
-        notificarExito(resGasto.message)
+        notificarExito("Se actualizó el servicio correctamente")
       }
     } catch (error) {
       console.log(error);
     }
-    actualizarFinanzasAnuales();
   };
 
   const eliminarGasto = async (id) => {
 
     openConfirmModal('¿Estás seguro de que deseas eliminar este elemento?', async () => {
       try {
-        const resGasto = await borrarGasto(id);
+        const resGasto = await borrarServicio(id);
         if (resGasto.ok) {
-          const updatedGastos = gastos.filter((gasto) => gasto.id !== id);
-          setGastos(updatedGastos);
-          notificarExito("Se borro existosamente el gasto")
+          const updatedGastos = servicios.filter((servicio) => servicio.id !== id);
+          setServicios(updatedGastos);
+          notificarExito("Se borro existosamente el servicio")
         }
       } catch (error) {
         console.log(error);
       }
-      actualizarFinanzasAnuales();
       console.log('Elemento eliminado');
     });
 
   };
 
   // Paginación
-  const indiceUltimoGasto = paginaActual * gastosPorPagina;
-  const indicePrimerGasto = indiceUltimoGasto - gastosPorPagina;
-  const gastosActuales = gastosFiltrados.slice(indicePrimerGasto, indiceUltimoGasto);
+  const indiceUltimoGasto = paginaActual * servicioPorPagina;
+  const indicePrimerGasto = indiceUltimoGasto - servicioPorPagina;
+  const serviciosActuales = serviciosFiltrados.slice(indicePrimerGasto, indiceUltimoGasto);
 
   const numerosDePagina = [];
-  for (let i = 1; i <= Math.ceil(gastosFiltrados.length / gastosPorPagina); i++) {
+  for (let i = 1; i <= Math.ceil(serviciosFiltrados.length / servicioPorPagina); i++) {
     numerosDePagina.push(i);
   }
 
@@ -146,13 +168,16 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
   const paginasVisibles = obtenerPaginasVisibles();
 
   return (
+    <>
+    <Header></Header>
+    <div className='md:container md:mx-auto p-5'>
     <div className="p-6 bg-gray-100 container">
-      <h1 className="text-3xl font-bold mb-4">Control de Gastos La Bandada {new Date().getFullYear()}</h1>
+      <h1 className="text-3xl font-bold mb-4">Servicios de La Bandada </h1>
       <div className='flex justify-between mb-4'>
         <div>
           <input
             type="text"
-            placeholder="Buscar gasto..."
+            placeholder="Buscar servicio..."
             className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             value={buscarPalabra}
             onChange={(e) => setBuscarPalabra(e.target.value)}
@@ -163,15 +188,16 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
             onClick={() => abrirModal('agregar')}
             className="mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
           >
-            Agregar Gasto
+            Agregar Servicio
           </button>
-          <AgregarGasto
+          <AgregarServicio
             isOpen={modalIsOpen}
             cerrar={cerrarModal}
-            agregarGasto={agregarGasto}
-            editarGasto={editarGasto}
-            gasto={gastoActual}
+            agregarServicio={agregarServicio}
+            editarServicio={editarServicio}
+            servicio={servicioActual}
             modo={modo}
+            tiposMascota={tiposMascota}
           />
         </div>
       </div>
@@ -181,27 +207,26 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
           <thead>
             <tr className="bg-gray-100 border-b border-gray-300">
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Animal</th>              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {gastosActuales.map((gasto) => (
-              <tr key={gasto.id} className="border-b border-gray-300">
-                <td className="px-6 py-4 whitespace-nowrap">{gasto.descripcion}</td>
-                <td className="px-6 py-4 whitespace-nowrap">${gasto.monto}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{gasto.fecha}</td>
+            {serviciosActuales.map((servicio) => (
+              <tr key={servicio.id} className="border-b border-gray-300">
+                <td className="px-6 py-4 whitespace-nowrap">{servicio.descripcion}</td>
+                <td className="px-6 py-4 whitespace-nowrap">${servicio.precio}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{servicio.tipoMascota.Descripcion}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <button
                     className="px-3 py-1 bg-red-600 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
-                    onClick={() => eliminarGasto(gasto.id)}
+                    onClick={() => eliminarGasto(servicio.id)}
                   >
                     Eliminar
                   </button>
                   <button
                     className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
-                    onClick={() => abrirModal('editar', gasto)}
+                    onClick={() => abrirModal('editar', servicio)}
                   >
                     Editar
                   </button>
@@ -255,11 +280,13 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
         </nav>
       </div>
     </div>
+    </div>
+    </>
   );
 };
 
-ListaGastos.propTypes ={
+ListaServicios.propTypes ={
   actualizarFinanzasAnuales: PropTypes.func
 }
 
-export default ListaGastos;
+export default ListaServicios;

@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
       cb(null, new Date().getTime() + path.extname(file.originalname));
     },
   });
-const upload = multer({ storage }).single('image');
+const upload = multer({ storage }).array('images',10);
 const router = Router();
 router.get('/clientes', getListCliente);
 router.get('/clientes/:id', getCliente);

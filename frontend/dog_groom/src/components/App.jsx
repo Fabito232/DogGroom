@@ -10,13 +10,14 @@ import AgregarProducto from './AgregarProducto';
 import ListaClientes from './ListaClientes';
 import AgregarCliente from './AgregarCliente';
 import Finanzas from './Finanzas';
-import AgregarGasto from './AgregarGasto';
-import ListaGastos from './ListaGastos';
+import { ConfirmProvider } from './ModalConfirmacion';
+import ListaServicios from './ListaServicios';
 
 const App = () => {
   
   return (
     <>
+    <ConfirmProvider>
       <ToastContainer/>
       <Router>
         <Routes>
@@ -28,10 +29,10 @@ const App = () => {
           <Route path='/clientes' element={<ListaClientes/>}/>
           <Route path='/agregarCliente' element={<AgregarCliente/>}/>
           <Route path='/f' element={<Finanzas/>}/>
-          <Route path='/g' element={<AgregarGasto/>}/>
-          <Route path='/lg' element={<ListaGastos/>}/>
+          <Route path='/servicios' element={<ListaServicios/>}/>
         </Routes>
       </Router>
+    </ConfirmProvider>
     </>
   )
 }

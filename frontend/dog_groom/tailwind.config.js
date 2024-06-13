@@ -11,6 +11,9 @@ export default {
     "./src/components/Header.jsx",
     "./src/components/AgregarGasto.jsx",
     "./src/components/ListaGastos.jsx",
+    "./src/components/ModalConfirmacion.jsx",
+    "./src/components/ListaServicios.jsx",
+    "./src/components/AgregarServicio.jsx",
   ],
   theme: {
     extend: {

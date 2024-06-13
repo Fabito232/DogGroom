@@ -34,7 +34,7 @@ Servicio.init({
     updatedAt: false
 });
 
-TipoMascota.hasMany(Servicio, {foreignKey: 'ID_TipoMascota'});
-Servicio.belongsTo(TipoMascota, {foreignKey: 'ID_Servicio'});
+//TipoMascota.hasMany(Servicio, {foreignKey: 'ID_TipoMascota'});
+Servicio.belongsTo(TipoMascota, { foreignKey: 'ID_TipoMascota', as: 'TipoMascota' });
 
 export default Servicio;
