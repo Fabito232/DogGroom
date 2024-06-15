@@ -8,6 +8,7 @@ import { validarCliente, validarMascota } from "./validaciones";
 
 function AgregarCliente() {
     const [cliente, setCliente] = useState([]);
+    const navigate = useNavigate();
 
     const [cedulaCliente, setCedulaCliente] = useState('');
     const [nombreCliente, setNombreCliente] = useState('');
@@ -66,8 +67,6 @@ function AgregarCliente() {
             setFotoUrl(URL.createObjectURL(file));
         }
     };
-
-    const navigate = useNavigate();
 
     const manejarCancelar = () => {
         navigate('/clientes');

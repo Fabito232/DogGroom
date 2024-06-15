@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from "./Header";
+import {crearProducto} from '../services/productoService.js'
 
 const AgregarProducto = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-    const { productos, setProductos } = location.state || { productos: [], setProductos: () => { } };
 
     const [nuevoProducto, setNuevoProducto] = useState({
-        id: productos.length + 1,
         nombre: '',
         marca: '',
         cantidad: '',
@@ -22,7 +20,7 @@ const AgregarProducto = () => {
         setNuevoProducto({ ...nuevoProducto, [name]: value });
     };
 
-    const manejarAgregarProducto = () => {
+    const manejarAgregarProducto = async () => {
         const { nombre, marca, cantidad, descripcion } = nuevoProducto;
 
         let mensajesError = [];
@@ -43,9 +41,15 @@ const AgregarProducto = () => {
             });
             return;
         }
+        console.log('Producto: ', nuevoProducto)
+        const resProducto = await crearProducto(nuevoProducto);
+        console.log("Respuesta",resProducto)
+        if(resProducto.ok){
+            toast.success("Se guardó con éxito el producto", { autoClose: 1500, theme: "colored"});
+        }else{
+            toast.error(resProducto.message, { autoClose: 1500, theme: "colored"});
+        }
 
-        const nuevosProductos = [...productos, { ...nuevoProducto, id: productos.length + 1 }];
-        setProductos(nuevosProductos);
         navigate('/productos');
     };
 
@@ -68,6 +72,7 @@ const AgregarProducto = () => {
                                 value={nuevoProducto.nombre}
                                 onChange={manejarCambioEntradaNuevo}
                                 className="block w-full mb-2 p-2 border border-gray-300 rounded"
+                                required
                             />
                             <input
                                 type="text"
@@ -76,6 +81,7 @@ const AgregarProducto = () => {
                                 value={nuevoProducto.marca}
                                 onChange={manejarCambioEntradaNuevo}
                                 className="block w-full mb-2 p-2 border border-gray-300 rounded"
+                                required
                             />
                             <input
                                 type="number"
@@ -84,6 +90,7 @@ const AgregarProducto = () => {
                                 value={nuevoProducto.cantidad}
                                 onChange={manejarCambioEntradaNuevo}
                                 className="block w-full mb-2 p-2 border border-gray-300 rounded"
+                                required
                             />
                             <input
                                 type="text"
@@ -92,6 +99,7 @@ const AgregarProducto = () => {
                                 value={nuevoProducto.descripcion}
                                 onChange={manejarCambioEntradaNuevo}
                                 className="block w-full mb-2 p-2 border border-gray-300 rounded"
+                                required
                             />
                             <div className="flex justify-between mt-8">
                                 <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2" onClick={manejarAgregarProducto}>Agregar</button>
