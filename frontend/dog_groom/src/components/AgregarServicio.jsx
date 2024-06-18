@@ -19,7 +19,7 @@ const AgregarServicio = ({ isOpen, cerrar, agregarServicio, editarServicio, serv
     const { name, value } = e.target;
     setServicioInfo(prevState => ({
       ...prevState,
-      [name]: value || {} 
+      [name]: value 
     }));
   };
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 Modal.setAppElement('#root'); // Esto es necesario para la accesibilidad
 
@@ -11,7 +11,6 @@ const AgregarGasto = ({ isOpen, cerrar, agregarGasto, editarGasto, gasto, modo }
     if (modo === 'editar' && gasto) {
       setGastoInfo(gasto);
     } else {
-      console.log(gasto, modo)
       setGastoInfo({ descripcion: '', fecha: '', monto: '' });
     }
   }, [modo, gasto]);
@@ -42,7 +41,7 @@ const AgregarGasto = ({ isOpen, cerrar, agregarGasto, editarGasto, gasto, modo }
       contentLabel="Agregar Gasto" 
       className="fixed inset-0 flex items-center justify-center p-4 bg-gray-800 bg-opacity-75"
     >
-      <div className="bg-white rounded-lg p-6 w-full max-w-lg">
+      <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4">
         <h2 className="text-2xl font-semibold mb-4">{modo === 'agregar' ? 'Agregar Gasto' : 'Editar Gasto'}</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -90,7 +89,7 @@ const AgregarGasto = ({ isOpen, cerrar, agregarGasto, editarGasto, gasto, modo }
               type="submit" 
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
-             {modo === 'agregar' ? 'Agregar' : 'Guardar'}
+              {modo === 'agregar' ? 'Agregar' : 'Guardar'}
             </button>
           </div>
         </form>
@@ -100,12 +99,12 @@ const AgregarGasto = ({ isOpen, cerrar, agregarGasto, editarGasto, gasto, modo }
 };
 
 AgregarGasto.propTypes = {
-    isOpen: PropTypes.bool, 
-    cerrar: PropTypes.func,
-    agregarGasto: PropTypes.func,
-    editarGasto: PropTypes.func,
+    isOpen: PropTypes.bool.isRequired, 
+    cerrar: PropTypes.func.isRequired,
+    agregarGasto: PropTypes.func.isRequired,
+    editarGasto: PropTypes.func.isRequired,
     gasto: PropTypes.object,
-    modo: PropTypes.string
-}
+    modo: PropTypes.string.isRequired
+};
 
 export default AgregarGasto;
