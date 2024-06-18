@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from "./Header";
-import {borrarProducto, crearProducto, actualizarProducto} from '../services/productoService.js'
+import {crearProducto} from '../services/productoService.js'
 
 const AgregarProducto = () => {
     const navigate = useNavigate();
@@ -27,7 +27,6 @@ const AgregarProducto = () => {
         if (!nombre) mensajesError.push('Nombre');
         if (!marca) mensajesError.push('Marca');
         if (!cantidad) mensajesError.push('Cantidad');
-        if (!descripcion) mensajesError.push('Descripción');
 
         if (mensajesError.length > 0) {
             toast.error(`Debe completar los siguientes campos: ${mensajesError.join(', ')}`, {

@@ -15,10 +15,10 @@ const ListaClientes = () => {
     { id: 5, image: imgPerro, cedula: '55667', nombre: 'Luis Mora', telefono: '555-5566', mascota: 'Lasi', raza: 'Pastor' }
   ]);
 
-  const cargarClientes = async () =>{
-      try {
+  const cargarClientes = async () => {
+    try {
       const resClientes = await obtenerClientes();
-        console.log(resClientes)
+      console.log(resClientes)
       const listaClientes = resClientes.data.map(cliente => ({
         id: cliente.Cedula,
         cedula: cliente.Cedula,
@@ -26,18 +26,18 @@ const ListaClientes = () => {
         telefono: cliente.Telefono,
         mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '-',
         raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '-',
-        image:  cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : '-',
-        idMascota:cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
+        image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : '-',
+        idMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
         ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '-'
       }))
       setClientes(listaClientes)
       console.log(listaClientes)
-      } catch (error) {
+    } catch (error) {
       console.log(error)
-      }
+    }
   }
 
-  useEffect(  () => {
+  useEffect(() => {
     cargarClientes()
   }, [])
 
@@ -50,33 +50,33 @@ const ListaClientes = () => {
   };
 
   const manejarEditar = async (cliente) => {
-    console.log("Cliente editado",cliente)
+    console.log("Cliente editado", cliente)
     setClienteEditando(cliente);
   };
 
   const manejarGuardar = async () => {
-    console.log("editar:" + clienteEditando.ID_TipoMascota)
+    console.log("editar:" + clienteEditando)
     const cliente = {
       cedula: clienteEditando.cedula,
       nombre: clienteEditando.nombre,
       telefono: clienteEditando.telefono
     }
     const mascota = {
-        nombre: clienteEditando.mascota,
-        raza: clienteEditando.raza,
-        image: clienteEditando.image,
-        cedula: clienteEditando.cedula,
-        ID_TipoMascota: clienteEditando.ID_TipoMascota
+      nombre: clienteEditando.mascota,
+      raza: clienteEditando.raza,
+      image: clienteEditando.image,
+      cedula: clienteEditando.cedula,
+      ID_TipoMascota: clienteEditando.ID_TipoMascota
     }
 
     const resCliente = await actualizarCliente(cliente, clienteEditando.id);
     console.log(resCliente)
-    if(resCliente.ok){
+    if (resCliente.ok) {
       console.log(clienteEditando.image)
       const resMascota = await actualizarMascota(mascota, clienteEditando.idMascota);
       console.log(resMascota)
     }
-  
+
 
     if (isGuardarDisabled) return;
     setClientes(clientes.map(cliente => cliente.id === clienteEditando.id ? clienteEditando : cliente));
@@ -94,15 +94,16 @@ const ListaClientes = () => {
 
   const manejarCambioImagen = (e) => {
     const file = e.target.files[0];
-    console.log("files:" , file)
-    setClienteEditando({ ...clienteEditando, image: file});
-    // if (file) {
-    //   const reader = new FileReader();
-    //   reader.onload = () => {
-    //     setClienteEditando({ ...clienteEditando, image: reader.result });
-    //   };
-    //   reader.readAsDataURL(file);
-    // }
+    console.log("files:", file)
+    setClienteEditando({ ...clienteEditando, image: file });
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setClienteEditando({ ...clienteEditando, image: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+
   };
 
   const manejarEliminar = async (id) => {
@@ -126,21 +127,21 @@ const ListaClientes = () => {
   return (
     <div className="relative min-h-screen flex flex-col bg-fondo2 bg-cover">
       <Header />
-      <div className="flex-grow flex items-start justify-start p-12">
+      <div className="flex-grow flex items-start justify-start p-4 md:p-12">
         <div className="shadow-lg w-full md:w-200 md:h-auto">
-          <div className="shadow-md p-16 mb-8 overflow-auto max-h-[790px]" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
-            <div className="flex items-center justify-between mb-4">
-              <h1 className="bg-gray-300 rounded-lg text-6xl font-bold flex-1 text-center">Lista de Clientes</h1>
-              <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-4 px-12 rounded ml-8" onClick={manejarAgregar}>Agregar</button>
+          <div className="shadow-md p-4 md:p-16 mb-8 overflow-auto max-h-[790px]" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
+            <div className="flex flex-col md:flex-row items-center justify-between mb-4">
+              <h1 className="bg-gray-300 rounded-lg text-3xl md:text-6xl font-bold flex-1 text-center mb-4 md:mb-0">Lista de Clientes</h1>
+              <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 md:py-4 px-6 md:px-12 rounded" onClick={manejarAgregar}>Agregar</button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {clientes.map(cliente => (
-                <div key={cliente.id} className="flex bg-amber-700 bg-opacity-90 border border-black w-full">
-                  <div className="p-4 w-64 relative">
+                <div key={cliente.id} className="flex flex-col bg-amber-700 bg-opacity-90 border border-black w-full">
+                  <div className="relative p-4 w-full flex justify-center">
                     <img
-                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image :URL_Hosting + cliente.image || imgPerro}
+                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image : URL_Hosting + cliente.image || imgPerro}
                       alt={cliente.nombre}
-                      className="h-full w-full object-cover rounded-lg cursor-pointer"
+                      className="h-32 w-32 md:h-48 md:w-48 object-cover rounded-lg cursor-pointer"
                       onClick={() => document.getElementById(`fileInput-${cliente.id}`).click()}
                     />
                     {clienteEditando && clienteEditando.id === cliente.id && (

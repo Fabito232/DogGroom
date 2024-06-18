@@ -1,6 +1,6 @@
 import api from "./api";
 
-export const resumenControlAnual = async (user) =>{
+export const resumenControlAnual = async (user) => {
     try {
         const response = await api.get('/resumenControlAnual', user);
         return response.data;

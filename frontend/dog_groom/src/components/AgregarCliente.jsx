@@ -1,12 +1,15 @@
-import { useState } from "react";
 import Header from "./Header";
+import { useState } from "react";
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import { crearCliente } from "../services/clienteService";
 import { crearMascota } from "../services/mascotaService";
+import { validarCliente, validarMascota } from "./validaciones";
 import { useConfirm } from './ModalConfirmacion';
 
 function AgregarCliente() {
     const [cliente, setCliente] = useState([]);
+    const navigate = useNavigate();
 
     const [cedulaCliente, setCedulaCliente] = useState('');
     const [nombreCliente, setNombreCliente] = useState('');
@@ -36,24 +39,29 @@ function AgregarCliente() {
             cedula: cedulaCliente,
             ID_TipoMascota: 1
         }
-        try {
-            console.log(cliente, " \n", mascota )
-            const resCliente = await crearCliente(cliente);
-            console.log(resCliente)
-            if(resCliente.ok){
-                const resMascota = await crearMascota(mascota);
-                if(resMascota.ok) {
-                    toast.success("Se guardó con éxito el cliente", { autoClose: 1500, theme: "colored"});
-                }else{
-                    toast.error(resMascota.message, { autoClose: 1500, theme: "colored"});
+
+        if (validarCliente(cliente) && validarMascota(mascota)) {
+            try {
+                console.log(cliente, " \n", mascota)
+                const resCliente = await crearCliente(cliente);
+                console.log(resCliente)
+                if (resCliente.ok) {
+                    const resMascota = await crearMascota(mascota);
+                    if (resMascota.ok) {
+                        toast.success("Se guardó con éxito el cliente", { autoClose: 1500, theme: "colored" });
+                    } else {
+                        toast.error(resMascota.message, { autoClose: 1500, theme: "colored" });
+                    }
+                    console.log('MASCOTA:', resMascota)
+                } else {
+                    toast.error(resCliente.message, { autoClose: 1500, theme: "colored" });
                 }
-                console.log('MASCOTA:' , resMascota)   
-            }else{
-                toast.error(resCliente.message, { autoClose: 1500, theme: "colored"});
+            } catch (error) {
+                toast.error(error.message, { autoClose: 1500, theme: "colored" });
             }
-        } catch (error) {
-            toast.error(error.message, { autoClose: 1500, theme: "colored"});
         }
+
+
     };
 
     const handleImageChange = (e) => {
@@ -62,6 +70,10 @@ function AgregarCliente() {
             SetFotoMascota(file);
             setFotoUrl(URL.createObjectURL(file));
         }
+    };
+
+    const manejarCancelar = () => {
+        navigate('/clientes');
     };
 
     return (
@@ -129,7 +141,6 @@ function AgregarCliente() {
                             >
                                 <option value="d" disabled>Tamaño</option>
                                 <option value="pequeño">Pequeño</option>
-                                <option value="mediano">Mediano</option>
                                 <option value="grande">Grande</option>
                             </select>
                         </div>
@@ -165,6 +176,7 @@ function AgregarCliente() {
                             <button
                                 className="p-4 text-lg bg-red-600 rounded-md text-black font-bold hover:bg-red-700 focus:outline-none"
                                 type="button"
+                                onClick={manejarCancelar}
                             >
                                 Cancelar
                             </button>
