@@ -63,6 +63,7 @@ function validarFotoMascota(fotoMascota) {
     return fotoMascota !== null && fotoMascota !== undefined;
 }
 
+// Validacion para los nombres y raza
 function validarString(String) {
     const validacionString = /^[a-zA-Z\s]{4,20}$/;
     return validacionString.test(String)

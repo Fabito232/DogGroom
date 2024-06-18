@@ -7,18 +7,17 @@ import { obtenerMascotas, actualizarMascota, borrarMascota } from '../services/m
 import { URL_Hosting } from '../services/api';
 
 const ListaClientes = () => {
-  const [clientes, setClientes] = useState([
-    { id: 1, image: imgPerro, cedula: '12345', nombre: 'Juan Perez', telefono: '555-1234', mascota: 'Lasi', raza: 'Pastor' },
-    { id: 2, image: imgPerro, cedula: '67890', nombre: 'Maria Lopez', telefono: '555-5678', mascota: 'Lasi', raza: 'Pastor' },
-    { id: 3, image: imgPerro, cedula: '11223', nombre: 'Carlos Diaz', telefono: '555-1122', mascota: 'Lasi', raza: 'Pastor' },
-    { id: 4, image: imgPerro, cedula: '33445', nombre: 'Ana Torres', telefono: '555-3344', mascota: 'Lasi', raza: 'Pastor' },
-    { id: 5, image: imgPerro, cedula: '55667', nombre: 'Luis Mora', telefono: '555-5566', mascota: 'Lasi', raza: 'Pastor' }
-  ]);
+  const [clientes, setClientes] = useState([]);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [clientesPorPagina] = useState(8);
+  const navigate = useNavigate();
+  const [clienteEditando, setClienteEditando] = useState(null);
+  const [isGuardarDisabled, setIsGuardarDisabled] = useState(true);
+  const [terminoBusqueda, setTerminoBusqueda] = useState(""); // Nuevo estado para el término de búsqueda
 
   const cargarClientes = async () => {
     try {
       const resClientes = await obtenerClientes();
-      console.log(resClientes)
       const listaClientes = resClientes.data.map(cliente => ({
         id: cliente.Cedula,
         cedula: cliente.Cedula,
@@ -26,60 +25,49 @@ const ListaClientes = () => {
         telefono: cliente.Telefono,
         mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '-',
         raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '-',
-        image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : '-',
+        image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : imgPerro,
         idMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
         ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '-'
-      }))
-      setClientes(listaClientes)
-      console.log(listaClientes)
+      }));
+      setClientes(listaClientes);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
-    cargarClientes()
-  }, [])
-
-  const navigate = useNavigate();
-  const [clienteEditando, setClienteEditando] = useState(null);
-  const [isGuardarDisabled, setIsGuardarDisabled] = useState(true);
+    cargarClientes();
+  }, []);
 
   const manejarAgregar = () => {
     navigate('/agregarCliente');
   };
 
-  const manejarEditar = async (cliente) => {
-    console.log("Cliente editado", cliente)
+  const manejarEditar = (cliente) => {
     setClienteEditando(cliente);
   };
 
   const manejarGuardar = async () => {
-    console.log("editar:" + clienteEditando)
     const cliente = {
       cedula: clienteEditando.cedula,
       nombre: clienteEditando.nombre,
       telefono: clienteEditando.telefono
-    }
+    };
     const mascota = {
       nombre: clienteEditando.mascota,
       raza: clienteEditando.raza,
       image: clienteEditando.image,
       cedula: clienteEditando.cedula,
       ID_TipoMascota: clienteEditando.ID_TipoMascota
-    }
+    };
 
     const resCliente = await actualizarCliente(cliente, clienteEditando.id);
-    console.log(resCliente)
     if (resCliente.ok) {
-      console.log(clienteEditando.image)
-      const resMascota = await actualizarMascota(mascota, clienteEditando.idMascota);
-      console.log(resMascota)
+      await actualizarMascota(mascota, clienteEditando.idMascota);
     }
 
-
     if (isGuardarDisabled) return;
-    setClientes(clientes.map(cliente => cliente.id === clienteEditando.id ? clienteEditando : cliente));
+    setClientes(clientes.map(c => c.id === clienteEditando.id ? clienteEditando : c));
     setClienteEditando(null);
   };
 
@@ -94,8 +82,6 @@ const ListaClientes = () => {
 
   const manejarCambioImagen = (e) => {
     const file = e.target.files[0];
-    console.log("files:", file)
-    setClienteEditando({ ...clienteEditando, image: file });
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
@@ -103,14 +89,12 @@ const ListaClientes = () => {
       };
       reader.readAsDataURL(file);
     }
-
   };
 
   const manejarEliminar = async (id) => {
     const confirmacion = window.confirm('¿Estás seguro de eliminar este cliente?');
     if (confirmacion) {
-      const resCliente = await borrarCliente(id)
-      console.log(resCliente)
+      await borrarCliente(id);
       setClientes(clientes.filter(cliente => cliente.id !== id));
     }
   };
@@ -124,6 +108,22 @@ const ListaClientes = () => {
     }
   }, [clienteEditando]);
 
+  const manejarCambioBusqueda = (e) => {
+    setTerminoBusqueda(e.target.value);
+  };
+
+  const clientesFiltrados = clientes.filter(cliente =>
+    cliente.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
+    cliente.cedula.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
+    cliente.mascota.toLowerCase().includes(terminoBusqueda.toLowerCase())
+  );
+
+  const indiceUltimoCliente = paginaActual * clientesPorPagina;
+  const indicePrimerCliente = indiceUltimoCliente - clientesPorPagina;
+  const clientesActuales = clientesFiltrados.slice(indicePrimerCliente, indiceUltimoCliente);
+
+  const totalPaginas = Math.ceil(clientesFiltrados.length / clientesPorPagina);
+
   return (
     <div className="relative min-h-screen flex flex-col bg-fondo2 bg-cover">
       <Header />
@@ -132,10 +132,17 @@ const ListaClientes = () => {
           <div className="shadow-md p-4 md:p-16 mb-8 overflow-auto max-h-[790px]" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
             <div className="flex flex-col md:flex-row items-center justify-between mb-4">
               <h1 className="bg-gray-300 rounded-lg text-3xl md:text-6xl font-bold flex-1 text-center mb-4 md:mb-0">Lista de Clientes</h1>
-              <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 md:py-4 px-6 md:px-12 rounded" onClick={manejarAgregar}>Agregar</button>
+              <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 md:py-4 px-6 md:px-12 rounded ml-8" onClick={manejarAgregar}>Agregar</button>
             </div>
+            <input
+              type="text"
+              placeholder="Buscar por Nombre de Cliente, Cédula o Nombre de la Mascota"
+              value={terminoBusqueda}
+              onChange={manejarCambioBusqueda}
+              className="mb-4 p-2 border border-gray-300 rounded w-full"
+            />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {clientes.map(cliente => (
+              {clientesActuales.map(cliente => (
                 <div key={cliente.id} className="flex flex-col bg-amber-700 bg-opacity-90 border border-black w-full">
                   <div className="relative p-4 w-full flex justify-center">
                     <img
@@ -244,6 +251,22 @@ const ListaClientes = () => {
                 </div>
               ))}
             </div>
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => setPaginaActual(paginaActual - 1)}
+                disabled={paginaActual === 1}
+                className="mx-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 text-black rounded disabled:opacity-50"
+              >
+                Anterior
+              </button>
+              <button
+                onClick={() => setPaginaActual(paginaActual + 1)}
+                disabled={paginaActual === totalPaginas}
+                className="mx-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 text-black rounded disabled:opacity-50"
+              >
+                Siguiente
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -252,4 +275,3 @@ const ListaClientes = () => {
 };
 
 export default ListaClientes;
-
