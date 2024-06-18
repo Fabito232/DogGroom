@@ -1,8 +1,6 @@
-/** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./src/components/login.jsx",
-    "./src/components/AgendarCita.jsx",
     "./src/components/ListaProductos.jsx",
     "./src/components/AgregarProducto.jsx",
     "./src/components/ListaClientes.jsx",
@@ -14,8 +12,12 @@ export default {
     "./src/components/ModalConfirmacion.jsx",
     "./src/components/ListaServicios.jsx",
     "./src/components/AgregarServicio.jsx",
+    "./src/components/AgendarCita.jsx"
   ],
   theme: {
+    container: {
+      center: false,
+    },
     extend: {
       backgroundImage: {
         'fondo': "url('./src/assets/Fondo.jpg')",
@@ -34,3 +36,4 @@ export default {
   },
   plugins: [],
 }
+

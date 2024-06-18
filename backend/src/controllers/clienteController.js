@@ -120,6 +120,86 @@ export const createClienteConMascota = async (req, res) => {
   };
 
 
+export const createClienteConMascota = async (req, res) => {
+
+    const { cedula, nombreCliente, telefono, mascotas } = req.body;
+    const files = req.files; 
+    const mascotasData = JSON.parse(mascotas); 
+    let fotosURL = [];
+  
+    if (files && files.length > 0) {
+      fotosURL = files.map(file => `/uploads/${file.filename}`);
+    }
+    const transaction = await sequelize.transaction(); 
+  
+    try {
+      const existencia = await Cliente.findByPk(cedula, { transaction });
+      if (existencia !== null) {
+        await transaction.rollback();
+        if (fotosURL.length > 0) {
+            fotosURL.forEach(fotoURL => {
+              const fotoPath = join(__dirname, '../public' + fotoURL);
+              fs.unlink(fotoPath, (err) => {
+                if (err) console.error("Error al eliminar la imagen:", err);
+                console.log('Imagen eliminada');
+              });
+            });
+          }
+        return res.json({
+          ok: false,
+          status: 400,
+          message: "Existe un Cliente con esa cedula"
+        });
+      }
+  
+      const cliente = await Cliente.create({
+        Cedula: cedula,
+        Nombre: nombreCliente,
+        Telefono: telefono
+      }, { transaction });
+  
+      if (cliente) {
+        const mascotasConFotos = mascotasData.map((mascota, index) => ({
+          ...mascota,
+          FotoURL: fotosURL[index] || null,
+          ID_Cliente: cedula
+        }));
+  
+        await Mascota.bulkCreate(mascotasConFotos, { transaction });
+      }
+  
+      await transaction.commit();
+  
+      return res.json({
+        ok: true,
+        status: 200,
+        message: "Cliente creado correctamente",
+        data: cliente
+      });
+    } catch (error) {
+        console.log(error)
+      await transaction.rollback();
+  
+      if (fotosURL.length > 0) {
+        fotosURL.forEach(fotoURL => {
+          const fotoPath = join(__dirname, '../public' + fotoURL);
+          fs.unlink(fotoPath, (err) => {
+            if (err) console.error("Error al eliminar la imagen:", err);
+            console.log('Imagen eliminada');
+          });
+        });
+      }
+
+      return res.json({
+        ok: false,
+        status: 400,
+        message: "Error al crear el cliente y la mascota",
+        error
+      });
+    }
+  };
+
+
 export const getCliente = async (req, res) => {
     
     try {
@@ -169,10 +249,11 @@ export const getListCliente = async (req, res) => {
             data: cliente
         })
     } catch (error) {
+        console.log(error)
         return res.json({
             ok: false,
             status: 500,
-            message: "No se encontro ningun cliente",
+            message: "No se encontro ningun cliente" 
         })
     }
 }

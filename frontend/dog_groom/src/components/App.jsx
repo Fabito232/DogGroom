@@ -10,9 +10,9 @@ import AgregarProducto from './AgregarProducto';
 import ListaClientes from './ListaClientes';
 import AgregarCliente from './AgregarCliente';
 import Finanzas from './Finanzas';
+import ResumenCita from './resumenCita';
 import { ConfirmProvider } from './ModalConfirmacion';
 import ListaServicios from './ListaServicios';
-
 const App = () => {
   
   return (
@@ -25,6 +25,7 @@ const App = () => {
           <Route path="/citas" element={<Citas />}/>
           <Route path="/agendarCita" element={<AgendarCita />}/>
           <Route path='/productos' element={<ListaProductos/>}/>
+          <Route path='/resumen'element={<ResumenCita/>}/>
           <Route path='/agregarProducto' element={<AgregarProducto/>}/>
           <Route path='/clientes' element={<ListaClientes/>}/>
           <Route path='/agregarCliente' element={<AgregarCliente/>}/>

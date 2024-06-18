@@ -43,11 +43,16 @@ const empleadoSchema = Joi.object({
 });
 
 const citaSchema = Joi.object({
+    
+    cedula: Joi.string().required(),
     fechaYHora: Joi.date().iso().required(),
     descripcion: Joi.string().allow('', null).optional(),
-    estado: Joi.boolean().required(),
+    estado:  Joi.boolean().required(),
     montoTotal: Joi.number().precision(2).positive().required(),
-    cedula: Joi.string().required()
+
+    
+
+    
 });
 
 const citaDetalleSchema = Joi.object({

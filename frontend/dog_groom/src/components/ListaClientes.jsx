@@ -43,7 +43,8 @@ const ListaClientes = () => {
     navigate('/agregarCliente');
   };
 
-  const manejarEditar = (cliente) => {
+  const manejarEditar = async (cliente) => {
+    console.log("Cliente editado",cliente)
     setClienteEditando(cliente);
   };
 
@@ -82,15 +83,18 @@ const ListaClientes = () => {
 
   const manejarCambioImagen = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setClienteEditando({ ...clienteEditando, image: reader.result });
-      };
-      reader.readAsDataURL(file);
-    }
+    console.log("files:" , file)
+    setClienteEditando({ ...clienteEditando, image: file});
+    // if (file) {
+    //   const reader = new FileReader();
+    //   reader.onload = () => {
+    //     setClienteEditando({ ...clienteEditando, image: reader.result });
+    //   };
+    //   reader.readAsDataURL(file);
+    // }
   };
 
+  const manejarEliminar = async (id) => {
   const manejarEliminar = async (id) => {
     const confirmacion = window.confirm('¿Estás seguro de eliminar este cliente?');
     if (confirmacion) {
@@ -233,6 +237,8 @@ const ListaClientes = () => {
                           <div className="bg-white p-1 rounded flex-grow">{cliente.raza}</div>
                         )}
                       </div>
+                      
+                      
                     </div>
                     <div className="flex justify-between space-x-4 mt-4">
                       {clienteEditando && clienteEditando.id === cliente.id ? (
