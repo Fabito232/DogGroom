@@ -38,9 +38,12 @@ function AgregarCliente() {
         }
 
         if (validarCliente(cliente) && validarMascota(mascota)) {
+
             try {
                 console.log(cliente, " \n", mascota)
+
                 const resCliente = await crearCliente(cliente);
+                
                 console.log(resCliente)
                 if (resCliente.ok) {
                     const resMascota = await crearMascota(mascota);

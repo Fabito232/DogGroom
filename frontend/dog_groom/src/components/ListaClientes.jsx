@@ -9,10 +9,11 @@ import { URL_Hosting } from '../services/api';
 const ListaClientes = () => {
   const [clientes, setClientes] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
-  const [clientesPorPagina] = useState(4);
+  const [clientesPorPagina] = useState(8);
   const navigate = useNavigate();
   const [clienteEditando, setClienteEditando] = useState(null);
   const [isGuardarDisabled, setIsGuardarDisabled] = useState(true);
+  const [terminoBusqueda, setTerminoBusqueda] = useState(""); // Nuevo estado para el término de búsqueda
 
   const cargarClientes = async () => {
     try {
@@ -107,11 +108,21 @@ const ListaClientes = () => {
     }
   }, [clienteEditando]);
 
-  const indiceUltimoCliente = paginaActual * clientesPorPagina; // Calcula indiceUltimoCliente multiplicando la paginaActual por clientesPorPagina
-  const indicePrimerCliente = indiceUltimoCliente - clientesPorPagina; // Calcula indicePrimerCliente restando clientesPorPagina de indiceUltimoCliente.
-  const clientesActuales = clientes.slice(indicePrimerCliente, indiceUltimoCliente); // Usa slice para extraer los clientesActuales del array clientes.
+  const manejarCambioBusqueda = (e) => {
+    setTerminoBusqueda(e.target.value);
+  };
 
-  const totalPaginas = Math.ceil(clientes.length / clientesPorPagina); // Calcula totalPaginas dividiendo el número total de clientes por clientesPorPagina y redondeando hacia arriba con Math.ceil.
+  const clientesFiltrados = clientes.filter(cliente =>
+    cliente.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
+    cliente.cedula.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
+    cliente.mascota.toLowerCase().includes(terminoBusqueda.toLowerCase())
+  );
+
+  const indiceUltimoCliente = paginaActual * clientesPorPagina;
+  const indicePrimerCliente = indiceUltimoCliente - clientesPorPagina;
+  const clientesActuales = clientesFiltrados.slice(indicePrimerCliente, indiceUltimoCliente);
+
+  const totalPaginas = Math.ceil(clientesFiltrados.length / clientesPorPagina);
 
   return (
     <div className="relative min-h-screen flex flex-col bg-fondo2 bg-cover">
@@ -123,8 +134,14 @@ const ListaClientes = () => {
               <h1 className="bg-gray-300 rounded-lg text-3xl md:text-6xl font-bold flex-1 text-center mb-4 md:mb-0">Lista de Clientes</h1>
               <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 md:py-4 px-6 md:px-12 rounded ml-8" onClick={manejarAgregar}>Agregar</button>
             </div>
+            <input
+              type="text"
+              placeholder="Buscar por Nombre de Cliente, Cédula o Nombre de la Mascota"
+              value={terminoBusqueda}
+              onChange={manejarCambioBusqueda}
+              className="mb-4 p-2 border border-gray-300 rounded w-full"
+            />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {/* Cmabia clientes por clientesActuales en el mapeo de clientes para renderizar solo los clientes de la página actual. */}
               {clientesActuales.map(cliente => (
                 <div key={cliente.id} className="flex flex-col bg-amber-700 bg-opacity-90 border border-black w-full">
                   <div className="relative p-4 w-full flex justify-center">
