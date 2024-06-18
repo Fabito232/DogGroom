@@ -27,7 +27,6 @@ const AgregarProducto = () => {
         if (!nombre) mensajesError.push('Nombre');
         if (!marca) mensajesError.push('Marca');
         if (!cantidad) mensajesError.push('Cantidad');
-        if (!descripcion) mensajesError.push('Descripción');
 
         if (mensajesError.length > 0) {
             toast.error(`Debe completar los siguientes campos: ${mensajesError.join(', ')}`, {
