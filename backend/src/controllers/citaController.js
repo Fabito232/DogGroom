@@ -82,7 +82,7 @@ export const getListCita = async (req, res) => {
                         include: [{
                             model: TipoMascota,
                             include: [{
-                                model: Servicio
+                                model:Servicio
                             }]
                         }]
                     }]
@@ -181,10 +181,7 @@ export const obtenerTodasCitas = async(req, res) => {
                 {
                     model: Cliente,
                     include: [{
-                        model: Mascota,
-                        include:[{
-                           model: TipoMascota
-                        }]
+                        model: Mascota
                     }]
                 }],
            }

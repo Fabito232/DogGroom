@@ -1,5 +1,6 @@
 import  Cliente  from "../models/clienteModel.js"
 import Mascota from "../models/mascotaModel.js"
+import TipoMascota from "../models/tipoMascota.js";
 
 export const createCliente = async (req, res) => {
 

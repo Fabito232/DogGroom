@@ -219,8 +219,6 @@ const ListaClientes = () => {
                           <div className="bg-white p-1 rounded flex-grow">{cliente.raza}</div>
                         )}
                       </div>
-                      
-                      
                     </div>
                     <div className="flex justify-between space-x-4 mt-4">
                       {clienteEditando && clienteEditando.id === cliente.id ? (
