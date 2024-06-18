@@ -7,10 +7,12 @@ export default {
     "./src/components/AgregarCliente.jsx",
     "./src/components/Finanzas.jsx",
     "./src/components/Header.jsx",
-    "./src/components/ResumenCita.jsx", 
+    "./src/components/AgregarGasto.jsx",
+    "./src/components/ListaGastos.jsx",
+    "./src/components/ModalConfirmacion.jsx",
+    "./src/components/ListaServicios.jsx",
+    "./src/components/AgregarServicio.jsx",
     "./src/components/AgendarCita.jsx"
-    
-    
   ],
   theme: {
     container: {

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../services/empleadoService';
 import { toast } from 'react-toastify';
+import { notificarError, notificarExito} from '../utilis/notificaciones';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -15,24 +16,14 @@ const Login = () => {
       
       if (response.ok) {
         localStorage.setItem('token', response.token);
-        toast.success('Inicio de sesión exitoso!', { autoClose: 1500, theme: "colored"});
+        notificarExito('Inicio de sesión exitoso!');
         navigate('/citas');
       } else {
-        showErrorToast(response.message);
+        notificarError("Error en inicio de sesión:\n" + response.message);
       }
     } catch (error) {
-      showErrorToast(error.message);
+      notificarError(error.message);
     }
-  };
-
-  const showErrorToast = (message) => {
-    toast.error('Error en inicio de sesión:\n' + message, {
-      autoClose: 2000,
-      style: {
-        whiteSpace: 'pre-line',
-      },
-      theme: "colored"
-    });
   };
 
   return (

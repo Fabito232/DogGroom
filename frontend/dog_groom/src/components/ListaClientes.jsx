@@ -4,15 +4,10 @@ import imgPerro from '../assets/img_perro.jpg';
 import Header from "./Header";
 import { obtenerClientes, actualizarCliente, borrarCliente } from '../services/clienteService';
 import { obtenerMascotas, actualizarMascota, borrarMascota } from '../services/mascotaService';
+import { URL_Hosting } from '../services/api';
 
 const ListaClientes = () => {
-  const [clientes, setClientes] = useState([
-    { id: 1, image: imgPerro, cedula: '12345', nombre: 'Juan Perez', telefono: '555-1234', mascota: 'Lasi', raza: 'Pastor' },
-    { id: 2, image: imgPerro, cedula: '67890', nombre: 'Maria Lopez', telefono: '555-5678', mascota: 'Lasi', raza: 'Pastor' },
-    { id: 3, image: imgPerro, cedula: '11223', nombre: 'Carlos Diaz', telefono: '555-1122', mascota: 'Lasi', raza: 'Pastor' },
-    { id: 4, image: imgPerro, cedula: '33445', nombre: 'Ana Torres', telefono: '555-3344', mascota: 'Lasi', raza: 'Pastor' },
-    { id: 5, image: imgPerro, cedula: '55667', nombre: 'Luis Mora', telefono: '555-5566', mascota: 'Lasi', raza: 'Pastor' }
-  ]);
+  const [clientes, setClientes] = useState([]);
 
   const cargarClientes = async () =>{
       try {
@@ -49,6 +44,7 @@ const ListaClientes = () => {
   };
 
   const manejarEditar = async (cliente) => {
+    console.log("Cliente editado",cliente)
     setClienteEditando(cliente);
   };
 
@@ -71,7 +67,7 @@ const ListaClientes = () => {
     console.log(resCliente)
     if(resCliente.ok){
       console.log(clienteEditando.image)
-      const resMascota = await actualizarMascota(mascota, 26);
+      const resMascota = await actualizarMascota(mascota, clienteEditando.idMascota);
       console.log(resMascota)
     }
   
@@ -101,7 +97,6 @@ const ListaClientes = () => {
     //   };
     //   reader.readAsDataURL(file);
     // }
-
   };
 
   const manejarEliminar = async (id) => {
@@ -137,7 +132,7 @@ const ListaClientes = () => {
                 <div key={cliente.id} className="flex bg-amber-700 bg-opacity-90 border border-black w-full">
                   <div className="p-4 w-64 relative">
                     <img
-                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image :'https://doggroom.onrender.com'+ cliente.image || imgPerro}
+                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image :URL_Hosting + cliente.image || imgPerro}
                       alt={cliente.nombre}
                       className="h-full w-full object-cover rounded-lg cursor-pointer"
                       onClick={() => document.getElementById(`fileInput-${cliente.id}`).click()}
@@ -224,6 +219,7 @@ const ListaClientes = () => {
                           <div className="bg-white p-1 rounded flex-grow">{cliente.raza}</div>
                         )}
                       </div>
+                      
                       
                     </div>
                     <div className="flex justify-between space-x-4 mt-4">

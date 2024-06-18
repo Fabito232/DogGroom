@@ -2,7 +2,7 @@
 import { Calendar, dayjsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from 'dayjs';
-import '../styles/citas.css'
+import '../styles/citas.css';
 import "dayjs/locale/es";
 import Header from "./Header";
 import { obtenerCitas } from "../services/citaServices";
@@ -16,33 +16,40 @@ function Citas() {
   const location = useLocation();
   const nuevaCita = location.state?.nuevaCita;
 
-  useEffect(() => {
-    const fetchCitas = async () => {
-      try {
-        const resCitas = await obtenerCitas();
-        if (resCitas && resCitas.data) {
-          const citasTransformadas = resCitas.data.map(cita => ({
-            start: dayjs(cita.FechaYHora).toDate(),
-            end: dayjs(cita.FechaYHora).add(1, 'hour').toDate(), 
-            title: cita.Cliente.Nombre
-          }));
-          setEvents(citasTransformadas);
-        } else {
-          console.error("La respuesta de obtenerCitas no contiene datos.");
-        }
-      } catch (error) {
-        console.error("Error al obtener citas:", error);
+  const fetchCitas = async () => {
+    try {
+      const resCitas = await obtenerCitas();
+      console.log(resCitas)
+      if (resCitas && resCitas.data) {
+        console.log(resCitas)
+        console.log(resCitas.data)
+        const citasTransformadas = resCitas.data.map(cita => ({
+          start: dayjs(cita.FechaYHora).toDate(),
+          end: dayjs(cita.FechaYHora).add(1, 'hour').toDate(),
+          
+          title: cita.Cliente.Nombre// Asegúrate de acceder a nombreCliente correctamente
+          
+        }));
+        setEvents(citasTransformadas);
+      } else {
+        console.error("La respuesta de obtenerCitas no contiene datos.");
       }
-    };
+    } catch (error) {
+      console.error("Error al obtener citas:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchCitas();
   }, []);
 
   useEffect(() => {
     if (nuevaCita) {
+      console.log(nuevaCita);
       const nuevaCitaTransformada = {
         start: dayjs(nuevaCita.fechaYHora).toDate(),
         end: dayjs(nuevaCita.fechaYHora).add(1, 'hour').toDate(),
-        title: nuevaCita.Cliente.Nombre
+        title: nuevaCita.Cliente.nombreCliente
       };
       setEvents(prevEvents => [...prevEvents, nuevaCitaTransformada]);
     }

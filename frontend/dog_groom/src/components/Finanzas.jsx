@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
 import { resumenFinanzas, resumenControlAnual } from '../services/finanzasServices';
-import { toast } from 'react-toastify';
 import Header from './Header';
+import ListaGastos from './ListaGastos';
+import { notificarExito, notificarError } from '../utilis/notificaciones';
 
 const Finanzas = () => {
     const [fechaInicial, setFechaInicial] = useState('');
     const [fechaFinal, setFechaFinal] = useState('');
     const [finanzas, setFinanzas] = useState([{ porcentaje: '', nombre: '', monto: 0 }]);
     const [finanzasAnual, setFinanzasAnual] = useState([]);
+    const [actualizarFinanzas, setActualizarFinanzas] = useState(false)
 
     const resumenCAnual = async() => {  
         try {
             const response = await resumenControlAnual()
             setFinanzasAnual(response.data)
+            setActualizarFinanzas(false);
         } catch (error) {
             console.log(error)
         }
@@ -20,21 +23,22 @@ const Finanzas = () => {
 
     const resumenF = async() => {  
         try {
+            console.log("Click", fechaInicial, fechaFinal)
             const fechas = {
                 fechaInicio: fechaInicial,
                 fechaFin: fechaFinal
             }
 
             if(!fechas.fechaInicio || !fechas.fechaFin){
-                toast.error('Debe selecionar el rango de fechas, tanto Fecha inicial y final', { autoClose: 1500, theme: "colored"});
+                notificarError('Debe selecionar el rango de fechas, tanto Fecha inicial y final');
             }else{
                 const response = await resumenFinanzas(fechas)
-                toast.success(`Resumen de finanzas existoso`, { autoClose: 1500, theme: "colored"});
+                notificarExito('Resumen de finanzas existoso');
                 console.log(response.data)
                 setFinanzas(response.data)
             }
         } catch (error) {
-            console.log(error)
+            notificarError(error)
         }
     }
 
@@ -46,9 +50,12 @@ const Finanzas = () => {
 
     useEffect(() => {
         resumenCAnual();
-    }, [finanzas])
+    }, [finanzas, actualizarFinanzas])
 
-    
+    const actualizarFinanzasAnuales = () => {
+        setActualizarFinanzas(true);
+    }
+
     return (
         <>
         <Header></Header>
@@ -119,13 +126,16 @@ const Finanzas = () => {
                         <tbody>
                             {finanzasAnual.map((item, index) => (
                                 <tr key= {index} className="odd:bg-white even:bg-gray-100">
-                                  <td className="border border-slate-300 p-2">{item.descripcion}o</td>
+                                  <td className="border border-slate-300 p-2">{item.descripcion}</td>
                                   <td className="border border-slate-300 p-2">${item.monto}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
+                <ListaGastos
+                actualizarFinanzasAnuales= {actualizarFinanzasAnuales}
+                ></ListaGastos>
             </div>
         </div>
         </>

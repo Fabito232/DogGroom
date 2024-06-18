@@ -6,10 +6,12 @@ import Header from "./Header";
 import { crearCita } from '../services/citaServices';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-
+import ListaServicios from './ListaServicios';
+import { obtenerServicios } from '../services/paqueteServices';
 function AgendarCita() {
   const [clientes, setClientes] = useState([]);
   const [citas, setCitas] = useState([]);
+  const [servicios, setServicios] =useState([]);
   const navigate = useNavigate();
 
   const [cedulaCliente, setCedulaCliente] = useState('');
@@ -28,10 +30,13 @@ function AgendarCita() {
   const [descripcion, setDescripcion] = useState('');
   const [id_cedula, setIDCedula] = useState('');
 
+  const [servicioSeleccionado, setServicioSeleccionado] = useState(null);
+
   useEffect(() => {
     const cargarClientes = async () => {
       try {
         const resClientes = await obtenerClientes();
+        console.log(resClientes)
         const listaClientes = resClientes.data.map(cliente => ({
           id: cliente.Cedula,
           cedula: cliente.Cedula,
@@ -42,8 +47,10 @@ function AgendarCita() {
           tamano: cliente.Mascota.length > 0 ? cliente.Mascota[0].Tamano : '',
           image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : '',
           ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : ''
+
         }));
         setClientes(listaClientes);
+        console.log("Hola")
       } catch (error) {
         console.log(error);
       }
@@ -59,7 +66,8 @@ function AgendarCita() {
     setRazaMascota(cliente.raza);
     setTamanoMascota(cliente.tamano);
     SetFotoMascota(cliente.image);
-    setFotoUrl(cliente.image ? `https://doggroom.onrender.com${cliente.image}` : '');
+    setFotoUrl(cliente.image );
+
   };
 
   const handleAgendaCita = async (e) => {
@@ -71,9 +79,7 @@ function AgendarCita() {
       montoTotal: montoTotal,
       descripcion: descripcion,
       cedula: cedulaCliente,
-  
-  
-      
+
     };
   
     try {
@@ -81,6 +87,8 @@ function AgendarCita() {
       const resCita = await crearCita(cita);
       console.log(resCita);
       if (resCita.ok) {
+        setNombreCliente(resCita.data.nombreCliente);
+        setCedulaCliente(resCita.data.Cedula);
         toast.success("Se agendó la cita con éxito", {
           autoClose: 1500,
           theme: "colored",
@@ -122,6 +130,7 @@ function AgendarCita() {
                   >
                     <span>
                       {cliente.nombre} - {cliente.cedula}
+                      
                     </span>
                   </li>
                 ))}
@@ -200,6 +209,7 @@ function AgendarCita() {
                   <option value="mediano">Mediano</option>
                   <option value="grande">Grande</option>
                 </select>
+                
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -227,7 +237,7 @@ function AgendarCita() {
                   id="estado"
                   name="estado"
                   value={estado}
-                  onChange={(e) => setEstado(e.target.value === "Finalizar")}
+                  onChange={(e) => setEstado(e.target.value)}
                   required
                 >
                   <option value="" disabled>
@@ -237,6 +247,25 @@ function AgendarCita() {
                   <option value="En proceso">En proceso</option>
                 </select>
 
+                <select
+                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                  id="servicio"
+                  name="servicio"
+                  value={servicioSeleccionado ? servicioSeleccionado.id : ''}
+                  onChange={(e) => {
+                    const servicioSeleccionado = servicios.find(servicio => servicio.id === parseInt(e.target.value));
+                    setServicioSeleccionado(servicioSeleccionado);
+                    setMontoTotal(servicioSeleccionado ? servicioSeleccionado.precio : ''); // Actualiza el monto total con el precio del servicio seleccionado
+                  }}
+                  required
+                >
+                  <option value="" disabled>
+                    Selecciona un Servicio
+                  </option>
+                  {servicios.map(servicio => (
+                    <option key={servicio.id} value={servicio.id}>{servicio.descripcion}</option>
+                  ))}
+                </select>
                 
                 <input
                   className="p-3 border border-gray-300 rounded w-full mb-2"

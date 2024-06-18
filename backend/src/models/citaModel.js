@@ -29,19 +29,20 @@ Cita.init({
     },
     ID_Cliente: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
         references: {
             model: Cliente,
             key: 'Cedula'
         }
     }
+    
 }, {
     sequelize,
     freezeTableName: true,
 
 });
 
-Cliente.hasMany(Cita, {foreignKey: 'ID_Cliente'});
+Cliente.hasMany(Cita, {foreignKey: 'ID_Cliente', as: 'cliente'});
 Cita.belongsTo(Cliente,{foreignKey: 'ID_Cliente'});
 
 export default Cita;

@@ -3,6 +3,7 @@ import Header from "./Header";
 import { toast } from 'react-toastify';
 import { crearCliente } from "../services/clienteService";
 import { crearMascota } from "../services/mascotaService";
+import { useConfirm } from './ModalConfirmacion';
 
 function AgregarCliente() {
     const [cliente, setCliente] = useState([]);
@@ -16,6 +17,8 @@ function AgregarCliente() {
     const [tamanoMascota, setTamanoMascota] = useState('');
     const [fotoMascota, SetFotoMascota] = useState(null);
     const [fotoUrl, setFotoUrl] = useState('');
+
+    const openConfirmModal = useConfirm();
 
     const handleAgregarCliente = async (e) => {
         e.preventDefault();
@@ -55,6 +58,7 @@ function AgregarCliente() {
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
+        console.log(file)
         if (file) {
             SetFotoMascota(file);
             setFotoUrl(URL.createObjectURL(file));

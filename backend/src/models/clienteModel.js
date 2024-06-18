@@ -19,7 +19,8 @@ Cliente.init({
 }, {
     sequelize,
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+
 });
 
 export default Cliente;
