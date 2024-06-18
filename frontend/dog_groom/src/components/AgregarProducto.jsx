@@ -51,13 +51,13 @@ const AgregarProducto = ({ isOpen, cerrar, agregarProducto, editarProducto, prod
       isOpen={isOpen} 
       onRequestClose={cerrar} 
       contentLabel="Agregar Producto" 
-      className="fixed inset-0 flex items-center justify-center p-4 bg-gray-800 bg-opacity-75"
+      className="fixed inset-0 flex items-center justify-center p-4 bg-gray-800 bg-opacity-60"
     >
-      <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4">
+      <div className="bg-amber-700 rounded-lg p-6 w-full max-w-lg mx-4 opacity-90">
         <h2 className="text-2xl font-semibold mb-4">{modo === 'agregar' ? 'Agregar Producto' : 'Editar Producto'}</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Nombre:</label>
+            <label className="block text-black mb-2">Nombre:</label>
             <input 
               type="text" 
               name="nombre" 
@@ -68,7 +68,7 @@ const AgregarProducto = ({ isOpen, cerrar, agregarProducto, editarProducto, prod
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Marca:</label>
+            <label className="block text-black mb-2">Marca:</label>
             <input 
               type="text" 
               name="marca" 
@@ -79,7 +79,7 @@ const AgregarProducto = ({ isOpen, cerrar, agregarProducto, editarProducto, prod
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Cantidad:</label>
+            <label className="block text-black mb-2">Cantidad:</label>
             <input 
               type="number" 
               name="cantidad" 
@@ -90,7 +90,7 @@ const AgregarProducto = ({ isOpen, cerrar, agregarProducto, editarProducto, prod
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Descripcion:</label>
+            <label className="block text-black mb-2">Descripcion:</label>
             <input 
               type="text" 
               name="descripcion" 
@@ -104,9 +104,8 @@ const AgregarProducto = ({ isOpen, cerrar, agregarProducto, editarProducto, prod
             <button 
               type="button" 
               onClick={cerrar} 
-              className="mr-2 px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
-            >
-              Cancelar
+              className="mr-2 px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-gray-500"
+            > Cancelar
             </button>
             <button 
               type="submit" 

@@ -167,10 +167,10 @@ const ListaServicios = () => {
   return (
     <>
       <Header></Header>
-      <div className="bg-fondo1 min-h-screen">
+      <div className="bg-fondo1 bg-cover min-h-screen">
         <div className='md:container md:mx-auto p-5 flex'>
           <div className="p-6 bg-amber-700 container bg-opacity-95">
-            <h1 className="text-3xl font-bold mb-4">Servicios de La Bandada</h1>
+            <h1 className="text-3xl font-bold mb-4 text-center">Servicios de La Bandada</h1>
             <div className='flex justify-between mb-4'>
               <div>
                 <input
@@ -204,10 +204,10 @@ const ListaServicios = () => {
               <table className="min-w-full bg-white border border-gray-300">
                 <thead>
                   <tr className="bg-lime-600 border-b text-lg">
-                    <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Descripción</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Precio</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Tipo Animal</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">Acciones</th>
+                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Descripción</th>
+                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Precio</th>
+                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Tipo Animal</th>
+                    <th className="px-6 py-3 text-center text-base font-medium text-black uppercase tracking-wider">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
