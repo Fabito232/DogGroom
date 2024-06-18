@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from "./Header";
 import { actualizarProducto, borrarProducto, obtenerProductos } from '../services/productoService.js';
-
 
 const ListaProductos = () => {
     const [productos, setProductos] = useState([]);

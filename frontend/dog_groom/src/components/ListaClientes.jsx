@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import imgPerro from '../assets/img_perro.jpg';
 import Header from "./Header";
 import { obtenerClientes, actualizarCliente, borrarCliente } from '../services/clienteService';
-import { obtenerMascotas, actualizarMascota, borrarMascota } from '../services/mascotaService';
+import { actualizarMascota } from '../services/mascotaService';
 import { URL_Hosting } from '../services/api';
 
 const ListaClientes = () => {
@@ -93,8 +93,6 @@ const ListaClientes = () => {
     //   reader.readAsDataURL(file);
     // }
   };
-
-  const manejarEliminar = async (id) => {
   const manejarEliminar = async (id) => {
     const confirmacion = window.confirm('¿Estás seguro de eliminar este cliente?');
     if (confirmacion) {

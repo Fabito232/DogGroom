@@ -1,16 +1,10 @@
 import Header from "./Header";
 import { useState } from "react";
-import Header from "./Header";
-import { toast } from 'react-toastify';
-import { crearCliente } from "../services/clienteService";
-import { crearMascota } from "../services/mascotaService";
-import { useConfirm } from './ModalConfirmacion';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { crearCliente } from "../services/clienteService";
 import { crearMascota } from "../services/mascotaService";
 import { validarCliente, validarMascota } from "./validaciones";
-import { useConfirm } from './ModalConfirmacion';
 
 function AgregarCliente() {
     const [cliente, setCliente] = useState([]);
@@ -25,11 +19,6 @@ function AgregarCliente() {
     const [tamanoMascota, setTamanoMascota] = useState('');
     const [fotoMascota, SetFotoMascota] = useState(null);
     const [fotoUrl, setFotoUrl] = useState('');
-
-    const openConfirmModal = useConfirm();
-
-    const handleAgregarCliente = async (e) => {
-    const openConfirmModal = useConfirm();
 
     const handleAgregarCliente = async (e) => {
         e.preventDefault();
@@ -47,46 +36,11 @@ function AgregarCliente() {
             cedula: cedulaCliente,
             ID_TipoMascota: 1
         }
-        try {
-            console.log(cliente, " \n", mascota )
-            const resCliente = await crearCliente(cliente);
-            console.log(resCliente)
-            if(resCliente.ok){
-                const resMascota = await crearMascota(mascota);
-                if(resMascota.ok) {
-                    toast.success("Se guardó con éxito el cliente", { autoClose: 1500, theme: "colored"});
-                }else{
-                    toast.error(resMascota.message, { autoClose: 1500, theme: "colored"});
-                }
-                console.log('MASCOTA:' , resMascota)   
-            }else{
-                toast.error(resCliente.message, { autoClose: 1500, theme: "colored"});
-            }
-        } catch (error) {
-            toast.error(error.message, { autoClose: 1500, theme: "colored"});
-        }
-
-        const cliente = {
-            cedula: cedulaCliente,
-            nombre: nombreCliente,
-            telefono: telefonoCliente
-        }
-
-        const mascota = {
-            nombre: nombreMascota,
-            raza: razaMascota,
-            image: fotoMascota,
-            cedula: cedulaCliente,
-            ID_TipoMascota: 1
-        }
 
         if (validarCliente(cliente) && validarMascota(mascota)) {
-
             try {
                 console.log(cliente, " \n", mascota)
-
                 const resCliente = await crearCliente(cliente);
-                
                 console.log(resCliente)
                 if (resCliente.ok) {
                     const resMascota = await crearMascota(mascota);
@@ -102,13 +56,13 @@ function AgregarCliente() {
             } catch (error) {
                 toast.error(error.message, { autoClose: 1500, theme: "colored" });
             }
-            navigate('/clientes');
         }
+
+
     };
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        console.log(file)
         if (file) {
             SetFotoMascota(file);
             setFotoUrl(URL.createObjectURL(file));
@@ -183,7 +137,6 @@ function AgregarCliente() {
                                 required
                             >
                                 <option value="d" disabled>Tamaño</option>
-                                <option value="d" disabled>Tamaño</option>
                                 <option value="pequeño">Pequeño</option>
                                 <option value="grande">Grande</option>
                             </select>
@@ -194,7 +147,6 @@ function AgregarCliente() {
                                 type="file"
                                 id="imagenMascota"
                                 className="hidden"
-
 
                                 onChange={handleImageChange}
                                 required
