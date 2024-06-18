@@ -1,307 +1,263 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Header from "./Header";
-import { actualizarProducto, borrarProducto, obtenerProductos } from '../services/productoService.js';
+import AgregarProducto from './AgregarProducto.jsx';
+import { actualizarProducto, borrarProducto, crearProducto, obtenerProductos } from '../services/productoService.js';
+import { useConfirm } from './ModalConfirmacion';
+import { notificarError, notificarExito } from '../utilis/notificaciones';
+import Header from './Header.jsx';
 
 const ListaProductos = () => {
-    const [productos, setProductos] = useState([]);
-    const [productoEditando, setProductoEditando] = useState(null);
-    const [paginaActual, setPaginaActual] = useState(1);
-    const [filtroNombre, setFiltroNombre] = useState('');
-    const [filtroOrden, setFiltroOrden] = useState('');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [productos, setProductos] = useState([]);
+  const [buscarPalabra, setBuscarPalabra] = useState('');
+  const [productosFiltrados, setProductosFiltrados] = useState([]);
+  const [modo, setModo] = useState('agregar');
+  const [productoActual, setProductoActual] = useState(null);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [productosPorPagina] = useState(5); // Cantidad de productos por página
 
-    const productosPorPagina = 5; // Mostrar 5 productos por página
-    const navigate = useNavigate();
+  const openConfirmModal = useConfirm();
 
-    useEffect(() => {
-        cargarProducto();
-    }, []);
-
-    const cargarProducto = async () => {
-        try {
-            const resProducto = await obtenerProductos();
-            if (resProducto.ok) {
-                const listaProducto = resProducto.data.map(producto => ({
-                    id: producto.ID_Producto,
-                    nombre: producto.Nombre,
-                    marca: producto.Marca,
-                    descripcion: producto.Descripcion,
-                    cantidad: producto.Cantidad
-                }));
-                setProductos(listaProducto);
-            }
-        } catch (error) {
-            console.log(error.message);
-        }
-    };
-
-    // Función para buscar productos por nombre
-    const buscarProducto = (e) => {
-        const valorBusqueda = e.target.value.toLowerCase();
-        setFiltroNombre(valorBusqueda);
-        setPaginaActual(1); // Reiniciar la paginación al realizar una búsqueda
-    };
-
-    // Función para ordenar productos
-    const ordenarProductos = (tipoOrden) => {
-        setFiltroOrden(tipoOrden);
-    };
-
-    // Filtrar y ordenar los productos según los filtros activos
-    let productosFiltrados = productos.filter(producto =>
-        producto.nombre.toLowerCase().includes(filtroNombre)
+  useEffect(() => {
+    setProductosFiltrados(
+      productos.filter((producto) =>
+        producto.nombre.toLowerCase().includes(buscarPalabra.toLowerCase())
+      )
     );
+  }, [productos, buscarPalabra]);
 
-    if (filtroOrden === 'nombreAsc') {
-        productosFiltrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
-    } else if (filtroOrden === 'nombreDesc') {
-        productosFiltrados.sort((a, b) => b.nombre.localeCompare(a.nombre));
-    } else if (filtroOrden === 'cantidadAsc') {
-        productosFiltrados.sort((a, b) => a.cantidad - b.cantidad);
-    } else if (filtroOrden === 'cantidadDesc') {
-        productosFiltrados.sort((a, b) => b.cantidad - a.cantidad);
+  useEffect(() => {
+    cargarProductos();
+  }, []);
+
+  const cargarProductos = async () => {
+    try {
+        const resProducto = await obtenerProductos();
+        if (resProducto.ok) {
+            const listaProducto = resProducto.data.map(producto => ({
+                id: producto.ID_Producto,
+                nombre: producto.Nombre,
+                marca: producto.Marca,
+                descripcion: producto.Descripcion,
+                cantidad: producto.Cantidad
+            }));
+            setProductos(listaProducto);
+        }
+    } catch (error) {
+        console.log(error.message);
     }
+ }; 
 
-    // Obtener productos actuales según la página actual
-    const indexUltimoProducto = paginaActual * productosPorPagina;
-    const indexPrimerProducto = indexUltimoProducto - productosPorPagina;
-    const productosActuales = productosFiltrados.slice(indexPrimerProducto, indexUltimoProducto);
+  const abrirModal = (modo, producto = null) => {
+    setModo(modo);
+    setProductoActual(producto);
+    setModalIsOpen(true);
+  };
 
-    // Número de páginas
-    const numeroPaginas = Math.ceil(productosFiltrados.length / productosPorPagina);
+  const cerrarModal = () => {
+    setModalIsOpen(false);
+  };
 
-    const manejarAgregar = () => {
-        navigate('/agregarProducto');
-    };
-
-    const manejarEditar = (producto) => {
-        setProductoEditando(producto);
-    };
-
-    const manejarCambioEntradaEdicion = (e) => {
-        const { name, value } = e.target;
-        setProductoEditando({ ...productoEditando, [name]: value });
-    };
-
-    const manejarGuardar = async () => {
-        if (!productoEditando.marca.trim() & !productoEditando.nombre.trim()) {
-            toast.error("La marca y el nombre estan vacios.");
-            return;
-        }
-        
-        if (!productoEditando.nombre.trim()) {
-            toast.error("El nombre esta vacio.");
-            return;
-        }
-        if (!productoEditando.marca.trim()) {
-            toast.error("La marca esta vacia.");
-            return;
-        }
-
-        if (productoEditando.cantidad === "" || isNaN(productoEditando.cantidad) || productoEditando.cantidad < 0) {
-            productoEditando.cantidad = 0;
-        }
-
-        const producto = {
-            nombre: productoEditando.nombre,
-            marca: productoEditando.marca,
-            descripcion: productoEditando.descripcion,
-            cantidad: productoEditando.cantidad
+  const agregarProducto = async (producto) => {
+    try {
+      const resProducto = await crearProducto(producto);
+      if (resProducto.ok) {
+        const nuevoProducto = {
+          id: resProducto.data.ID_Producto,
+          ...producto,
         };
+        setProductos([...productos, nuevoProducto]);
+        setModalIsOpen(false);
+        notificarExito("Se guardó con éxito el producto")
+      } else {
+        notificarError(resProducto)
+      }
+    } catch (error) {
+      notificarError(error)
+    }
+  };
 
-        try {
-            const resProducto = await actualizarProducto(producto, productoEditando.id);
-            console.log(resProducto);
-        } catch (error) {
-            console.log(error);
+  const editarProducto = async (productoEditado) => {
+    try {
+      const { id, ...producto } = productoEditado;
+      console.log(producto);
+      const resProducto = await actualizarProducto(producto, productoEditado.id);
+      if (resProducto.ok) {
+        const updatedProductos = productos.map((producto) =>
+          producto.id === productoEditado.id ? productoEditado : producto
+        );
+        setProductos(updatedProductos);
+        setModalIsOpen(false);
+        notificarExito("Se guardó con éxito el producto")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const eliminarProducto = async (id) => {
+
+    openConfirmModal('¿Estás seguro de que deseas eliminar este elemento?', async () => {
+      try {
+        const resProducto = await borrarProducto(id);
+        if (resProducto.ok) {
+          const updatedProductos = productos.filter((producto) => producto.id !== id);
+          setProductos(updatedProductos);
+          notificarExito("Se borro existosamente el producto")
         }
+      } catch (error) {
+        console.log(error);
+      }
+    });
 
-        const productosActualizados = productos.map(p => (p.id === productoEditando.id ? productoEditando : p));
-        setProductos(productosActualizados);
-        setProductoEditando(null);
-    };
+  };
 
-    const manejarCancelar = () => {
-        setProductoEditando(null);
-    };
+  // Paginación
+  const indiceUltimoProducto = paginaActual * productosPorPagina;
+  const indicePrimerProducto = indiceUltimoProducto - productosPorPagina;
+  const productosActuales = productosFiltrados.slice(indicePrimerProducto, indiceUltimoProducto);
 
-    const manejarEliminar = async (id) => {
-        if (window.confirm("¿Estás seguro de que quieres eliminar este producto?")) {
-            const resProducto = await borrarProducto(id);
-            console.log(resProducto);
-            const productosActualizados = productos.filter(p => p.id !== id);
-            setProductos(productosActualizados);
-        }
-    };
+  const numerosDePagina = [];
+  for (let i = 1; i <= Math.ceil(productosFiltrados.length / productosPorPagina); i++) {
+    numerosDePagina.push(i);
+  }
 
-    const reducirCantidad = async (producto) => {
-        if (producto.cantidad > 0) {
-            const nuevaCantidad = producto.cantidad - 1;
-            const productoActualizado = { ...producto, cantidad: nuevaCantidad };
-            try {
-                const resProducto = await actualizarProducto(productoActualizado, producto.id);
-                console.log(resProducto);
-            } catch (error) {
-                console.log(error);
-            }
-            const productosActualizados = productos.map(p => (p.id === producto.id ? productoActualizado : p));
-            setProductos(productosActualizados);
-        }
-    };
+  const paginar = (numeroDePagina) => setPaginaActual(numeroDePagina);
+  const manejarAnterior = () => setPaginaActual((prev) => Math.max(prev - 1, 1));
+  const manejarSiguiente = () => setPaginaActual((prev) => Math.min(prev + 1, numerosDePagina.length));
 
-    return (
-        <div className="relative min-h-screen flex items-start justify-center bg-primary bg-fondo1 bg-cover">
-            <div className="relative z-10 shadow-lg w-full md:w-160 h-full md:h-auto">
-                <Header />
-                <div className="rounded-xl shadow-md p-10 mb-2 overflow-auto">
-                    <div className="flex items-center mb-4">
-                        <h1 className="bg-gray-300 rounded-lg text-6xl font-bold flex-1 text-center">Lista de Productos</h1>
-                        <button className="bg-green-700 hover:bg-green-900 text-black font-bold py-4 px-12 rounded ml-8" onClick={manejarAgregar}>Agregar</button>
-                    </div>
-                    <div className="space-x-4 bg-lime-600 py-4 px-6">
-                        <select
-                            className="p-2 border border-black rounded text-black"
-                            value={filtroOrden}
-                            onChange={(e) => ordenarProductos(e.target.value)}
-                        >
-                            <option value="">Ordenar por...</option>
-                            <option value="nombreAsc">Nombre (A-Z)</option>
-                            <option value="nombreDesc">Nombre (Z-A)</option>
-                            <option value="cantidadAsc">Cantidad (menor a mayor)</option>
-                            <option value="cantidadDesc">Cantidad (mayor a menor)</option>
-                        </select>
-                        <input
-                            type="text"
-                            placeholder="Buscar por nombre"
-                            className="p-2 border border-black rounded text-black"
-                            value={filtroNombre}
-                            onChange={buscarProducto}
-                        />
-                    </div>
-                    <div className="max-h-[500px]">
-                        <table className="w-full table-auto border-collapse">
-                            <thead>
-                                <tr className="bg-lime-600 text-lg">
-                                    <th className="border border-gray-800 py-4 px-4">Nombre</th>
-                                    <th className="border border-gray-800 py-4 px-4">Marca</th>
-                                    <th className="border border-gray-800 py-4 px-4">Cantidad</th>
-                                    <th className="border border-gray-800 py-4 px-4">Descripción</th>
-                                    <th className="border border-gray-800 py-4 px-4">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {productosActuales.map((producto, index) => (
-                                    <tr key={producto.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-200'}>
-                                        <td className="border border-gray-800 py-6 px-8">
-                                            <button
-                                                className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-4 rounded mr-4"
-                                                onClick={() => reducirCantidad(producto)}> -
-                                            </button>
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <input
-                                                    type="text"
-                                                    name="nombre"
-                                                    value={productoEditando.nombre}
-                                                    onChange={manejarCambioEntradaEdicion}
-                                                    className="p-2 border border-gray-300 rounded w-3/4"
-                                                />
-                                            ) : (
-                                                <span>{producto.nombre}</span>
-                                            )}
-                                        </td>
-                                        <td className="border border-gray-800 py-4 px-6">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <input
-                                                    type="text"
-                                                    name="marca"
-                                                    value={productoEditando.marca}
-                                                    onChange={manejarCambioEntradaEdicion}
-                                                    className="block w-full p-2 border border-gray-300 rounded"
-                                                />
-                                            ) : (
-                                                producto.marca
-                                            )}
-                                        </td>
-                                        <td className="border border-gray-800 py-4 px-6 text-center">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <input
-                                                    type="number"
-                                                    name="cantidad"
-                                                    value={productoEditando.cantidad}
-                                                    onChange={manejarCambioEntradaEdicion}
-                                                    className="block w-full p-2 border border-gray-300 rounded"
-                                                    min="0"
-                                                />
-                                            ) : (
-                                                producto.cantidad
-                                            )}
-                                        </td>
-                                        <td className="border border-gray-800 py-4 px-6">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <input
-                                                    type="text"
-                                                    name="descripcion"
-                                                    value={productoEditando.descripcion}
-                                                    onChange={manejarCambioEntradaEdicion}
-                                                    className="block w-full p-2 border border-gray-300 rounded"
-                                                />
-                                            ) : (
-                                                producto.descripcion
-                                            )}
-                                        </td>
-                                        <td className="border border-gray-800 py-4 px-6">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <div className="flex flex-row space-x-2">
-                                                    <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full" onClick={manejarGuardar}>Guardar</button>
-                                                    <button className="bg-red-700 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded w-full" onClick={manejarCancelar}>Cancelar</button>
-                                                </div>
-                                            ) : (
-                                                <div className="flex flex-row space-x-2">
-                                                    <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full" onClick={() => manejarEditar(producto)}>Editar</button>
-                                                    <button className="bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded w-full" onClick={() => manejarEliminar(producto.id)}>Eliminar</button>
-                                                </div>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    {/* Paginación */}
-                    <div className="flex-grow flex justify-center items-end mt-4">
-                        <button
-                            className="bg-gray-200 hover:bg-gray-300 text-black font-bold py-4 px-6 rounded mr-8"
-                            onClick={() => setPaginaActual(prev => prev - 1)}
-                            disabled={paginaActual === 1}
-                        >
-                            &larr; Anterior
-                        </button>
-                        <div className="flex space-x-2">
-                            {Array.from({ length: numeroPaginas }, (_, index) => (
-                                <button
-                                    key={index + 1}
-                                    className={`bg-gray-200 hover:bg-gray-300 text-black font-bold py-4 px-6 rounded ${paginaActual === index + 1 ? 'bg-blue-400' : ''}`}
-                                    onClick={() => setPaginaActual(index + 1)}
-                                >
-                                    {index + 1}
-                                </button>
-                            ))}
-                        </div>
-                        <button
-                            className="bg-gray-200 hover:bg-gray-300 text-black font-bold py-4 px-6 rounded ml-8"
-                            onClick={() => setPaginaActual(prev => prev + 1)}
-                            disabled={paginaActual === numeroPaginas}
-                        >
-                            Siguiente &rarr;
-                        </button>
-                    </div>
-                </div>
+  const obtenerPaginasVisibles = () => {
+    if (numerosDePagina.length <= 3) {
+      return numerosDePagina;
+    } else if (paginaActual <= 2) {
+      return [1, 2, 3];
+    } else if (paginaActual >= numerosDePagina.length - 1) {
+      return [numerosDePagina.length - 2, numerosDePagina.length - 1, numerosDePagina.length];
+    } else {
+      return [paginaActual - 1, paginaActual, paginaActual + 1];
+    }
+  };
+
+  const paginasVisibles = obtenerPaginasVisibles();
+
+  return (
+    <>
+      <Header></Header>
+      <div className='md:container md:mx-auto p-5'>
+        <div className="p-6 bg-gray-100 container">
+          <h1 className="text-3xl font-bold mb-4">Lista de Productos</h1>
+          <div className='flex justify-between mb-4'>
+            <div>
+              <input
+                type="text"
+                placeholder="Buscar producto..."
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                value={buscarPalabra}
+                onChange={(e) => setBuscarPalabra(e.target.value)}
+              />
             </div>
-            <ToastContainer />
+            <div>
+              <button
+                onClick={() => abrirModal('agregar')}
+                className="mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Agregar Producto
+              </button>
+              <AgregarProducto
+                isOpen={modalIsOpen}
+                cerrar={cerrarModal}
+                agregarProducto={agregarProducto}
+                editarProducto={editarProducto}
+                producto={productoActual}
+                modo={modo}
+              />
+            </div>
+          </div>
+  
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead>
+                <tr className="bg-gray-100 border-b border-gray-300">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marca</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {productosActuales.map((producto) => (
+                  <tr key={producto.id} className="border-b border-gray-300">
+                    <td className="px-6 py-4 whitespace-nowrap">{producto.nombre}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{producto.marca}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{producto.cantidad}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{producto.descripcion}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        className="px-3 py-1 bg-red-600 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
+                        onClick={() => eliminarProducto(producto.id)}
+                      >
+                        Eliminar
+                      </button>
+                      <button
+                        className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+                        onClick={() => abrirModal('editar', producto)}
+                      >
+                        Editar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+  
+          {/* Paginación */}
+          <div className="flex justify-center mt-4">
+            <nav>
+              <ul className="flex items-center">
+                <li>
+                  <button
+                    onClick={manejarAnterior}
+                    className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
+                      paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
+                    }`}
+                    disabled={paginaActual === 1}
+                  >
+                    &laquo;
+                  </button>
+                </li>
+                {paginasVisibles.map((numero) => (
+                  <li key={numero} className="cursor-pointer mx-1">
+                    <button
+                      onClick={() => paginar(numero)}
+                      className={`px-3 py-1 ${
+                        paginaActual === numero
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-white text-blue-600'
+                      } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
+                    >
+                      {numero}
+                    </button>
+                  </li>
+                ))}
+                <li>
+                  <button
+                    onClick={manejarSiguiente}
+                    className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
+                      paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
+                    }`}
+                    disabled={paginaActual === numerosDePagina.length}
+                  >
+                    &raquo;
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
-    );
+      </div>
+    </>
+  );
 };
 
 export default ListaProductos;
