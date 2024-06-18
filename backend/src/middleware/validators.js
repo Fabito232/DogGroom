@@ -48,12 +48,11 @@ const citaSchema = Joi.object({
     fechaYHora: Joi.date().iso().required(),
     descripcion: Joi.string().allow('', null).optional(),
     estado:  Joi.boolean().required(),
-    montoTotal: Joi.number().precision(2).positive().required(),
-
-    
-
-    
-});
+    montoTotal: Joi.number().precision(2).min(0).required(),
+    montoAdicional: Joi.number().precision(2).min(0).required(),
+    ID_Servicio: Joi.number().precision(2).positive().required()
+    }  
+);
 
 const citaDetalleSchema = Joi.object({
     ID_Cita: Joi.string().required(),
