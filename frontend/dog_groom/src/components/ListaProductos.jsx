@@ -10,7 +10,6 @@ const ListaProductos = () => {
     const [productoEditando, setProductoEditando] = useState(null);
     const [paginaActual, setPaginaActual] = useState(1);
     const [filtroNombre, setFiltroNombre] = useState('');
-    const [filtroMarca, setFiltroMarca] = useState('');
     const [filtroOrden, setFiltroOrden] = useState('');
 
     const productosPorPagina = 5; // Mostrar 5 productos por página
@@ -52,8 +51,7 @@ const ListaProductos = () => {
 
     // Filtrar y ordenar los productos según los filtros activos
     let productosFiltrados = productos.filter(producto =>
-        producto.nombre.toLowerCase().includes(filtroNombre) &&
-        producto.marca.toLowerCase().includes(filtroMarca)
+        producto.nombre.toLowerCase().includes(filtroNombre)
     );
 
     if (filtroOrden === 'nombreAsc') {
