@@ -7,9 +7,6 @@ import { crearMascota } from "../services/mascotaService";
 import { validarCliente, validarMascota } from "./validaciones";
 
 function AgregarCliente() {
-    const [cliente, setCliente] = useState([]);
-    const navigate = useNavigate();
-
     const [cedulaCliente, setCedulaCliente] = useState('');
     const [nombreCliente, setNombreCliente] = useState('');
     const [telefonoCliente, setTelefonoCliente] = useState('');
@@ -17,8 +14,37 @@ function AgregarCliente() {
     const [nombreMascota, setNombreMascota] = useState('');
     const [razaMascota, setRazaMascota] = useState('');
     const [tamanoMascota, setTamanoMascota] = useState('');
-    const [fotoMascota, SetFotoMascota] = useState(null);
+    const [fotoMascota, setFotoMascota] = useState(null);
     const [fotoUrl, setFotoUrl] = useState('');
+
+    const [mascotas, setMascotas] = useState([]);
+
+    const navigate = useNavigate();
+
+    const handleAgregarMascota = () => {
+        const mascota = {
+            nombre: nombreMascota,
+            raza: razaMascota,
+            tamano: tamanoMascota,
+            image: fotoMascota,
+        };
+
+        if (!validarMascota(mascota)) {
+            toast.error("Todos los campos de la mascota son obligatorios", { autoClose: 1500, theme: "colored" });
+            return;
+        }
+
+        setMascotas([...mascotas, mascota]);
+        limpiarCamposMascota();
+    };
+
+    const limpiarCamposMascota = () => {
+        setNombreMascota('');
+        setRazaMascota('');
+        setTamanoMascota('');
+        setFotoMascota(null);
+        setFotoUrl('');
+    };
 
     const handleAgregarCliente = async (e) => {
         e.preventDefault();
@@ -27,46 +53,59 @@ function AgregarCliente() {
             cedula: cedulaCliente,
             nombre: nombreCliente,
             telefono: telefonoCliente
+        };
+
+        if (!validarCliente(cliente)) {
+            toast.error("Todos los campos del cliente son obligatorios", { autoClose: 1500, theme: "colored" });
+            return;
         }
 
-        const mascota = {
-            nombre: nombreMascota,
-            raza: razaMascota,
-            image: fotoMascota,
-            cedula: cedulaCliente,
-            ID_TipoMascota: 1
+        if (mascotas.length === 0) {
+            toast.error("Debe agregar al menos una mascota", { autoClose: 1500, theme: "colored" });
+            return;
         }
 
-        if (validarCliente(cliente) && validarMascota(mascota)) {
+        try {
+            const resCliente = await crearCliente(cliente);
 
-            try {
-                console.log(cliente, " \n", mascota)
+            if (resCliente.ok) {
+                const promises = mascotas.map(mascota => {
+                    const nuevaMascota = {
+                        nombre: mascota.nombre,
+                        raza: mascota.raza,
+                        tamano: mascota.tamano,
+                        image: mascota.image,
+                        cedula: cedulaCliente,
+                        ID_TipoMascota: 1
+                    };
+                    return crearMascota(nuevaMascota);
+                });
 
-                const resCliente = await crearCliente(cliente);
-                
-                console.log(resCliente)
-                if (resCliente.ok) {
-                    const resMascota = await crearMascota(mascota);
-                    if (resMascota.ok) {
-                        toast.success("Se guardó con éxito el cliente", { autoClose: 1500, theme: "colored" });
-                    } else {
-                        toast.error(resMascota.message, { autoClose: 1500, theme: "colored" });
-                    }
-                    console.log('MASCOTA:', resMascota)
+                const resultadosMascotas = await Promise.all(promises);
+                const errores = resultadosMascotas.filter(res => !res.ok);
+
+                if (errores.length === 0) {
+                    toast.success("Se guardó con éxito el cliente y las mascotas", { autoClose: 1500, theme: "colored" });
+                    navigate('/clientes'); // Redirige al usuario después de guardar correctamente
                 } else {
-                    toast.error(resCliente.message, { autoClose: 1500, theme: "colored" });
+                    errores.forEach(error => {
+                        console.error('Error al guardar mascota:', error.message);
+                    });
+                    toast.error("Error al guardar algunas mascotas", { autoClose: 1500, theme: "colored" });
                 }
-            } catch (error) {
-                toast.error(error.message, { autoClose: 1500, theme: "colored" });
+            } else {
+                toast.error(resCliente.message, { autoClose: 1500, theme: "colored" });
             }
-            navigate('/clientes');
+        } catch (error) {
+            console.error('Error al guardar cliente:', error.message);
+            toast.error(error.message, { autoClose: 1500, theme: "colored" });
         }
     };
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            SetFotoMascota(file);
+            setFotoMascota(file);
             setFotoUrl(URL.createObjectURL(file));
         }
     };
@@ -76,7 +115,7 @@ function AgregarCliente() {
     };
 
     return (
-        <div className="relaive flex flex-col min-h-screen bg-primary bg-agregarCliente bg-cover">
+        <div className="relative flex flex-col min-h-screen bg-primary bg-agregarCliente bg-cover">
             <Header />
             <div className="flex-grow flex items-center justify-center">
                 <div className="bg-yellow-800 bg-opacity-95 rounded-3xl p-10 m-6 flex items-center justify-center">
@@ -119,7 +158,7 @@ function AgregarCliente() {
                                 placeholder="Nombre del Perro"
                                 value={nombreMascota}
                                 onChange={(e) => setNombreMascota(e.target.value)}
-                                required
+                                required={mascotas.length === 0}
                             />
                             <input
                                 className="p-4 text-lg border border-gray-300 rounded-md w-full mb-4"
@@ -128,7 +167,7 @@ function AgregarCliente() {
                                 placeholder="Raza"
                                 value={razaMascota}
                                 onChange={(e) => setRazaMascota(e.target.value)}
-                                required
+                                required={mascotas.length === 0}
                             />
                             <select
                                 className="p-4 text-lg border border-gray-300 rounded-md w-full mb-4"
@@ -136,9 +175,9 @@ function AgregarCliente() {
                                 placeholder="Tamaño"
                                 value={tamanoMascota}
                                 onChange={(e) => setTamanoMascota(e.target.value)}
-                                required
+                                required={mascotas.length === 0}
                             >
-                                <option value="d" disabled>Tamaño</option>
+                                <option value="" disabled>Selecciona el tamaño</option>
                                 <option value="pequeño">Pequeño</option>
                                 <option value="grande">Grande</option>
                             </select>
@@ -149,9 +188,8 @@ function AgregarCliente() {
                                 type="file"
                                 id="imagenMascota"
                                 className="hidden"
-
                                 onChange={handleImageChange}
-                                required
+                                required={mascotas.length === 0}
                             />
                             <label
                                 htmlFor="imagenMascota"
@@ -167,10 +205,17 @@ function AgregarCliente() {
 
                         <div className="flex justify-center space-x-4 mb-6">
                             <button
+                                className="p-4 text-lg bg-blue-600 rounded-md text-black font-bold hover:bg-blue-700 focus:outline-none"
+                                type="button"
+                                onClick={handleAgregarMascota}
+                            >
+                                Agregar Mascota
+                            </button>
+                            <button
                                 className="p-4 text-lg bg-green-600 rounded-md text-black font-bold hover:bg-green-700 focus:outline-none"
                                 type="submit"
                             >
-                                Agregar
+                                Guardar Cliente y Mascotas
                             </button>
                             <button
                                 className="p-4 text-lg bg-red-600 rounded-md text-black font-bold hover:bg-red-700 focus:outline-none"
@@ -181,10 +226,26 @@ function AgregarCliente() {
                             </button>
                         </div>
                     </form>
+
+                    <div className="w-full md:w-1/2 bg-amber-800 bg-opacity-90 rounded-3xl p-8 m-4 overflow-hidden">
+                        <div className="overflow-y-auto" style={{ maxHeight: '400px', scrollbarWidth: 'none' }}>
+                            <h2 className="text-2xl font-bold text-center mb-4">Mascotas Agregadas</h2>
+                            {mascotas.length === 0 && (
+                                <p className="text-center text-gray-500">No se han agregado mascotas aún.</p>
+                            )}
+                            {mascotas.map((mascota, index) => (
+                                <div key={index} className="bg-black my-2 p-2 rounded-md text-white cursor-pointer">
+                                    <p><strong>Nombre:</strong> {mascota.nombre}</p>
+                                    <p><strong>Raza:</strong> {mascota.raza}</p>
+                                    <p><strong>Tamaño:</strong> {mascota.tamano}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default AgregarCliente;
