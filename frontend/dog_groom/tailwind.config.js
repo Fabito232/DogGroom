@@ -12,7 +12,9 @@ export default {
     "./src/components/ModalConfirmacion.jsx",
     "./src/components/ListaServicios.jsx",
     "./src/components/AgregarServicio.jsx",
-    "./src/components/AgendarCita.jsx"
+    "./src/components/AgendarCita.jsx",
+    "./src/components/resumen.jsx",
+  
   ],
   theme: {
     container: {

@@ -2,7 +2,11 @@ import api from "./api";
 
 export const crearCliente = async (cliente) => {
     try {
-        const response = await api.post('/clientes', cliente);
+        const response = await api.post('/clientes', cliente,{
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return response.data;
     } catch (error) {
         console.log(error.response)

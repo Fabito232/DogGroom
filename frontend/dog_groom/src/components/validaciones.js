@@ -31,7 +31,7 @@ export function validarMascota(mascota) {
         errores.push("raza de mascota invalida");
     }
 
-    if (!validarFotoMascota(mascota.image)) {
+    if (!validarFotoMascota(mascota.images)) {
         errores.push("foto de mascota invalida");
     }
 

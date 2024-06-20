@@ -18,17 +18,26 @@ const ListaClientes = () => {
   const cargarClientes = async () => {
     try {
       const resClientes = await obtenerClientes();
+      // const listaClientes = resClientes.data.map(cliente => ({
+      //   id: cliente.Cedula,
+      //   cedula: cliente.Cedula,
+      //   nombre: cliente.Nombre,
+      //   telefono: cliente.Telefono,
+      //   mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '-',
+      //   raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '-',
+      //   image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : imgPerro,
+      //   idMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
+      //   ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '-'
+      // }));
       const listaClientes = resClientes.data.map(cliente => ({
         id: cliente.Cedula,
         cedula: cliente.Cedula,
         nombre: cliente.Nombre,
         telefono: cliente.Telefono,
-        mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '-',
-        raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '-',
-        image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : imgPerro,
-        idMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
-        ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '-'
+        mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0]: '-',
+        
       }));
+      console.log(listaClientes);
       setClientes(listaClientes);
     } catch (error) {
       console.log(error);
@@ -55,16 +64,16 @@ const ListaClientes = () => {
       telefono: clienteEditando.telefono
     };
     const mascota = {
-      nombre: clienteEditando.mascota,
-      raza: clienteEditando.raza,
-      image: clienteEditando.image,
+      nombre: clienteEditando.mascota.Nombre,
+      raza: clienteEditando.mascota.Raza,
+      image: clienteEditando.mascota.FotoURL,
       cedula: clienteEditando.cedula,
-      ID_TipoMascota: clienteEditando.ID_TipoMascota
+      ID_TipoMascota: clienteEditando.mascota.ID_TipoMascota
     };
 
     const resCliente = await actualizarCliente(cliente, clienteEditando.id);
     if (resCliente.ok) {
-      await actualizarMascota(mascota, clienteEditando.idMascota);
+      await actualizarMascota(mascota, clienteEditando.mascota.ID_Mascota);
     }
 
     if (isGuardarDisabled) return;
@@ -103,8 +112,9 @@ const ListaClientes = () => {
 
   useEffect(() => {
     if (clienteEditando) {
-      const { cedula, nombre, telefono, mascota, raza } = clienteEditando;
-      setIsGuardarDisabled(!cedula || !nombre || !telefono || !mascota || !raza);
+      const { cedula, nombre, telefono, mascota } = clienteEditando;
+      setIsGuardarDisabled(!cedula || !nombre || !telefono || !mascota || !mascota.Nombre || !mascota.Raza);
+   
     } else {
       setIsGuardarDisabled(true);
     }
@@ -148,7 +158,7 @@ const ListaClientes = () => {
                 <div key={cliente.id} className="flex flex-col bg-amber-700 bg-opacity-90 border border-black w-full">
                   <div className="relative p-4 w-full flex justify-center">
                     <img
-                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image : URL_Hosting + cliente.image || imgPerro}
+                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.mascota.FotoURL : (cliente.mascota && cliente.mascota.FotoURL) ? URL_Hosting + cliente.mascota.FotoURL : imgPerro}
                       alt={cliente.nombre}
                       className="h-32 w-32 md:h-48 md:w-48 object-cover rounded-lg cursor-pointer"
                       onClick={() => document.getElementById(`fileInput-${cliente.id}`).click()}
@@ -213,12 +223,12 @@ const ListaClientes = () => {
                           <input
                             type="text"
                             name="mascota"
-                            value={clienteEditando.mascota}
+                            value={clienteEditando.mascota.Nombre}
                             onChange={manejarCambioEntradaEdicion}
                             className="block w-full p-1 border border-gray-300 rounded"
                           />
                         ) : (
-                          <div className="bg-white p-1 rounded flex-grow">{cliente.mascota}</div>
+                          <div className="bg-white p-1 rounded flex-grow">{cliente.mascota.Nombre}</div>
                         )}
                       </div>
                       <div className="flex items-center mb-2">
@@ -227,12 +237,12 @@ const ListaClientes = () => {
                           <input
                             type="text"
                             name="raza"
-                            value={clienteEditando.raza}
+                            value={clienteEditando.mascota.Raza}
                             onChange={manejarCambioEntradaEdicion}
                             className="block w-full p-1 border border-gray-300 rounded"
                           />
                         ) : (
-                          <div className="bg-white p-1 rounded flex-grow">{cliente.raza}</div>
+                          <div className="bg-white p-1 rounded flex-grow">{cliente.mascota.Raza}</div>
                         )}
                       </div>
                       
