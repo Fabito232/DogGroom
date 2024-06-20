@@ -37,7 +37,7 @@ const ResumenCita = () => {
 
     return (
         <div className="relative min-h-screen flex items-center justify-center bg-primary bg-opacity-80 bg-fondo bg-cover">
-            <div className="bg-lime-900 shadow-md roundedrounded-s-3xl px-4 pt-2 pb-10 mb-4 max-w-4xl h-auto w-auto max-h-full max-w-full overflow-y-auto">
+            <div className="bg-lime-900 shadow-md roundedrounded-s-3xl px-4 pt-2 pb-10 mb-4 h-auto w-auto max-h-full max-w-full overflow-y-auto">
                 {appointments.length === 0 ? (
                     <p>No hay citas agendadas.</p>
                 ) : (

@@ -42,11 +42,12 @@ Cita.init({
     },
     ID_Servicio: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: Servicio,
             key: 'ID_Servicio'
-        }
+        },
+        onDelete: 'SET NULL',
     },
     
 }, {
@@ -60,6 +61,6 @@ Cliente.hasMany(Cita, {foreignKey: 'ID_Cliente', as: 'cliente'});
 Cita.belongsTo(Cliente,{foreignKey: 'ID_Cliente'});
 
 Servicio.hasMany(Cita, {foreignKey: 'ID_Servicio'});
-Cita.belongsTo(Servicio,{foreignKey: 'ID_Servicio'});
+Cita.belongsTo(Servicio,{foreignKey: 'ID_Servicio',onDelete: 'SET NULL'});
 
 export default Cita;

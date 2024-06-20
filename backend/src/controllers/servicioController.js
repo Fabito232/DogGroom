@@ -109,7 +109,7 @@ export const deleteServicio = async (req, res) => {
         return res.json({
             ok: false,
             status: 500,
-            message: "No se borro la Servicio",
+            message: "No se borro la Servicio", error
         })
     }
 }

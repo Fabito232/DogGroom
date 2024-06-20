@@ -26,7 +26,7 @@ Mascota.init({
     },
     ID_Cliente: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
         references: {
             model: Cliente,
             key: 'Cedula'
@@ -34,7 +34,7 @@ Mascota.init({
     },
     ID_TipoMascota: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
         references: {
             model: TipoMascota,
             key: 'ID_TipoMascota'
