@@ -30,6 +30,7 @@ export const createEmpleado = async (req, res) => {
 
 export const loginEmpleado = async (req, res) => {
     try {
+
         const empleado = await Empleado.findOne({
             where: {
                 Correo: req.body.correo
@@ -51,6 +52,8 @@ export const loginEmpleado = async (req, res) => {
                 message: "Contraseña incorrecta"
             });
         }
+        
+        
         const token =  generarToken({ id: empleado.ID_Empleado, correo: empleado.Correo });
 
         return res.json({

@@ -67,6 +67,11 @@ const Header = () => {
                   Finanzas
                 </a>
               </li>
+              <li>
+                <a href="/servicios" className="block px-3 py-2 hover:text-gray-400">
+                  Servicios
+                </a>
+              </li>
             </ul>
           </div>
         </nav>

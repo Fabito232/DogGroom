@@ -4,28 +4,20 @@ import PropTypes from 'prop-types';
 
 Modal.setAppElement('#root'); // Esto es necesario para la accesibilidad
 
-const AgregarProducto = ({ isOpen, cerrar, agregarProducto, editarProducto, producto, modo }) => {
-  const [productoInfo, setProductoInfo] = useState({
-    nombre: '',
-    marca: '',
-    cantidad: '',
-    descripcion: ''});
+const AgregarGasto = ({ isOpen, cerrar, agregarGasto, editarGasto, gasto, modo }) => {
+  const [gastoInfo, setGastoInfo] = useState({ descripcion: '', fecha: '', monto: '' });
 
   useEffect(() => {
-    if (modo === 'editar' && producto) {
-      setProductoInfo(producto);
+    if (modo === 'editar' && gasto) {
+      setGastoInfo(gasto);
     } else {
-      setProductoInfo({
-        nombre: '',
-        marca: '',
-        cantidad: '',
-        descripcion: ''});
+      setGastoInfo({ descripcion: '', fecha: '', monto: '' });
     }
-  }, [modo, producto]);
+  }, [modo, gasto]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProductoInfo(prevState => ({
+    setGastoInfo(prevState => ({
       ...prevState,
       [name]: value
     }));
@@ -34,14 +26,10 @@ const AgregarProducto = ({ isOpen, cerrar, agregarProducto, editarProducto, prod
   const handleSubmit = (e) => {
     e.preventDefault();
     if (modo === 'agregar') {
-      agregarProducto(productoInfo);
-      setProductoInfo({
-        nombre: '',
-        marca: '',
-        cantidad: '',
-        descripcion: ''});
+      agregarGasto(gastoInfo);
+      setGastoInfo({ descripcion: '', fecha: '', monto: '' });
     } else if (modo === 'editar') {
-      editarProducto(productoInfo);
+      editarGasto(gastoInfo);
     }
     cerrar();
   };
@@ -50,51 +38,40 @@ const AgregarProducto = ({ isOpen, cerrar, agregarProducto, editarProducto, prod
     <Modal 
       isOpen={isOpen} 
       onRequestClose={cerrar} 
-      contentLabel="Agregar Producto" 
+      contentLabel="Agregar Gasto" 
       className="fixed inset-0 flex items-center justify-center p-4 bg-gray-800 bg-opacity-75"
     >
       <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4">
-        <h2 className="text-2xl font-semibold mb-4">{modo === 'agregar' ? 'Agregar Producto' : 'Editar Producto'}</h2>
+        <h2 className="text-2xl font-semibold mb-4">{modo === 'agregar' ? 'Agregar Gasto' : 'Editar Gasto'}</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Nombre:</label>
-            <input 
-              type="text" 
-              name="nombre" 
-              value={productoInfo.nombre} 
-              onChange={handleChange} 
-              required 
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Marca:</label>
-            <input 
-              type="text" 
-              name="marca" 
-              value={productoInfo.marca} 
-              onChange={handleChange} 
-              required 
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Cantidad:</label>
-            <input 
-              type="number" 
-              name="cantidad" 
-              value={productoInfo.cantidad} 
-              onChange={handleChange} 
-              required 
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Descripcion:</label>
+            <label className="block text-gray-700 mb-2">Descripción:</label>
             <input 
               type="text" 
               name="descripcion" 
-              value={productoInfo.descripcion} 
+              value={gastoInfo.descripcion} 
+              onChange={handleChange} 
+              required 
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">Fecha:</label>
+            <input 
+              type="date" 
+              name="fecha" 
+              value={gastoInfo.fecha} 
+              onChange={handleChange} 
+              required 
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">Monto:</label>
+            <input 
+              type="number" 
+              name="monto" 
+              value={gastoInfo.monto} 
               onChange={handleChange} 
               required 
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -121,13 +98,13 @@ const AgregarProducto = ({ isOpen, cerrar, agregarProducto, editarProducto, prod
   );
 };
 
-AgregarProducto.propTypes = {
+AgregarGasto.propTypes = {
     isOpen: PropTypes.bool.isRequired, 
     cerrar: PropTypes.func.isRequired,
-    agregarProducto: PropTypes.func.isRequired,
-    editarProducto: PropTypes.func.isRequired,
-    producto: PropTypes.object,
+    agregarGasto: PropTypes.func.isRequired,
+    editarGasto: PropTypes.func.isRequired,
+    gasto: PropTypes.object,
     modo: PropTypes.string.isRequired
 };
 
-export default AgregarProducto;
+export default AgregarGasto;

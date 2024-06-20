@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createCliente, getCliente, getListCliente, deleteCliente, updateCliente, createClienteConMascota } from "../controllers/clienteController.js";
+import { createCliente, getCliente, getListCliente, deleteCliente, updateCliente } from "../controllers/clienteController.js";
 import { validarDatosCliente } from "../middleware/validators.js";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -14,13 +14,12 @@ const storage = multer.diskStorage({
       cb(null, new Date().getTime() + path.extname(file.originalname));
     },
   });
-const upload = multer({ storage }).single('image');
+const upload = multer({ storage }).array('images',10);
 const router = Router();
 router.get('/clientes', getListCliente);
 router.get('/clientes/:id', getCliente);
-router.post('/clientes',validarDatosCliente, createCliente);
-router.post('/cliente',upload, createClienteConMascota);
+router.post('/clientes', upload,validarDatosCliente, createCliente);
 router.delete('/clientes/:id',deleteCliente)
-router.put('/clientes/:id',validarDatosCliente, updateCliente);
+router.put('/clientes/:id', upload,validarDatosCliente, updateCliente);
 
 export default router

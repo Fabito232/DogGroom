@@ -1,186 +1,263 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from "./Header";
-import { actualizarProducto, borrarProducto, obtenerProductos } from '../services/productoService.js';
+import AgregarProducto from './AgregarProducto.jsx';
+import { actualizarProducto, borrarProducto, crearProducto, obtenerProductos } from '../services/productoService.js';
+import { useConfirm } from './ModalConfirmacion';
+import { notificarError, notificarExito } from '../utilis/notificaciones';
+import Header from './Header.jsx';
 
 const ListaProductos = () => {
-    const [productos, setProductos] = useState([]);
-    const [productoEditando, setProductoEditando] = useState(null);
-    const navigate = useNavigate();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [productos, setProductos] = useState([]);
+  const [buscarPalabra, setBuscarPalabra] = useState('');
+  const [productosFiltrados, setProductosFiltrados] = useState([]);
+  const [modo, setModo] = useState('agregar');
+  const [productoActual, setProductoActual] = useState(null);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [productosPorPagina] = useState(5); // Cantidad de productos por página
 
-    const cargarProducto = async () => {
-        try {
-            const resProducto = await obtenerProductos();
-            console.log(resProducto);
-            if (resProducto.ok) {
-                const listaProducto = resProducto.data.map(producto => ({
-                    id: producto.ID_Producto,
-                    nombre: producto.Nombre,
-                    marca: producto.Marca,
-                    descripcion: producto.Descripcion,
-                    cantidad: producto.Cantidad
-                }));
-                setProductos(listaProducto);
-            }
-        } catch (error) {
-            console.log(error.message);
-        }
-    };
+  const openConfirmModal = useConfirm();
 
-    useEffect(() => {
-        cargarProducto();
-    }, []);
-
-    const manejarAgregar = () => {
-        navigate('/agregarProducto');
-    };
-
-    const manejarEditar = (producto) => {
-        console.log("producto editado", producto);
-        setProductoEditando(producto);
-    };
-
-    const manejarCambioEntradaEdicion = (e) => {
-        const { name, value } = e.target;
-        setProductoEditando({ ...productoEditando, [name]: value });
-    };
-
-    const manejarGuardar = async () => {
-        console.log(productoEditando);
-        const producto = {
-            nombre: productoEditando.nombre,
-            marca: productoEditando.marca,
-            descripcion: productoEditando.descripcion,
-            cantidad: productoEditando.cantidad
-        };
-        console.log(producto);
-        try {
-            const resProducto = await actualizarProducto(producto, productoEditando.id);
-            console.log(resProducto);
-        } catch (error) {
-            console.log(error);
-        }
-
-        const productosActualizados = productos.map(producto => {
-            if (producto.id === productoEditando.id) {
-                return productoEditando;
-            }
-            return producto;
-        });
-        setProductos(productosActualizados);
-        setProductoEditando(null);
-    };
-
-    const manejarCancelar = () => {
-        setProductoEditando(null);
-    };
-
-    const manejarEliminar = async (id) => {
-        if (window.confirm("¿Estás seguro de que quieres eliminar este producto?")) {
-            const resProducto = await borrarProducto(id);
-            console.log(resProducto);
-            const productosActualizados = productos.filter(producto => producto.id !== id);
-            setProductos(productosActualizados);
-        }
-    };
-
-    return (
-        <div className="relative min-h-screen flex items-start justify-center bg-primary bg-fondo1 bg-cover">
-            <div className="relative z-10 shadow-lg w-full md:w-160 h-full md:h-auto">
-                <Header />
-                <div className="rounded-xl shadow-md p-20 mb-2 overflow-auto">
-                    <div className="flex items-center mb-4">
-                        <h1 className="bg-gray-300 rounded-lg text-6xl font-bold flex-1 text-center">Lista de Productos</h1>
-                        <button className="bg-green-700 hover:bg-green-900 text-black font-bold py-4 px-12 rounded ml-8" onClick={manejarAgregar}>Agregar</button>
-                    </div>
-                    <div className="overflow-auto max-h-[650px] mt-8" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
-                        <table className="w-full table-auto border-collapse">
-                            <thead>
-                                <tr className="bg-lime-600">
-                                    <th className="border border-gray-800 py-6 px-6">Nombre</th>
-                                    <th className="border border-gray-800 py-6 px-6">Marca</th>
-                                    <th className="border border-gray-800 py-6 px-6">Cantidad</th>
-                                    <th className="border border-gray-800 py-6 px-6">Descripción</th>
-                                    <th className="border border-gray-800 py-6 px-6">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {productos.map((producto, index) => (
-                                    <tr key={producto.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-200'}>
-                                        <td className="border border-gray-800 py-4 px-6">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <input
-                                                    type="text"
-                                                    name="nombre"
-                                                    value={productoEditando.nombre}
-                                                    onChange={manejarCambioEntradaEdicion}
-                                                    className="block w-full p-2 border border-gray-300 rounded"
-                                                />
-                                            ) : (
-                                                producto.nombre
-                                            )}
-                                        </td>
-                                        <td className="border border-gray-800 py-4 px-6">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <input
-                                                    type="text"
-                                                    name="marca"
-                                                    value={productoEditando.marca}
-                                                    onChange={manejarCambioEntradaEdicion}
-                                                    className="block w-full p-2 border border-gray-300 rounded"
-                                                />
-                                            ) : (
-                                                producto.marca
-                                            )}
-                                        </td>
-                                        <td className="border border-gray-800 py-4 px-6 text-center">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <input
-                                                    type="number"
-                                                    name="cantidad"
-                                                    value={productoEditando.cantidad}
-                                                    onChange={manejarCambioEntradaEdicion}
-                                                    className="block w-full p-2 border border-gray-300 rounded"
-                                                />
-                                            ) : (
-                                                producto.cantidad
-                                            )}
-                                        </td>
-                                        <td className="border border-gray-800 py-4 px-6">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <input
-                                                    type="text"
-                                                    name="descripcion"
-                                                    value={productoEditando.descripcion}
-                                                    onChange={manejarCambioEntradaEdicion}
-                                                    className="block w-full p-2 border border-gray-300 rounded"
-                                                />
-                                            ) : (
-                                                producto.descripcion
-                                            )}
-                                        </td>
-                                        <td className="border border-gray-800 py-4 px-6">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <div className="flex flex-row space-x-2">
-                                                    <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full" onClick={manejarGuardar}>Guardar</button>
-                                                    <button className="bg-red-700 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded w-full" onClick={manejarCancelar}>Cancelar</button>
-                                                </div>
-                                            ) : (
-                                                <div className="flex flex-row space-x-2">
-                                                    <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full" onClick={() => manejarEditar(producto)}>Editar</button>
-                                                    <button className="bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded w-full" onClick={() => manejarEliminar(producto.id)}>Eliminar</button>
-                                                </div>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+  useEffect(() => {
+    setProductosFiltrados(
+      productos.filter((producto) =>
+        producto.nombre.toLowerCase().includes(buscarPalabra.toLowerCase())
+      )
     );
+  }, [productos, buscarPalabra]);
+
+  useEffect(() => {
+    cargarProductos();
+  }, []);
+
+  const cargarProductos = async () => {
+    try {
+        const resProducto = await obtenerProductos();
+        if (resProducto.ok) {
+            const listaProducto = resProducto.data.map(producto => ({
+                id: producto.ID_Producto,
+                nombre: producto.Nombre,
+                marca: producto.Marca,
+                descripcion: producto.Descripcion,
+                cantidad: producto.Cantidad
+            }));
+            setProductos(listaProducto);
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+ }; 
+
+  const abrirModal = (modo, producto = null) => {
+    setModo(modo);
+    setProductoActual(producto);
+    setModalIsOpen(true);
+  };
+
+  const cerrarModal = () => {
+    setModalIsOpen(false);
+  };
+
+  const agregarProducto = async (producto) => {
+    try {
+      const resProducto = await crearProducto(producto);
+      if (resProducto.ok) {
+        const nuevoProducto = {
+          id: resProducto.data.ID_Producto,
+          ...producto,
+        };
+        setProductos([...productos, nuevoProducto]);
+        setModalIsOpen(false);
+        notificarExito("Se guardó con éxito el producto")
+      } else {
+        notificarError(resProducto)
+      }
+    } catch (error) {
+      notificarError(error)
+    }
+  };
+
+  const editarProducto = async (productoEditado) => {
+    try {
+      const { id, ...producto } = productoEditado;
+      console.log(producto);
+      const resProducto = await actualizarProducto(producto, productoEditado.id);
+      if (resProducto.ok) {
+        const updatedProductos = productos.map((producto) =>
+          producto.id === productoEditado.id ? productoEditado : producto
+        );
+        setProductos(updatedProductos);
+        setModalIsOpen(false);
+        notificarExito("Se guardó con éxito el producto")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const eliminarProducto = async (id) => {
+
+    openConfirmModal('¿Estás seguro de que deseas eliminar este elemento?', async () => {
+      try {
+        const resProducto = await borrarProducto(id);
+        if (resProducto.ok) {
+          const updatedProductos = productos.filter((producto) => producto.id !== id);
+          setProductos(updatedProductos);
+          notificarExito("Se borro existosamente el producto")
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+  };
+
+  // Paginación
+  const indiceUltimoProducto = paginaActual * productosPorPagina;
+  const indicePrimerProducto = indiceUltimoProducto - productosPorPagina;
+  const productosActuales = productosFiltrados.slice(indicePrimerProducto, indiceUltimoProducto);
+
+  const numerosDePagina = [];
+  for (let i = 1; i <= Math.ceil(productosFiltrados.length / productosPorPagina); i++) {
+    numerosDePagina.push(i);
+  }
+
+  const paginar = (numeroDePagina) => setPaginaActual(numeroDePagina);
+  const manejarAnterior = () => setPaginaActual((prev) => Math.max(prev - 1, 1));
+  const manejarSiguiente = () => setPaginaActual((prev) => Math.min(prev + 1, numerosDePagina.length));
+
+  const obtenerPaginasVisibles = () => {
+    if (numerosDePagina.length <= 3) {
+      return numerosDePagina;
+    } else if (paginaActual <= 2) {
+      return [1, 2, 3];
+    } else if (paginaActual >= numerosDePagina.length - 1) {
+      return [numerosDePagina.length - 2, numerosDePagina.length - 1, numerosDePagina.length];
+    } else {
+      return [paginaActual - 1, paginaActual, paginaActual + 1];
+    }
+  };
+
+  const paginasVisibles = obtenerPaginasVisibles();
+
+  return (
+    <>
+      <Header></Header>
+      <div className='md:container md:mx-auto p-5'>
+        <div className="p-6 bg-gray-100 container">
+          <h1 className="text-3xl font-bold mb-4">Lista de Productos</h1>
+          <div className='flex justify-between mb-4'>
+            <div>
+              <input
+                type="text"
+                placeholder="Buscar producto..."
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                value={buscarPalabra}
+                onChange={(e) => setBuscarPalabra(e.target.value)}
+              />
+            </div>
+            <div>
+              <button
+                onClick={() => abrirModal('agregar')}
+                className="mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Agregar Producto
+              </button>
+              <AgregarProducto
+                isOpen={modalIsOpen}
+                cerrar={cerrarModal}
+                agregarProducto={agregarProducto}
+                editarProducto={editarProducto}
+                producto={productoActual}
+                modo={modo}
+              />
+            </div>
+          </div>
+  
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead>
+                <tr className="bg-gray-100 border-b border-gray-300">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marca</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {productosActuales.map((producto) => (
+                  <tr key={producto.id} className="border-b border-gray-300">
+                    <td className="px-6 py-4 whitespace-nowrap">{producto.nombre}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{producto.marca}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{producto.cantidad}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{producto.descripcion}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        className="px-3 py-1 bg-red-600 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
+                        onClick={() => eliminarProducto(producto.id)}
+                      >
+                        Eliminar
+                      </button>
+                      <button
+                        className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+                        onClick={() => abrirModal('editar', producto)}
+                      >
+                        Editar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+  
+          {/* Paginación */}
+          <div className="flex justify-center mt-4">
+            <nav>
+              <ul className="flex items-center">
+                <li>
+                  <button
+                    onClick={manejarAnterior}
+                    className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
+                      paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
+                    }`}
+                    disabled={paginaActual === 1}
+                  >
+                    &laquo;
+                  </button>
+                </li>
+                {paginasVisibles.map((numero) => (
+                  <li key={numero} className="cursor-pointer mx-1">
+                    <button
+                      onClick={() => paginar(numero)}
+                      className={`px-3 py-1 ${
+                        paginaActual === numero
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-white text-blue-600'
+                      } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
+                    >
+                      {numero}
+                    </button>
+                  </li>
+                ))}
+                <li>
+                  <button
+                    onClick={manejarSiguiente}
+                    className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
+                      paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
+                    }`}
+                    disabled={paginaActual === numerosDePagina.length}
+                  >
+                    &raquo;
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default ListaProductos;

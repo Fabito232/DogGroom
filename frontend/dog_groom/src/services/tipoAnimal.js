@@ -1,12 +1,8 @@
 import api from "./api";
 
-export const crearCliente = async (cliente) => {
+export const crearTipoMascota = async (TipoMascota) => {
     try {
-        const response = await api.post('/clientes', cliente,{
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
+        const response = await api.post('/tipoMascotas', TipoMascota);
         return response.data;
     } catch (error) {
         console.log(error.response)
@@ -14,9 +10,9 @@ export const crearCliente = async (cliente) => {
     }
 }
 
-export const obtenerClientes = async () => {
+export const obtenerTipoMascotas = async () => {
     try {
-        const response = await api.get('/clientes');
+        const response = await api.get('/tipoMascotas');
         return response.data;
     } catch (error) {
         console.log(error.response)
@@ -24,9 +20,9 @@ export const obtenerClientes = async () => {
     }
 }
 
-export const borrarCliente = async (id) => {
+export const borrarTipoMascota = async (id) => {
     try {
-        const response = await api.delete(`/clientes/${id}`);
+        const response = await api.delete(`/tipoMascotas/${id}`);
         return response.data;
     } catch (error) {
         console.log(error.response)
@@ -34,9 +30,9 @@ export const borrarCliente = async (id) => {
     }
 }
 
-export const actualizarCliente = async (cliente, id) => {
+export const actualizarTipoMascota = async (TipoMascota,id) => {
     try {
-        const response = await api.put(`/clientes/${id}`, cliente);
+        const response = await api.put(`/tipoMascotas/${id}`, TipoMascota);
         return response.data;
     } catch (error) {
         console.log(error.response)

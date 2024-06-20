@@ -1,7 +1,8 @@
 import axios from 'axios';
-//const API_URL = "http://localhost:4000/api";
-export const URL_Hosting = "https://doggroom.onrender.com";
-const API_URL = "https://doggroom.onrender.com/api";
+const API_URL = "http://localhost:4000/api";
+//export const URL_Hosting = "https://doggroom.onrender.com";
+export const URL_Hosting = "http://localhost:4000";
+//const API_URL = "https://doggroom.onrender.com/api";
 
 const api = axios.create({
   baseURL: API_URL,

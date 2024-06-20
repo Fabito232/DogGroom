@@ -2,15 +2,18 @@ export function validarCliente(cliente) {
     const errores = [];
 
     if (!validarCedula(cliente.cedula)) {
+        console.log("cedula")
         errores.push("cedula invalida");
     }
 
     if (!validarNombre(cliente.nombre)) {
         errores.push("nombre invalido");
+        console.log("nombre")
     }
 
     if (!validarTelefono(cliente.telefono)) {
         errores.push("telefono invalido");
+        console.log("tele")
     }
 
     return errores.length === 0 ? true : false;
@@ -28,7 +31,7 @@ export function validarMascota(mascota) {
         errores.push("raza de mascota invalida");
     }
 
-    if (!validarFotoMascota(mascota.image)) {
+    if (!validarFotoMascota(mascota.images)) {
         errores.push("foto de mascota invalida");
     }
 
