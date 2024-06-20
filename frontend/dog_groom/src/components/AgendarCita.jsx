@@ -8,10 +8,11 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import ListaServicios from './ListaServicios';
 import { obtenerServicios } from '../services/paqueteServices';
+
 function AgendarCita() {
   const [clientes, setClientes] = useState([]);
   const [citas, setCitas] = useState([]);
-  const [servicios, setServicios] =useState([]);
+  const [servicios, setServicios] = useState([]);
   const navigate = useNavigate();
 
   const [cedulaCliente, setCedulaCliente] = useState('');
@@ -66,13 +67,13 @@ function AgendarCita() {
     setRazaMascota(cliente.raza);
     setTamanoMascota(cliente.tamano);
     SetFotoMascota(cliente.image);
-    setFotoUrl(cliente.image );
+    setFotoUrl(cliente.image);
 
   };
 
   const handleAgendaCita = async (e) => {
     e.preventDefault();
-  
+
     const cita = {
       fechaYHora: fechaYHora,
       estado: estado,
@@ -81,7 +82,7 @@ function AgendarCita() {
       cedula: cedulaCliente,
 
     };
-  
+
     try {
       console.log(cita);
       const resCita = await crearCita(cita);
@@ -94,7 +95,7 @@ function AgendarCita() {
           theme: "colored",
         });
         navigate('/citas', { state: { nuevaCita: resCita.data } });
-        
+
         navigate('/citas');
       } else {
         toast.error(resCita.message, { autoClose: 1500, theme: "colored" });
@@ -103,8 +104,8 @@ function AgendarCita() {
       toast.error(error.message, { autoClose: 1500, theme: "colored" });
     }
   };
-  
-  
+
+
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -130,7 +131,7 @@ function AgendarCita() {
                   >
                     <span>
                       {cliente.nombre} - {cliente.cedula}
-                      
+
                     </span>
                   </li>
                 ))}
@@ -209,7 +210,7 @@ function AgendarCita() {
                   <option value="mediano">Mediano</option>
                   <option value="grande">Grande</option>
                 </select>
-                
+
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -266,7 +267,7 @@ function AgendarCita() {
                     <option key={servicio.id} value={servicio.id}>{servicio.descripcion}</option>
                   ))}
                 </select>
-                
+
                 <input
                   className="p-3 border border-gray-300 rounded w-full mb-2"
                   type="text"
@@ -278,9 +279,9 @@ function AgendarCita() {
                   required
                 />
               </div>
-                
+
               <div className="mb-8 md:mr-8 md:mb-0">
-                
+
                 {fotoUrl && (
                   <img
                     src={fotoUrl}

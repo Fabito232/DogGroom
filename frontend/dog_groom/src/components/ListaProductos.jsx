@@ -31,21 +31,21 @@ const ListaProductos = () => {
 
   const cargarProductos = async () => {
     try {
-        const resProducto = await obtenerProductos();
-        if (resProducto.ok) {
-            const listaProducto = resProducto.data.map(producto => ({
-                id: producto.ID_Producto,
-                nombre: producto.Nombre,
-                marca: producto.Marca,
-                descripcion: producto.Descripcion,
-                cantidad: producto.Cantidad
-            }));
-            setProductos(listaProducto);
-        }
+      const resProducto = await obtenerProductos();
+      if (resProducto.ok) {
+        const listaProducto = resProducto.data.map(producto => ({
+          id: producto.ID_Producto,
+          nombre: producto.Nombre,
+          marca: producto.Marca,
+          descripcion: producto.Descripcion,
+          cantidad: producto.Cantidad
+        }));
+        setProductos(listaProducto);
+      }
     } catch (error) {
-        console.log(error.message);
+      console.log(error.message);
     }
- }; 
+  };
 
   const abrirModal = (modo, producto = null) => {
     setModo(modo);
@@ -172,7 +172,7 @@ const ListaProductos = () => {
               />
             </div>
           </div>
-  
+
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white border border-gray-300">
               <thead>
@@ -210,7 +210,7 @@ const ListaProductos = () => {
               </tbody>
             </table>
           </div>
-  
+
           {/* Paginación */}
           <div className="flex justify-center mt-4">
             <nav>
@@ -218,9 +218,8 @@ const ListaProductos = () => {
                 <li>
                   <button
                     onClick={manejarAnterior}
-                    className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
-                      paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
-                    }`}
+                    className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
+                      }`}
                     disabled={paginaActual === 1}
                   >
                     &laquo;
@@ -230,11 +229,10 @@ const ListaProductos = () => {
                   <li key={numero} className="cursor-pointer mx-1">
                     <button
                       onClick={() => paginar(numero)}
-                      className={`px-3 py-1 ${
-                        paginaActual === numero
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-white text-blue-600'
-                      } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
+                      className={`px-3 py-1 ${paginaActual === numero
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-white text-blue-600'
+                        } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
                     >
                       {numero}
                     </button>
@@ -243,9 +241,8 @@ const ListaProductos = () => {
                 <li>
                   <button
                     onClick={manejarSiguiente}
-                    className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
-                      paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
-                    }`}
+                    className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
+                      }`}
                     disabled={paginaActual === numerosDePagina.length}
                   >
                     &raquo;

@@ -13,31 +13,18 @@ const ListaClientes = () => {
   const navigate = useNavigate();
   const [clienteEditando, setClienteEditando] = useState(null);
   const [isGuardarDisabled, setIsGuardarDisabled] = useState(true);
-  const [terminoBusqueda, setTerminoBusqueda] = useState(""); // Nuevo estado para el término de búsqueda
+  const [terminoBusqueda, setTerminoBusqueda] = useState("");
 
   const cargarClientes = async () => {
     try {
       const resClientes = await obtenerClientes();
-      // const listaClientes = resClientes.data.map(cliente => ({
-      //   id: cliente.Cedula,
-      //   cedula: cliente.Cedula,
-      //   nombre: cliente.Nombre,
-      //   telefono: cliente.Telefono,
-      //   mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '-',
-      //   raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '-',
-      //   image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : imgPerro,
-      //   idMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
-      //   ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '-'
-      // }));
       const listaClientes = resClientes.data.map(cliente => ({
         id: cliente.Cedula,
         cedula: cliente.Cedula,
         nombre: cliente.Nombre,
         telefono: cliente.Telefono,
-        mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0]: '-',
-        
+        mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0] : '-',
       }));
-      console.log(listaClientes);
       setClientes(listaClientes);
     } catch (error) {
       console.log(error);
@@ -53,7 +40,6 @@ const ListaClientes = () => {
   };
 
   const manejarEditar = async (cliente) => {
-    console.log("Cliente editado",cliente)
     setClienteEditando(cliente);
   };
 
@@ -92,16 +78,9 @@ const ListaClientes = () => {
 
   const manejarCambioImagen = (e) => {
     const file = e.target.files[0];
-    console.log("files:" , file)
-    setClienteEditando({ ...clienteEditando, image: file});
-    // if (file) {
-    //   const reader = new FileReader();
-    //   reader.onload = () => {
-    //     setClienteEditando({ ...clienteEditando, image: reader.result });
-    //   };
-    //   reader.readAsDataURL(file);
-    // }
+    setClienteEditando({ ...clienteEditando, image: file });
   };
+
   const manejarEliminar = async (id) => {
     const confirmacion = window.confirm('¿Estás seguro de eliminar este cliente?');
     if (confirmacion) {
@@ -114,7 +93,7 @@ const ListaClientes = () => {
     if (clienteEditando) {
       const { cedula, nombre, telefono, mascota } = clienteEditando;
       setIsGuardarDisabled(!cedula || !nombre || !telefono || !mascota || !mascota.Nombre || !mascota.Raza);
-   
+
     } else {
       setIsGuardarDisabled(true);
     }
@@ -127,7 +106,7 @@ const ListaClientes = () => {
   const clientesFiltrados = clientes.filter(cliente =>
     cliente.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
     cliente.cedula.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-    cliente.mascota.toLowerCase().includes(terminoBusqueda.toLowerCase())
+    (cliente.mascota !== '-' && cliente.mascota.Nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()))
   );
 
   const indiceUltimoCliente = paginaActual * clientesPorPagina;
@@ -228,25 +207,14 @@ const ListaClientes = () => {
                             className="block w-full p-1 border border-gray-300 rounded"
                           />
                         ) : (
-                          <div className="bg-white p-1 rounded flex-grow">{cliente.mascota.Nombre}</div>
+                          <button
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={() => manejarEditar(cliente)}
+                          >
+                            Ver
+                          </button>
                         )}
                       </div>
-                      <div className="flex items-center mb-2">
-                        <div className="font-bold mr-2">Raza:</div>
-                        {clienteEditando && clienteEditando.id === cliente.id ? (
-                          <input
-                            type="text"
-                            name="raza"
-                            value={clienteEditando.mascota.Raza}
-                            onChange={manejarCambioEntradaEdicion}
-                            className="block w-full p-1 border border-gray-300 rounded"
-                          />
-                        ) : (
-                          <div className="bg-white p-1 rounded flex-grow">{cliente.mascota.Raza}</div>
-                        )}
-                      </div>
-                      
-                      
                     </div>
                     <div className="flex justify-between space-x-4 mt-4">
                       {clienteEditando && clienteEditando.id === cliente.id ? (

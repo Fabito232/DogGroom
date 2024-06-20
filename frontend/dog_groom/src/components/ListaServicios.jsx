@@ -36,7 +36,7 @@ const ListaServicios = () => {
     try {
       const resServicio = await obtenerServicios();
       const resTipoAnimal = await obtenerTipoMascotas();
-    
+
       if (resServicio.ok) {
         const ListaServicios = resServicio.data.map(servicio => ({
           id: servicio.ID_Servicio,
@@ -51,7 +51,7 @@ const ListaServicios = () => {
         console.log(resServicio);
       }
 
-      if(resTipoAnimal.ok){  
+      if (resTipoAnimal.ok) {
         setTiposMascota(resTipoAnimal.data)
       }
     } catch (error) {
@@ -72,22 +72,22 @@ const ListaServicios = () => {
   const agregarServicio = async (servicio) => {
     try {
 
-        console.log("antes",servicio)
-        const nuevoServicio = {
-            descripcion: servicio.descripcion,
-            precio: servicio.precio,
-            ID_TipoMascota: servicio.tipoMascota.ID_TipoMascota
-        }
-        console.log("despues",nuevoServicio)
+      console.log("antes", servicio)
+      const nuevoServicio = {
+        descripcion: servicio.descripcion,
+        precio: servicio.precio,
+        ID_TipoMascota: servicio.tipoMascota.ID_TipoMascota
+      }
+      console.log("despues", nuevoServicio)
       const resServicio = await crearServicio(nuevoServicio);
-      
+
       if (resServicio.ok) {
         console.log(resServicio)
         const nuevoServicio = {
           id: resServicio.data.ID_Servicio,
           ...servicio,
         };
-        console.log("sss",nuevoServicio)
+        console.log("sss", nuevoServicio)
         setServicios([...servicios, nuevoServicio]);
         setModalIsOpen(false);
         notificarExito(resServicio.message)
@@ -169,123 +169,120 @@ const ListaServicios = () => {
 
   return (
     <>
-    <Header></Header>
-    <div className='md:container md:mx-auto p-5'>
-    <div className="p-6 bg-gray-100 container">
-      <h1 className="text-3xl font-bold mb-4">Servicios de La Bandada </h1>
-      <div className='flex justify-between mb-4'>
-        <div>
-          <input
-            type="text"
-            placeholder="Buscar servicio..."
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            value={buscarPalabra}
-            onChange={(e) => setBuscarPalabra(e.target.value)}
-          />
-        </div>
-        <div>
-          <button
-            onClick={() => abrirModal('agregar')}
-            className="mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            Agregar Servicio
-          </button>
-          <AgregarServicio
-            isOpen={modalIsOpen}
-            cerrar={cerrarModal}
-            agregarServicio={agregarServicio}
-            editarServicio={editarServicio}
-            servicio={servicioActual}
-            modo={modo}
-            tiposMascota={tiposMascota}
-          />
-        </div>
-      </div>
+      <Header></Header>
+      <div className='md:container md:mx-auto p-5'>
+        <div className="p-6 bg-gray-100 container">
+          <h1 className="text-3xl font-bold mb-4">Servicios de La Bandada </h1>
+          <div className='flex justify-between mb-4'>
+            <div>
+              <input
+                type="text"
+                placeholder="Buscar servicio..."
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                value={buscarPalabra}
+                onChange={(e) => setBuscarPalabra(e.target.value)}
+              />
+            </div>
+            <div>
+              <button
+                onClick={() => abrirModal('agregar')}
+                className="mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Agregar Servicio
+              </button>
+              <AgregarServicio
+                isOpen={modalIsOpen}
+                cerrar={cerrarModal}
+                agregarServicio={agregarServicio}
+                editarServicio={editarServicio}
+                servicio={servicioActual}
+                modo={modo}
+                tiposMascota={tiposMascota}
+              />
+            </div>
+          </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Animal</th>              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {serviciosActuales.map((servicio) => (
-              <tr key={servicio.id} className="border-b border-gray-300">
-                <td className="px-6 py-4 whitespace-nowrap">{servicio.descripcion}</td>
-                <td className="px-6 py-4 whitespace-nowrap">${servicio.precio}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{servicio.tipoMascota.Descripcion}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead>
+                <tr className="bg-gray-100 border-b border-gray-300">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Animal</th>              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {serviciosActuales.map((servicio) => (
+                  <tr key={servicio.id} className="border-b border-gray-300">
+                    <td className="px-6 py-4 whitespace-nowrap">{servicio.descripcion}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">${servicio.precio}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{servicio.tipoMascota.Descripcion}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        className="px-3 py-1 bg-red-600 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
+                        onClick={() => eliminarGasto(servicio.id)}
+                      >
+                        Eliminar
+                      </button>
+                      <button
+                        className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+                        onClick={() => abrirModal('editar', servicio)}
+                      >
+                        Editar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* Paginación */}
+          <div className="flex justify-center mt-4">
+            <nav>
+              <ul className="flex items-center">
+                <li>
                   <button
-                    className="px-3 py-1 bg-red-600 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
-                    onClick={() => eliminarGasto(servicio.id)}
+                    onClick={manejarAnterior}
+                    className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
+                      }`}
+                    disabled={paginaActual === 1}
                   >
-                    Eliminar
+                    &laquo;
                   </button>
+                </li>
+                {paginasVisibles.map((numero) => (
+                  <li key={numero} className="cursor-pointer mx-1">
+                    <button
+                      onClick={() => paginar(numero)}
+                      className={`px-3 py-1 ${paginaActual === numero
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-white text-blue-600'
+                        } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
+                    >
+                      {numero}
+                    </button>
+                  </li>
+                ))}
+                <li>
                   <button
-                    className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
-                    onClick={() => abrirModal('editar', servicio)}
+                    onClick={manejarSiguiente}
+                    className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
+                      }`}
+                    disabled={paginaActual === numerosDePagina.length}
                   >
-                    Editar
+                    &raquo;
                   </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
       </div>
-      {/* Paginación */}
-      <div className="flex justify-center mt-4">
-        <nav>
-          <ul className="flex items-center">
-            <li>
-              <button
-                onClick={manejarAnterior}
-                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
-                  paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
-                }`}
-                disabled={paginaActual === 1}
-              >
-                &laquo;
-              </button>
-            </li>
-            {paginasVisibles.map((numero) => (
-              <li key={numero} className="cursor-pointer mx-1">
-                <button
-                  onClick={() => paginar(numero)}
-                  className={`px-3 py-1 ${
-                    paginaActual === numero
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-blue-600'
-                  } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
-                >
-                  {numero}
-                </button>
-              </li>
-            ))}
-            <li>
-              <button
-                onClick={manejarSiguiente}
-                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
-                  paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
-                }`}
-                disabled={paginaActual === numerosDePagina.length}
-              >
-                &raquo;
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </div>
-    </div>
     </>
   );
 };
 
-ListaServicios.propTypes ={
+ListaServicios.propTypes = {
   actualizarFinanzasAnuales: PropTypes.func
 }
 

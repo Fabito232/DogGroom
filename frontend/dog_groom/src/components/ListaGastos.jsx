@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { useConfirm } from './ModalConfirmacion';
 import { notificarError, notificarExito } from '../utilis/notificaciones';
 
-const ListaGastos = ({actualizarFinanzasAnuales}) => {
+const ListaGastos = ({ actualizarFinanzasAnuales }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [gastos, setGastos] = useState([]);
   const [buscarPalabra, setBuscarPalabra] = useState('');
@@ -218,9 +218,8 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
             <li>
               <button
                 onClick={manejarAnterior}
-                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
-                  paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
-                }`}
+                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
+                  }`}
                 disabled={paginaActual === 1}
               >
                 &laquo;
@@ -230,11 +229,10 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
               <li key={numero} className="cursor-pointer mx-1">
                 <button
                   onClick={() => paginar(numero)}
-                  className={`px-3 py-1 ${
-                    paginaActual === numero
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-blue-600'
-                  } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
+                  className={`px-3 py-1 ${paginaActual === numero
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-blue-600'
+                    } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
                 >
                   {numero}
                 </button>
@@ -243,9 +241,8 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
             <li>
               <button
                 onClick={manejarSiguiente}
-                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
-                  paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
-                }`}
+                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
+                  }`}
                 disabled={paginaActual === numerosDePagina.length}
               >
                 &raquo;
@@ -258,7 +255,7 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
   );
 };
 
-ListaGastos.propTypes ={
+ListaGastos.propTypes = {
   actualizarFinanzasAnuales: PropTypes.func
 }
 
