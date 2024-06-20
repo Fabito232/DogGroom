@@ -9,6 +9,7 @@ import Empleado from "../models/empleadoModel.js";
 import Producto from "../models/productoModel.js";
 import Gasto from "../models/gastosModel.js";
 
+
 async function Sync () {
     try {
         //await sequelize.sync(); // Esto crea la tabla si no existe (y no hace nada si ya existe)

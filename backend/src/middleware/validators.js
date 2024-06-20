@@ -49,6 +49,8 @@ const citaSchema = Joi.object({
     descripcion: Joi.string().allow('', null).optional(),
     estado:  Joi.boolean().required(),
     montoTotal: Joi.number().precision(2).positive().required(),
+    montoAdicional: Joi.number().precision(2).min(0).required(),
+    ID_Servicio: Joi.number().precision(2).positive().required()
 
     
 

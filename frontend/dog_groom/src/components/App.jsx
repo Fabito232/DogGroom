@@ -13,6 +13,10 @@ import Finanzas from './Finanzas';
 import ResumenCita from './resumenCita';
 import { ConfirmProvider } from './ModalConfirmacion';
 import ListaServicios from './ListaServicios';
+
+//import { ConfirmProvider } from './ModalConfirmacion';
+
+
 const App = () => {
   
   return (

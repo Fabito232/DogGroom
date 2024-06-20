@@ -1,6 +1,13 @@
 import  Cliente  from "../models/clienteModel.js"
-import Mascota from "../models/mascotaModel.js"
+import Mascota from "../models/mascotaModel.js";
 import TipoMascota from "../models/tipoMascota.js";
+import fs from 'fs';
+import sequelize from "../database/database.js";
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export const createCliente = async (req, res) => {
 
@@ -149,9 +156,15 @@ export const getListCliente = async (req, res) => {
         const id = req.params.id
         const cliente = await Cliente.findAll(
             {
-                include: [
+                include:[
                     {
-                        model: Mascota
+                        model: Mascota,
+                        include:[
+                            {
+                                model: TipoMascota,
+
+                            }
+                        ]
                     }
                 ]
         
@@ -175,7 +188,7 @@ export const getListCliente = async (req, res) => {
 export const deleteCliente = async (req, res) => {
     try {
         const id = req.params.id
-        console.log(id)
+
         const mascotas = await Mascota.findAll(
             {
                 where: {
@@ -193,7 +206,7 @@ export const deleteCliente = async (req, res) => {
             });
           });
 
-        //console.log("URLS",fotosURL)
+        console.log("URLS",fotosURL)
         const cliente = await Cliente.destroy({
             where:{
                 Cedula: id

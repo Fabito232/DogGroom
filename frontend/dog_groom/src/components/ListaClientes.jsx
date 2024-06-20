@@ -3,16 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import imgPerro from '../assets/img_perro.jpg';
 import Header from "./Header";
 import { obtenerClientes, actualizarCliente, borrarCliente } from '../services/clienteService';
-import { obtenerMascotas, actualizarMascota, borrarMascota } from '../services/mascotaService';
+import { actualizarMascota } from '../services/mascotaService';
 import { URL_Hosting } from '../services/api';
 
 const ListaClientes = () => {
   const [clientes, setClientes] = useState([]);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [clientesPorPagina] = useState(8);
+  const navigate = useNavigate();
+  const [clienteEditando, setClienteEditando] = useState(null);
+  const [isGuardarDisabled, setIsGuardarDisabled] = useState(true);
+  const [terminoBusqueda, setTerminoBusqueda] = useState(""); // Nuevo estado para el término de búsqueda
 
-  const cargarClientes = async () =>{
-      try {
+  const cargarClientes = async () => {
+    try {
       const resClientes = await obtenerClientes();
-        console.log(resClientes)
       const listaClientes = resClientes.data.map(cliente => ({
         id: cliente.Cedula,
         cedula: cliente.Cedula,
@@ -20,24 +25,19 @@ const ListaClientes = () => {
         telefono: cliente.Telefono,
         mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '-',
         raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '-',
-        image:  cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : '-',
-        idMascota:cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
+        image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : imgPerro,
+        idMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
         ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '-'
-      }))
-      setClientes(listaClientes)
-      console.log(listaClientes)
-      } catch (error) {
-      console.log(error)
-      }
-  }
+      }));
+      setClientes(listaClientes);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  useEffect(  () => {
-    cargarClientes()
-  }, [])
-
-  const navigate = useNavigate();
-  const [clienteEditando, setClienteEditando] = useState(null);
-  const [isGuardarDisabled, setIsGuardarDisabled] = useState(true);
+  useEffect(() => {
+    cargarClientes();
+  }, []);
 
   const manejarAgregar = () => {
     navigate('/agregarCliente');
@@ -49,31 +49,26 @@ const ListaClientes = () => {
   };
 
   const manejarGuardar = async () => {
-    console.log("editar:" + clienteEditando.ID_TipoMascota)
     const cliente = {
       cedula: clienteEditando.cedula,
       nombre: clienteEditando.nombre,
       telefono: clienteEditando.telefono
-    }
+    };
     const mascota = {
-        nombre: clienteEditando.mascota,
-        raza: clienteEditando.raza,
-        image: clienteEditando.image,
-        cedula: clienteEditando.cedula,
-        ID_TipoMascota: clienteEditando.ID_TipoMascota
-    }
+      nombre: clienteEditando.mascota,
+      raza: clienteEditando.raza,
+      image: clienteEditando.image,
+      cedula: clienteEditando.cedula,
+      ID_TipoMascota: clienteEditando.ID_TipoMascota
+    };
 
     const resCliente = await actualizarCliente(cliente, clienteEditando.id);
-    console.log(resCliente)
-    if(resCliente.ok){
-      console.log(clienteEditando.image)
-      const resMascota = await actualizarMascota(mascota, clienteEditando.idMascota);
-      console.log(resMascota)
+    if (resCliente.ok) {
+      await actualizarMascota(mascota, clienteEditando.idMascota);
     }
-  
 
     if (isGuardarDisabled) return;
-    setClientes(clientes.map(cliente => cliente.id === clienteEditando.id ? clienteEditando : cliente));
+    setClientes(clientes.map(c => c.id === clienteEditando.id ? clienteEditando : c));
     setClienteEditando(null);
   };
 
@@ -98,12 +93,10 @@ const ListaClientes = () => {
     //   reader.readAsDataURL(file);
     // }
   };
-
   const manejarEliminar = async (id) => {
     const confirmacion = window.confirm('¿Estás seguro de eliminar este cliente?');
     if (confirmacion) {
-      const resCliente = await borrarCliente(id)
-      console.log(resCliente)
+      await borrarCliente(id);
       setClientes(clientes.filter(cliente => cliente.id !== id));
     }
   };
@@ -117,24 +110,47 @@ const ListaClientes = () => {
     }
   }, [clienteEditando]);
 
+  const manejarCambioBusqueda = (e) => {
+    setTerminoBusqueda(e.target.value);
+  };
+
+  const clientesFiltrados = clientes.filter(cliente =>
+    cliente.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
+    cliente.cedula.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
+    cliente.mascota.toLowerCase().includes(terminoBusqueda.toLowerCase())
+  );
+
+  const indiceUltimoCliente = paginaActual * clientesPorPagina;
+  const indicePrimerCliente = indiceUltimoCliente - clientesPorPagina;
+  const clientesActuales = clientesFiltrados.slice(indicePrimerCliente, indiceUltimoCliente);
+
+  const totalPaginas = Math.ceil(clientesFiltrados.length / clientesPorPagina);
+
   return (
     <div className="relative min-h-screen flex flex-col bg-fondo2 bg-cover">
       <Header />
-      <div className="flex-grow flex items-start justify-start p-12">
+      <div className="flex-grow flex items-start justify-start p-4 md:p-12">
         <div className="shadow-lg w-full md:w-200 md:h-auto">
-          <div className="shadow-md p-16 mb-8 overflow-auto max-h-[790px]" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
-            <div className="flex items-center justify-between mb-4">
-              <h1 className="bg-gray-300 rounded-lg text-6xl font-bold flex-1 text-center">Lista de Clientes</h1>
-              <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-4 px-12 rounded ml-8" onClick={manejarAgregar}>Agregar</button>
+          <div className="shadow-md p-4 md:p-16 mb-8 overflow-auto max-h-[790px]" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
+            <div className="flex flex-col md:flex-row items-center justify-between mb-4">
+              <h1 className="bg-gray-300 rounded-lg text-3xl md:text-6xl font-bold flex-1 text-center mb-4 md:mb-0">Lista de Clientes</h1>
+              <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 md:py-4 px-6 md:px-12 rounded ml-8" onClick={manejarAgregar}>Agregar</button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 gap-4">
-              {clientes.map(cliente => (
-                <div key={cliente.id} className="flex bg-amber-700 bg-opacity-90 border border-black w-full">
-                  <div className="p-4 w-64 relative">
+            <input
+              type="text"
+              placeholder="Buscar por Nombre de Cliente, Cédula o Nombre de la Mascota"
+              value={terminoBusqueda}
+              onChange={manejarCambioBusqueda}
+              className="mb-4 p-2 border border-gray-300 rounded w-full"
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {clientesActuales.map(cliente => (
+                <div key={cliente.id} className="flex flex-col bg-amber-700 bg-opacity-90 border border-black w-full">
+                  <div className="relative p-4 w-full flex justify-center">
                     <img
-                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image :URL_Hosting + cliente.image || imgPerro}
+                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.image : URL_Hosting + cliente.image || imgPerro}
                       alt={cliente.nombre}
-                      className="h-full w-full object-cover rounded-lg cursor-pointer"
+                      className="h-32 w-32 md:h-48 md:w-48 object-cover rounded-lg cursor-pointer"
                       onClick={() => document.getElementById(`fileInput-${cliente.id}`).click()}
                     />
                     {clienteEditando && clienteEditando.id === cliente.id && (
@@ -219,6 +235,22 @@ const ListaClientes = () => {
                           <div className="bg-white p-1 rounded flex-grow">{cliente.raza}</div>
                         )}
                       </div>
+                      <div className="flex items-center mb-2">
+                        <div className="font-bold mr-2">Tamaño:</div>
+                        {clienteEditando && clienteEditando.id === cliente.id ? (
+                          <input
+                            type="text"
+                            name="tamaño"
+                            value={clienteEditando.ID_TipoMascota}
+                            onChange={manejarCambioEntradaEdicion}
+                            className="block w-full p-1 border border-gray-300 rounded"
+                          />
+                        ) : (
+                          <div className="bg-white p-1 rounded flex-grow">{cliente.raza}</div>
+                        )}
+                      </div>
+                      
+                      
                     </div>
                     <div className="flex justify-between space-x-4 mt-4">
                       {clienteEditando && clienteEditando.id === cliente.id ? (
@@ -237,6 +269,22 @@ const ListaClientes = () => {
                 </div>
               ))}
             </div>
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => setPaginaActual(paginaActual - 1)}
+                disabled={paginaActual === 1}
+                className="mx-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 text-black rounded disabled:opacity-50"
+              >
+                Anterior
+              </button>
+              <button
+                onClick={() => setPaginaActual(paginaActual + 1)}
+                disabled={paginaActual === totalPaginas}
+                className="mx-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 text-black rounded disabled:opacity-50"
+              >
+                Siguiente
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -245,4 +293,3 @@ const ListaClientes = () => {
 };
 
 export default ListaClientes;
-

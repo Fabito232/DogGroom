@@ -1,20 +1,21 @@
-import CitaDetalle from '../models/citaDetalleModel.js';
 import Cita from '../models/citaModel.js'
 import Cliente from '../models/clienteModel.js';
 import Mascota from '../models/mascotaModel.js';
 import Servicio from '../models/servicioModel.js';
 import TipoMascota from '../models/tipoMascota.js';
-//import Cliente from '../controllers/clienteController.js'
 
 export const createCita = async (req, res) => {
+    const {fechaYHora, descripcion, estado, montoTotal, cedula, ID_Servicio, montoAdicional } = req.body;
 
     try {
         const cita = await Cita.create({
-            FechaYHora: req.body.fechaYHora,
-            Descripcion: req.body.descripcion,
-            Estado: req.body.estado,
-            MontoTotal: req.body.montoTotal,
-            ID_Cliente: req.body.cedula
+            FechaYHora: fechaYHora,
+            Descripcion: descripcion,
+            Estado: estado,
+            MontoAdicional: montoAdicional,
+            MontoTotal: montoTotal,
+            ID_Cliente: cedula,
+            ID_Servicio: ID_Servicio
         });
         return res.json({
             ok: true,
@@ -41,7 +42,18 @@ export const getCita = async (id) => {
                     model: Cliente, 
                     include: [
                         {
-                            model: Mascota
+                            model: Mascota,
+                           /* include: [
+                                {
+                                    model: TipoMascota,
+                                    include: [
+                                        {
+                                            model: Servicio
+                                        }
+                                        
+                                    ]
+                                }
+                            ]*/
                         }
                     ]
                 }
@@ -80,14 +92,13 @@ export const getListCita = async (req, res) => {
                     include: [{
                         model: Mascota,
                         include: [{
-                            model: TipoMascota,
-                            include: [{
-                                model:Servicio
-                            }]
+                            model: TipoMascota, 
                         }]
                     }]
                 },
-
+                {
+                    model: Servicio
+                }
             ]
         });
         return res.json({
@@ -134,13 +145,16 @@ export const updateCita = async (req, res) => {
     
     try {
         const id = req.params.id
+        const { fechaYHora, descripcion, estado, montoTotal, cedula, ID_Servicio, montoAdicional } = req.body;
         const [filasActualizadas]  = await Cita.update(
             {
-                FechaYHora: req.body.fechaYHora,
-                Descripcion: req.body.descripcion,
-                Estado: req.body.estado,
-                MontoTotal: req.body.montoTotal,
-                ID_Cliente: req.body.cedula
+                FechaYHora: fechaYHora,
+                Descripcion: descripcion,
+                Estado: estado,
+                MontoAdicional: montoAdicional,
+                MontoTotal: montoTotal,
+                ID_Cliente: cedula,
+                ID_Servicio: ID_Servicio,
             },
             {
                 where:{
@@ -161,6 +175,7 @@ export const updateCita = async (req, res) => {
                 });
             }
     } catch (error) {
+        console.log(error)
         return res.json({
             ok: false,
             status: 500,
@@ -173,15 +188,17 @@ export const updateCita = async (req, res) => {
 export const obtenerTodasCitas = async(req, res) => {
 
     try{
-       
+        const {fechaYHora, descripcion, estado, montoTotal, cedula, ID_Servicio, montoAdicional } = req.body;
         const allCita = await Cita.findAll(
             {
-            
                 include: [
                 {
                     model: Cliente,
                     include: [{
-                        model: Mascota
+                        model: Mascota,
+                        include:[{
+                           model: TipoMascota
+                        }]
                     }]
                 }],
            }

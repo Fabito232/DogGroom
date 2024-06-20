@@ -1,6 +1,7 @@
 import sequelize from "../database/database.js";
 import { DataTypes, Model } from "sequelize";
 import Cliente from "./clienteModel.js";
+import Servicio from "./servicioModel.js";
 
 class Cita extends Model {}
 
@@ -23,9 +24,13 @@ Cita.init({
         type: DataTypes.BOOLEAN,
         allowNull: false
     },
+    MontoAdicional: {
+        type: DataTypes.DECIMAL,
+        allowNull: true
+    },
     MontoTotal: {
         type: DataTypes.DECIMAL,
-        allowNull: false
+        allowNull: true
     },
     ID_Cliente: {
         type: DataTypes.STRING,
@@ -34,15 +39,27 @@ Cita.init({
             model: Cliente,
             key: 'Cedula'
         }
-    }
+    },
+    ID_Servicio: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Servicio,
+            key: 'ID_Servicio'
+        }
+    },
     
 }, {
     sequelize,
     freezeTableName: true,
-
+    createdAt: false,
+    updatedAt: false
 });
 
 Cliente.hasMany(Cita, {foreignKey: 'ID_Cliente', as: 'cliente'});
 Cita.belongsTo(Cliente,{foreignKey: 'ID_Cliente'});
+
+Servicio.hasMany(Cita, {foreignKey: 'ID_Servicio'});
+Cita.belongsTo(Servicio,{foreignKey: 'ID_Servicio'});
 
 export default Cita;
