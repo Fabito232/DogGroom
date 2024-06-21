@@ -6,6 +6,8 @@ import { crearCita } from '../services/citaServices';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { obtenerServicios } from '../services/paqueteServices';
+import imgPerro from '../assets/img_perro.jpg';
+import { URL_Hosting } from '../services/api';
 //import ListaServicios from './ListaServicios';
 
 
@@ -29,6 +31,8 @@ function AgendarCita() {
   const [fotoUrl, setFotoUrl] = useState('');
 
   const [fechaYHora, setFechaYHora] = useState('');
+  const [fecha, setFecha] = useState(' ');
+  const [hora, setHora] = useState('');
   const [estado, setEstado] = useState('');
   const [montoTotal, setMontoTotal] = useState('');
   const [montoAdicional, setMontoAdicional]=useState('');
@@ -52,12 +56,13 @@ function AgendarCita() {
           mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '',
           raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '',
           tamano: cliente.Mascota.length > 0 ? cliente.Mascota[0].TipoMascotum.Descripcion : '',
-          image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : '',
+          image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : imgPerro,
           ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '',
           
 
         }));
         setClientes(listaClientes);
+        console.log(listaClientes)
         
       } catch (error) {
         console.log(error);
@@ -87,7 +92,8 @@ function AgendarCita() {
 
   const handleAgendaCita = async (e) => {
     e.preventDefault();
-  
+    
+    const fechaYHora = `${fecha}T${hora}`;
     const cita = {
       fechaYHora: fechaYHora,
       estado: estado,
@@ -131,6 +137,17 @@ function AgendarCita() {
       setFotoUrl(URL.createObjectURL(file));
     }
   };
+
+  const generateTimeOptions = () => {
+    const times = [];
+    for (let h = 8; h < 18; h++) {
+      times.push(`${String(h).padStart(2, '0')}:00`);
+      times.push(`${String(h).padStart(2, '0')}:30`);
+    }
+    return times;
+  };
+
+ 
 
   return (
     <div className="relative min-h-screen flex flex-col bg-primary bg-opacity-80 bg-fondo1 bg-cover">
@@ -226,16 +243,32 @@ function AgendarCita() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <input
+              <input
                   className="p-3 border border-gray-300 rounded w-full mb-2"
-                  type="datetime-local"
-                  id="fechaYHora"
-                  name="fechaYHora"
-                 
-                  value={fechaYHora}
-                  onChange={(e) => setFechaYHora(e.target.value)}
+                  type="date"
+                  id="fecha"
+                  name="fecha"
+                  value={fecha}
+                  onChange={(e) => setFecha(e.target.value)}
                   required
                 />
+                <select
+                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                  id="hora"
+                  name="hora"
+                  value={hora}
+                  onChange={(e) => setHora(e.target.value)}
+                  required
+                >
+                  <option value="" disabled>
+                    Selecciona la hora
+                  </option>
+                  {generateTimeOptions().map((time, index) => (
+                    <option key={index} value={time}>
+                      {time}
+                    </option>
+                  ))}
+                </select>
                   <input
                     className="p-3 border border-gray-300 rounded w-full mb-2"
                     type="text"
@@ -267,7 +300,7 @@ function AgendarCita() {
                     Estado
                   </option>
                   <option value="true">En proceso</option>
-                  <option value="false">Finalizar</option>
+                  <option value="false">Finalizadar</option>
                   
                 </select>                
                 <input
@@ -296,7 +329,7 @@ function AgendarCita() {
                 
                 {fotoUrl && (
                   <img
-                    src={fotoUrl}
+                    src={URL_Hosting + fotoUrl || imgPerro}
                     alt="Mascota"
                     className="w-48 h-48 object-cover rounded-md mt-4"
                   />

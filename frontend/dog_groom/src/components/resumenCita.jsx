@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { borrarCita, actualizarCita } from '../services/citaServices'; // Asegúrate de ajustar la ruta correcta
+import { notificarError, notificarExito} from '../utilis/notificaciones';
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
+import dayjs from 'dayjs';
+import { URL_Hosting } from '../services/api';
 
 function formatFechaHora(fechaHora) {
-    const fecha = new Date(fechaHora);
-    const dia = fecha.getDate().toString().padStart(2, '0');
-    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-    const anio = fecha.getFullYear();
-    const horas = fecha.getHours().toString().padStart(2, '0');
-    const minutos = fecha.getMinutes().toString().padStart(2, '0');
-    return `${dia}/${mes}/${anio} - ${horas}:${minutos}`;
-  }
+  const fecha = dayjs(fechaHora).format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
+  return fecha;
+}
 function ResumenCita() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -26,44 +26,67 @@ function ResumenCita() {
   const {
     id,
     start,
-    end,
     cedula,
-    title,
     descripcion,
     estado,
     montoTotal,
     montoAdicional,
     cliente,
     servicio
+    
   } = cita;
-  console.log("Ayuda",cita)
+  console.log("KAKSLAS",estado);
+  
   const total = parseFloat(montoTotal) + parseFloat(montoAdicional);
 
   const manejarEditar = () => {
     setEditando(true);
+    const estadoBool = estado.toLowerCase() === "True"; // Convierte "True" a true, "False" a false+
+    console.log("Hola", estadoBool)
     setCitaEditada({
-      //id,
-      fechaYHora: start,
+      fechaYHora: formatFechaHora(start),
       cedula,
       descripcion,
-      estado,
+      estado,//: estadoBool, // Asigna el valor booleano aquí
       montoTotal,
       montoAdicional,
       Cedula: cliente.Cedula,
       ID_Servicio: servicio.id_servicio
     });
   };
+
  
+
+  /*const manejarGuardar = async () => {
+    try {
+      const fechaHoraISO = dayjs(citaEditada.fechaYHora).toISOString();
+
+      
+      await actualizarCita({ ...citaEditada, fechaYHora: fechaHoraISO }, id);
+      setEditando(false);
+      notificarExito('Se edito la cita');
+      navigate('/citas', { state: { actualizar: true } });
+    } catch (error) {
+      notificarError(error);
+      console.error('Error al actualizar la cita:', error);
+    }
+  };*/
 
   const manejarGuardar = async () => {
     try {
-      await actualizarCita(citaEditada, id); // Llamada a la función de actualización con el ID de la cita
+      const fechaHoraISO = dayjs(citaEditada.fechaYHora).toISOString();
+      const estadoString = citaEditada.estado ? "True" : "False"; // Convertir de nuevo a string según sea necesario
+  
+      await actualizarCita({ ...citaEditada, estado: estadoString, fechaYHora: fechaHoraISO }, id);
       setEditando(false);
+      notificarExito('Se editó la cita');
       navigate('/citas', { state: { actualizar: true } });
     } catch (error) {
+      notificarError(error);
       console.error('Error al actualizar la cita:', error);
     }
   };
+  
  
 
   const manejarCancelar = () => {
@@ -72,18 +95,48 @@ function ResumenCita() {
   };
 
   const manejarEliminar = async () => {
-    const confirmacion = window.confirm('¿Estás seguro de eliminar esta cita?');
-    if (confirmacion) {
+    const resultado = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás revertir esta acción!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar!',
+      cancelButtonText: 'Cancelar'
+    });
+  
+    if (resultado.isConfirmed) {
       try {
-        await borrarCita(id); // Llamada a la función de eliminación con el ID de la cita
+        await borrarCita(id);
+        toast.success('Se eliminó la cita', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         navigate('/citas', { state: { actualizar: true } });
       } catch (error) {
+        toast.error(`Error al eliminar la cita: ${error.message}`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         console.error('Error al eliminar la cita:', error);
       }
     }
   };
+  
   const manejarSalir = () => {
     navigate('/citas');
+    
   };
 
   return (
@@ -97,12 +150,13 @@ function ResumenCita() {
             type="text"
             readOnly={!editando}
             className="p-3 border border-gray-300 rounded w-80"
-            value={editando ? citaEditada.fechaYHora : formatFechaHora(start)}
-            onChange={(e) => setCitaEditada({ ...citaEditada, fechaYHora: e.target.value })}
+            value={editando ? new Date(citaEditada.fechaYHora).toString() : formatFechaHora(start)}
+            onChange={(e) => setCitaEditada({ ...citaEditada, fechaYHora: new Date(e.target.value).toISOString() })}
+
           />
           {cliente.mascotas[0].fotoURL && (
             <img
-              src={cliente.mascotas[0].fotoURL}
+              src={URL_Hosting + cliente.mascotas[0].fotoURL}
               alt="Mascota"
               className="w-48 h-48 object-cover rounded-md"
             />
@@ -199,17 +253,19 @@ function ResumenCita() {
             <div className="text-right">
               <label className="block text-gray-900 text-sm font-bold mb-2">Estado:</label>
               <select
-                className="p-3 border border-gray-300 rounded w-64"
-                readOnly={!editando}
-                disabled={!editando}
-                value={editando ? citaEditada.estado : estado}
-                onChange={(e) => setCitaEditada({ ...citaEditada, estado: e.target.value })}
-                
-              >
-                <option value=""disabled>Seleccionar</option>
-                <option value="True">En proceso</option>
-                <option value="False">Finalizado</option>
-              </select>
+                  className="p-3 border border-gray-300 rounded w-64"
+                  readOnly={!editando}
+                  disabled={!editando}
+                  value={editando ? (citaEditada.estado ? "True" : "False") : (estado ? "True" : "False")}
+                  onChange={(e) => setCitaEditada({ ...citaEditada, estado: e.target.value === "True" })}
+                >
+                  <option value="" disabled>Seleccionar</option>
+                  <option value="True">En proceso</option>
+                  <option value="False">Finalizado</option>
+                  
+                </select>
+
+
 
               
               <label className="block text-gray-900 text-sm font-bold mb-2">Monto Adicional:</label>

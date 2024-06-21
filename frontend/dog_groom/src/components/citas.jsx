@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const localizer = dayjsLocalizer(dayjs);
+dayjs.locale('es');
 
 function Citas() {
   const [events, setEvents] = useState([]);
@@ -91,10 +92,10 @@ function Citas() {
 
   const eventStyleGetter = (event) => {
     let style = {
-      backgroundColor: event.estado === 'En proceso' ? 'blue' : 'gray',
+      backgroundColor: event.estado === 'En proceso' ? '#22c55e' : '#a1a1aa',
       color: 'white',
-      borderRadius: '0px',
-      border: 'none'
+      borderRadius: '5px',
+      borderColor: 'black solid'
     };
     return {
       style: style

@@ -197,7 +197,8 @@ export const obtenerTodasCitas = async(req, res) => {
                     include: [{
                         model: Mascota,
                         include:[{
-                           model: TipoMascota
+                           model: TipoMascota,
+                            as: 'TipoMascota'   
                         }]
                     }]
                 }],
