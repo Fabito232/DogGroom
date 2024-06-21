@@ -146,8 +146,8 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
   const paginasVisibles = obtenerPaginasVisibles();
 
   return (
-    <div className="p-6 bg-gray-100 container">
-      <h1 className="text-3xl font-bold mb-4">Control de Gastos La Bandada {new Date().getFullYear()}</h1>
+    <div className="p-6 bg-amber-800 bg-opacity-90 container rounded-lg">
+      <h1 className="text-3xl font-bold mb-4 text-center">Control de Gastos La Bandada {new Date().getFullYear()}</h1>
       <div className='flex justify-between mb-4'>
         <div>
           <input
@@ -179,11 +179,11 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
-            <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+            <tr className="bg-lime-700 border-b border-gray-300 text-lg">
+              <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Descripción</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Monto</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Fecha</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -192,15 +192,15 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
                 <td className="px-6 py-4 whitespace-nowrap">{gasto.descripcion}</td>
                 <td className="px-6 py-4 whitespace-nowrap">${gasto.monto}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{gasto.fecha}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 whitespace-nowrap flex justify-center items-center space-x-2">
                   <button
-                    className="px-3 py-1 bg-red-600 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
+                    className="px-3 py-1 w-24 bg-red-600 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
                     onClick={() => eliminarGasto(gasto.id)}
                   >
                     Eliminar
                   </button>
                   <button
-                    className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+                    className="px-3 py-1 w-24 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
                     onClick={() => abrirModal('editar', gasto)}
                   >
                     Editar

@@ -221,7 +221,7 @@ const ListaProductos = () => {
                     <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Marca</th>
                     <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Cantidad</th>
                     <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Descripción</th>
-                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Acciones</th>
+                    <th className="px-6 py-3 text-center text-base font-medium text-black uppercase tracking-wider">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -231,12 +231,12 @@ const ListaProductos = () => {
                       <td className="px-6 py-4 whitespace-nowrap">{producto.marca}</td>
                       <td className="px-6 py-4 whitespace-nowrap">{producto.cantidad}</td>
                       <td className="px-6 py-4 whitespace-nowrap">{producto.descripcion}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap flex justify-center items-center space-x-2">
                         <button
-                          className="px-3 py-1 bg-red-600 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
+                          className="px-3 py-1 bg-red-600 w-24 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
                           onClick={() => eliminarProducto(producto.id)}>Eliminar </button>
                         <button
-                          className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+                          className="px-3 py-1 bg-blue-600 w-24 text-white rounded-md hover:bg-blue-700 focus:outline-none"
                           onClick={() => abrirModal('editar', producto)}>Editar</button>
                       </td>
                     </tr>
