@@ -6,7 +6,7 @@ import { actualizarMascota, borrarMascota } from '../services/mascotaService';
 const ModalMascotas = ({ mascotas, onClose, cargarClientes, nombreCliente }) => {
   const [mascotaEditando, setMascotaEditando] = useState(null);
   const [paginaActual, setPaginaActual] = useState(0);
-  const MASCOTAS_POR_PAGINA = 4;
+  const MASCOTAS_POR_PAGINA = 2;
 
   const manejarCambioEntradaEdicion = (e) => {
     const { name, value } = e.target;
