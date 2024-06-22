@@ -1,117 +1,132 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Header from "./Header";
-import {borrarProducto, crearProducto, actualizarProducto} from '../services/productoService.js'
+import { useState, useEffect } from 'react';
+import Modal from 'react-modal';
+import PropTypes from 'prop-types';
 
-const AgregarProducto = () => {
-    const navigate = useNavigate();
+Modal.setAppElement('#root'); // Esto es necesario para la accesibilidad
 
-    const [nuevoProducto, setNuevoProducto] = useState({
+const AgregarProducto = ({ isOpen, cerrar, agregarProducto, editarProducto, producto, modo }) => {
+  const [productoInfo, setProductoInfo] = useState({
+    nombre: '',
+    marca: '',
+    cantidad: '',
+    descripcion: ''});
+
+  useEffect(() => {
+    if (modo === 'editar' && producto) {
+      setProductoInfo(producto);
+    } else {
+      setProductoInfo({
         nombre: '',
         marca: '',
         cantidad: '',
-        descripcion: ''
-    });
+        descripcion: ''});
+    }
+  }, [modo, producto]);
 
-    const manejarCambioEntradaNuevo = (e) => {
-        const { name, value } = e.target;
-        setNuevoProducto({ ...nuevoProducto, [name]: value });
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProductoInfo(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
 
-    const manejarAgregarProducto = async () => {
-        const { nombre, marca, cantidad, descripcion } = nuevoProducto;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (modo === 'agregar') {
+      agregarProducto(productoInfo);
+      setProductoInfo({
+        nombre: '',
+        marca: '',
+        cantidad: '',
+        descripcion: ''});
+    } else if (modo === 'editar') {
+      editarProducto(productoInfo);
+    }
+    cerrar();
+  };
 
-        let mensajesError = [];
-        if (!nombre) mensajesError.push('Nombre');
-        if (!marca) mensajesError.push('Marca');
-        if (!cantidad) mensajesError.push('Cantidad');
-        if (!descripcion) mensajesError.push('Descripción');
+  return (
+    <Modal 
+      isOpen={isOpen} 
+      onRequestClose={cerrar} 
+      contentLabel="Agregar Producto" 
+      className="fixed inset-0 flex items-center justify-center p-4 bg-gray-800 bg-opacity-60"
+    >
+      <div className="bg-slate-200 rounded-lg p-6 w-full max-w-lg mx-4 opacity-90">
+        <h2 className="text-2xl font-semibold mb-4">{modo === 'agregar' ? 'Agregar Producto' : 'Editar Producto'}</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-black mb-2">Nombre:</label>
+            <input 
+              type="text" 
+              name="nombre" 
+              value={productoInfo.nombre} 
+              onChange={handleChange} 
+              required 
+              className="w-full px-3 py-2 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-black mb-2">Marca:</label>
+            <input 
+              type="text" 
+              name="marca" 
+              value={productoInfo.marca} 
+              onChange={handleChange} 
+              required 
+              className="w-full px-3 py-2 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-black mb-2">Cantidad:</label>
+            <input 
+              type="number" 
+              name="cantidad" 
+              value={productoInfo.cantidad} 
+              onChange={handleChange} 
+              required 
+              className="w-full px-3 py-2 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-black mb-2">Descripcion:</label>
+            <input 
+              type="text" 
+              name="descripcion" 
+              value={productoInfo.descripcion} 
+              onChange={handleChange} 
+              required 
+              className="w-full px-3 py-2 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            />
+          </div>
+          <div className="flex justify-end">
+            <button 
+              type="button" 
+              onClick={cerrar} 
+              className="mr-2 px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-500"
+            > Cancelar
+            </button>
+            <button 
+              type="submit" 
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              {modo === 'agregar' ? 'Agregar' : 'Guardar'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </Modal>
+  );
+};
 
-        if (mensajesError.length > 0) {
-            toast.error(`Debe completar los siguientes campos: ${mensajesError.join(', ')}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            return;
-        }
-        console.log('Producto: ', nuevoProducto)
-        const resProducto = await crearProducto(nuevoProducto);
-        console.log("Respuesta",resProducto)
-        if(resProducto.ok){
-            toast.success("Se guardó con éxito el producto", { autoClose: 1500, theme: "colored"});
-        }else{
-            toast.error(resProducto.message, { autoClose: 1500, theme: "colored"});
-        }
-
-        navigate('/productos');
-    };
-
-    const manejarCancelarAgregar = () => {
-        navigate('/productos');
-    };
-
-    return (
-        <div className="relative min-h-screen flex flex-col bg-primary bg-opacity-80 bg-fondo1 bg-cover">
-            <Header />
-            <div className="flex-grow flex items-center justify-center">
-                <div className="relative z-10 bg-amber-800 bg-opacity-90 rounded-3xl p-16 shadow-lg w-3/4" style={{ overflowY: 'hidden' }}>
-                    <div className="bg-white rounded-lg shadow-md p-8 mb-2 overflow-auto">
-                        <h2 className="text-6xl font-bold text-center mb-12">Agregar Producto</h2>
-                        <div className="mt-4">
-                            <input
-                                type="text"
-                                name="nombre"
-                                placeholder="Nombre"
-                                value={nuevoProducto.nombre}
-                                onChange={manejarCambioEntradaNuevo}
-                                className="block w-full mb-2 p-2 border border-gray-300 rounded"
-                                required
-                            />
-                            <input
-                                type="text"
-                                name="marca"
-                                placeholder="Marca"
-                                value={nuevoProducto.marca}
-                                onChange={manejarCambioEntradaNuevo}
-                                className="block w-full mb-2 p-2 border border-gray-300 rounded"
-                                required
-                            />
-                            <input
-                                type="number"
-                                name="cantidad"
-                                placeholder="Cantidad"
-                                value={nuevoProducto.cantidad}
-                                onChange={manejarCambioEntradaNuevo}
-                                className="block w-full mb-2 p-2 border border-gray-300 rounded"
-                                required
-                            />
-                            <input
-                                type="text"
-                                name="descripcion"
-                                placeholder="Descripción"
-                                value={nuevoProducto.descripcion}
-                                onChange={manejarCambioEntradaNuevo}
-                                className="block w-full mb-2 p-2 border border-gray-300 rounded"
-                                required
-                            />
-                            <div className="flex justify-between mt-8">
-                                <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2" onClick={manejarAgregarProducto}>Agregar</button>
-                                <button className="bg-red-700 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded" onClick={manejarCancelarAgregar}>Cancelar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <ToastContainer />
-        </div>
-    );
+AgregarProducto.propTypes = {
+    isOpen: PropTypes.bool.isRequired, 
+    cerrar: PropTypes.func.isRequired,
+    agregarProducto: PropTypes.func.isRequired,
+    editarProducto: PropTypes.func.isRequired,
+    producto: PropTypes.object,
+    modo: PropTypes.string.isRequired
 };
 
 export default AgregarProducto;

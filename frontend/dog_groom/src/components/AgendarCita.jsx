@@ -39,6 +39,7 @@ function AgendarCita() {
   const [descripcion, setDescripcion] = useState('');
   const [id_cedula, setIDCedula] = useState('');
   const [id_servicio, setIDServicio] = useState('');
+  const [precio, setPrecio] = useState(' ');
 
 
   useEffect(() => {
@@ -84,7 +85,8 @@ function AgendarCita() {
     const servicio = servicios.find(serv => serv.ID_TipoMascota === cliente.ID_TipoMascota);
       if (servicio) {
         setIDServicio(servicio.ID_Servicio);
-        setMontoTotal(servicio.Precio);
+        setPrecio(servicio.Precio);
+        setMontoTotal(parseFloat(servicio.Precio)+parseFloat(montoAdicional||0))
       }
 
 
@@ -130,13 +132,11 @@ function AgendarCita() {
   
   
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      SetFotoMascota(file);
-      setFotoUrl(URL.createObjectURL(file));
-    }
-  };
+  const handleMontoAdicionalChange = (e)=>{
+    const nuevoMontoAdicional = e.target.value;
+    setMontoAdicional(nuevoMontoAdicional);
+    setMontoTotal(parseFloat(precio || 0) + parseFloat(nuevoMontoAdicional || 0));
+  }
 
   const generateTimeOptions = () => {
     const times = [];
@@ -302,14 +302,14 @@ function AgendarCita() {
                   <option value="true">En proceso</option>
                   <option value="false">Finalizadar</option>
                   
-                </select>                
+                </select> 
                 <input
                   className="p-3 border border-gray-300 rounded w-full mb-2"
                   type="text"
-                  id="montoTotal"
-                  name="montoTotal"
-                  placeholder="Monto Total"
-                  value ={montoTotal}
+                  id="precio"
+                  name="precio"
+                  placeholder="Precio"
+                  value={precio}
                   readOnly
                   required
                 />
@@ -320,9 +320,21 @@ function AgendarCita() {
                   name="montoAdicional"
                   placeholder="Monto Adicional"
                   value={montoAdicional}
-                  onChange={(e) => setMontoAdicional(e.target.value)}
+                  onChange={handleMontoAdicionalChange}
+                />
+                              
+                <input
+                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                  type="text"
+                  id="montoTotal"
+                  name="montoTotal"
+                  placeholder="Monto Total"
+                  value ={montoTotal}
+                  readOnly
                   required
                 />
+                
+               
               </div>
                 
               <div className="mb-8 md:mr-8 md:mb-0">

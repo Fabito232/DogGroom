@@ -1,188 +1,295 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from "./Header";
-import { actualizarProducto, borrarProducto, obtenerProductos } from '../services/productoService.js';
+import AgregarProducto from './AgregarProducto.jsx';
+import { actualizarProducto, borrarProducto, crearProducto, obtenerProductos } from '../services/productoService.js';
+import { useConfirm } from './ModalConfirmacion';
+import { notificarError, notificarExito } from '../utilis/notificaciones';
+import Header from './Header.jsx';
 
 const ListaProductos = () => {
-    const [productos, setProductos] = useState([]);
-    const [productoEditando, setProductoEditando] = useState(null);
-    const navigate = useNavigate();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [productos, setProductos] = useState([]);
+  const [buscarPalabra, setBuscarPalabra] = useState('');
+  const [productosFiltrados, setProductosFiltrados] = useState([]);
+  const [modo, setModo] = useState('agregar');
+  const [productoActual, setProductoActual] = useState(null);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [productosPorPagina] = useState(5); // Cantidad de productos por página
+  const [orden, setOrden] = useState({ campo: 'nombre', direccion: 'asc', label: 'Nombre (A-Z)' });
 
+  const openConfirmModal = useConfirm();
 
-    const cargarProducto = async () => {
-        try {
-            const resProducto = await obtenerProductos();
-            console.log(resProducto)
-            if(resProducto.ok){
-                const listaProducto = resProducto.data.map( producto =>({
-                    id: producto.ID_Producto,
-                    nombre: producto.Nombre,
-                    marca: producto.Marca,
-                    descripcion: producto.Descripcion,
-                    cantidad: producto.Cantidad
-                }))
-                setProductos(listaProducto)
-            }
-         
-        } catch (error) {
-            console.log(error.message)
-        }
-    }
-
-    useEffect(() =>{
-        cargarProducto();
-    },[])
-
-    const manejarAgregar = () => {
-        navigate('/agregarProducto');
-    };
-
-    const manejarEditar = (producto) => {
-        console.log("producto editado",producto)
-        setProductoEditando(producto);
-    };
-
-    const manejarCambioEntradaEdicion = (e) => {
-        const { name, value } = e.target;
-        setProductoEditando({ ...productoEditando, [name]: value });
-    };
-
-    const manejarGuardar = async () => {
-        console.log(productoEditando)
-        const producto = {
-            nombre: productoEditando.nombre,
-            marca: productoEditando.marca,
-            descripcion: productoEditando.descripcion,
-            cantidad: productoEditando.cantidad
-        }
-        console.log(producto)
-        try {
-            const resProducto = await actualizarProducto(producto, productoEditando.id);
-            console.log(resProducto)
-        } catch (error) {
-            console.log(error)
-        }
-
-        const productosActualizados = productos.map(producto => {
-            if (producto.id === productoEditando.id) {
-                return productoEditando;
-            }
-            return producto;
-        });
-        setProductos(productosActualizados);
-        setProductoEditando(null);
-    };
-
-    const manejarCancelar = () => {
-        setProductoEditando(null);
-    };
-
-    const manejarEliminar = async (id) => {
-        if (window.confirm("¿Estás seguro de que quieres eliminar este producto?")) {
-            const resProducto = await borrarProducto(id);
-            console.log(resProducto)
-            const productosActualizados = productos.filter(producto => producto.id !== id);
-            setProductos(productosActualizados);
-        }
-    };
-
-    return (
-        <div className="relative min-h-screen flex items-start justify-center bg-primary bg-fondo1 bg-cover">
-            <div className="relative z-10 shadow-lg w-full md:w-160 h-full md:h-auto">
-            <Header />
-                <div className="rounded-xl shadow-md p-20 mb-2 overflow-auto">
-                    <div className="flex items-center mb-4">
-                        <h1 className="bg-gray-300 rounded-lg text-6xl font-bold flex-1 text-center">Lista de Productos</h1>
-                        <button className="bg-green-700 hover:bg-green-900 text-black font-bold py-4 px-12 rounded ml-8" onClick={manejarAgregar}>Agregar</button>
-                    </div>
-                    <div className="overflow-auto max-h-[650px] mt-8" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none'}}>
-                        <table className="w-full table-auto border-collapse" >
-                            <thead>
-                                <tr className="bg-gray-300">
-                                    <th className="border border-gray-800 py-6 px-6">Nombre</th>
-                                    <th className="border border-gray-800 py-6 px-6">Marca</th>
-                                    <th className="border border-gray-800 py-6 px-6">Cantidad</th>
-                                    <th className="border border-gray-800 py-6 px-6">Descripción</th>
-                                    <th className="border border-gray-800 py-6 px-6">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {productos.map((producto) => (
-                                    <tr key={producto.id} className={producto.id % 2 === 0 ? 'bg-white' : "bg-amber-800"}>
-                                        <td className="border border-gray-800 py-4 px-6">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <input
-                                                    type="text"
-                                                    name="nombre"
-                                                    value={productoEditando.nombre}
-                                                    onChange={manejarCambioEntradaEdicion}
-                                                    className="block w-full p-2 border border-gray-300 rounded"
-                                                />
-                                            ) : (
-                                                producto.nombre
-                                            )}
-                                        </td>
-                                        <td className="border border-gray-800 py-4 px-6">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <input
-                                                    type="text"
-                                                    name="marca"
-                                                    value={productoEditando.marca}
-                                                    onChange={manejarCambioEntradaEdicion}
-                                                    className="block w-full p-2 border border-gray-300 rounded"
-                                                />
-                                            ) : (
-                                                producto.marca
-                                            )}
-                                        </td>
-                                        <td className="border border-gray-800 py-4 px-6 text-center">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <input
-                                                    type="number"
-                                                    name="cantidad"
-                                                    value={productoEditando.cantidad}
-                                                    onChange={manejarCambioEntradaEdicion}
-                                                    className="block w-full p-2 border border-gray-300 rounded"
-                                                />
-                                            ) : (
-                                                producto.cantidad
-                                            )}
-                                        </td>
-                                        <td className="border border-gray-800 py-4 px-6">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <input
-                                                    type="text"
-                                                    name="descripcion"
-                                                    value={productoEditando.descripcion}
-                                                    onChange={manejarCambioEntradaEdicion}
-                                                    className="block w-full p-2 border border-gray-300 rounded"
-                                                />
-                                            ) : (
-                                                producto.descripcion
-                                            )}
-                                        </td>
-                                        <td className="border border-gray-800 py-4 px-6">
-                                            {productoEditando && productoEditando.id === producto.id ? (
-                                                <div className="flex flex-col space-y-2">
-                                                    <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={manejarGuardar}>Guardar</button>
-                                                    <button className="bg-red-700 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded" onClick={manejarCancelar}>Cancelar</button>
-                                                </div>
-                                            ) : (
-                                                <div className="flex flex-col space-y-2">
-                                                    <button className="bg-green-500 hover:bg-green-700 text-white font-bold w-full py-2 px-4 rounded-md" onClick={() => manejarEditar(producto)}>Editar</button>
-                                                    <button className="bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded" onClick={() => manejarEliminar(producto.id)}>Eliminar</button>
-                                                </div>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+  useEffect(() => {
+    setProductosFiltrados(
+      productos
+        .filter((producto) =>
+          producto.nombre.toLowerCase().includes(buscarPalabra.toLowerCase())
+        )
+        .sort((a, b) => {
+          if (orden.campo === 'cantidad') {
+            return orden.direccion === 'asc' ? a.cantidad - b.cantidad : b.cantidad - a.cantidad;
+          } else {
+            return orden.direccion === 'asc' ? a[orden.campo].localeCompare(b[orden.campo]) : b[orden.campo].localeCompare(a[orden.campo]);
+          }
+        })
     );
+  }, [productos, buscarPalabra, orden]);
+
+  useEffect(() => {
+    cargarProductos();
+  }, []);
+
+  const cargarProductos = async () => {
+    try {
+      const resProducto = await obtenerProductos();
+      if (resProducto.ok) {
+        const listaProducto = resProducto.data.map(producto => ({
+          id: producto.ID_Producto,
+          nombre: producto.Nombre,
+          marca: producto.Marca,
+          descripcion: producto.Descripcion,
+          cantidad: producto.Cantidad
+        }));
+        setProductos(listaProducto);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const abrirModal = (modo, producto = null) => {
+    setModo(modo);
+    setProductoActual(producto);
+    setModalIsOpen(true);
+  };
+
+  const cerrarModal = () => {
+    setModalIsOpen(false);
+  };
+
+  const agregarProducto = async (producto) => {
+    try {
+      const resProducto = await crearProducto(producto);
+      if (resProducto.ok) {
+        const nuevoProducto = {
+          id: resProducto.data.ID_Producto,
+          ...producto,
+        };
+        setProductos([...productos, nuevoProducto]);
+        setModalIsOpen(false);
+        notificarExito("Se guardó con éxito el producto")
+      } else {
+        notificarError(resProducto)
+      }
+    } catch (error) {
+      notificarError(error)
+    }
+  };
+
+  const editarProducto = async (productoEditado) => {
+    try {
+      const { id, ...producto } = productoEditado;
+      console.log(producto);
+      const resProducto = await actualizarProducto(producto, productoEditado.id);
+      if (resProducto.ok) {
+        const updatedProductos = productos.map((producto) =>
+          producto.id === productoEditado.id ? productoEditado : producto
+        );
+        setProductos(updatedProductos);
+        setModalIsOpen(false);
+        notificarExito("Se guardó con éxito el producto")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const eliminarProducto = async (id) => {
+    openConfirmModal('¿Estás seguro de que deseas eliminar este elemento?', async () => {
+      try {
+        const resProducto = await borrarProducto(id);
+        if (resProducto.ok) {
+          const updatedProductos = productos.filter((producto) => producto.id !== id);
+          setProductos(updatedProductos);
+          notificarExito("Se borro existosamente el producto")
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  };
+
+  const manejarOrden = (evento) => {
+    const valor = evento.target.value;
+    let nuevoOrden;
+    switch (valor) {
+      case 'nombre_asc':
+        nuevoOrden = { campo: 'nombre', direccion: 'asc', label: 'Nombre (A-Z)' };
+        break;
+      case 'nombre_desc':
+        nuevoOrden = { campo: 'nombre', direccion: 'desc', label: 'Nombre (Z-A)' };
+        break;
+      case 'cantidad_asc':
+        nuevoOrden = { campo: 'cantidad', direccion: 'asc', label: 'Menor Cantidad' };
+        break;
+      case 'cantidad_desc':
+        nuevoOrden = { campo: 'cantidad', direccion: 'desc', label: 'Mayor Cantidad' };
+        break;
+      default:
+        nuevoOrden = { campo: 'nombre', direccion: 'asc', label: 'Nombre (A-Z)' };
+    }
+    setOrden(nuevoOrden);
+  };
+
+  // Paginación
+  const indiceUltimoProducto = paginaActual * productosPorPagina;
+  const indicePrimerProducto = indiceUltimoProducto - productosPorPagina;
+  const productosActuales = productosFiltrados.slice(indicePrimerProducto, indiceUltimoProducto);
+
+  const numerosDePagina = [];
+  for (let i = 1; i <= Math.ceil(productosFiltrados.length / productosPorPagina); i++) {
+    numerosDePagina.push(i);
+  }
+
+  const paginar = (numeroDePagina) => setPaginaActual(numeroDePagina);
+  const manejarAnterior = () => setPaginaActual((prev) => Math.max(prev - 1, 1));
+  const manejarSiguiente = () => setPaginaActual((prev) => Math.min(prev + 1, numerosDePagina.length));
+
+  const obtenerPaginasVisibles = () => {
+    if (numerosDePagina.length <= 3) {
+      return numerosDePagina;
+    } else if (paginaActual <= 2) {
+      return [1, 2, 3];
+    } else if (paginaActual >= numerosDePagina.length - 1) {
+      return [numerosDePagina.length - 2, numerosDePagina.length - 1, numerosDePagina.length];
+    } else {
+      return [paginaActual - 1, paginaActual, paginaActual + 1];
+    }
+  };
+
+  const paginasVisibles = obtenerPaginasVisibles();
+
+  return (
+    <>
+      <Header></Header>
+      <div className="bg-fondo1 bg-cover min-h-screen">
+        <div className='md:container md:mx-auto p-5'>
+          <div className="p-6 bg-amber-700 container bg-opacity-95 rounded-lg">
+            <h1 className="text-3xl font-bold mb-4 text-center">Lista de Productos</h1>
+            <div className='flex flex-col md:flex-row justify-between mb-4 items-center'>
+              <div className="flex items-center mb-2 md:mb-0">
+                <input
+                  type="text"
+                  placeholder="Buscar producto..."
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  value={buscarPalabra}
+                  onChange={(e) => setBuscarPalabra(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center mb-2 md:mb-0 ml-0 md:ml-4">
+                <select
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  onChange={manejarOrden}
+                  value={orden.campo + '_' + orden.direccion}
+                >
+                  <option value="nombre_asc">Nombre (A-Z)</option>
+                  <option value="nombre_desc">Nombre (Z-A)</option>
+                  <option value="cantidad_asc">Menor Cantidad</option>
+                  <option value="cantidad_desc">Mayor Cantidad</option>
+                </select>
+              </div>
+              <div className="ml-0 md:ml-auto">
+                <button
+                  onClick={() => abrirModal('agregar')}
+                  className="mb-2 md:mb-0 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"> Agregar Producto
+                </button>
+                <AgregarProducto
+                  isOpen={modalIsOpen}
+                  cerrar={cerrarModal}
+                  agregarProducto={agregarProducto}
+                  editarProducto={editarProducto}
+                  producto={productoActual}
+                  modo={modo}
+                />
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white border border-gray-300">
+                <thead>
+                  <tr className="bg-lime-600 border-b text-lg">
+                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Nombre</th>
+                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Marca</th>
+                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Cantidad</th>
+                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Descripción</th>
+                    <th className="px-6 py-3 text-center text-base font-medium text-black uppercase tracking-wider">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {productosActuales.map((producto) => (
+                    <tr key={producto.id} className="border-b border-gray-300">
+                      <td className="px-6 py-4 whitespace-nowrap">{producto.nombre}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{producto.marca}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{producto.cantidad}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{producto.descripcion}</td>
+                      <td className="px-6 py-4 whitespace-nowrap flex justify-center items-center space-x-2">
+                        <button
+                          className="px-3 py-1 bg-red-600 w-24 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
+                          onClick={() => eliminarProducto(producto.id)}>Eliminar </button>
+                        <button
+                          className="px-3 py-1 bg-blue-600 w-24 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+                          onClick={() => abrirModal('editar', producto)}>Editar</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Paginación */}
+            <div className="flex justify-center mt-4">
+              <nav>
+                <ul className="flex items-center">
+                  <li>
+                    <button
+                      onClick={manejarAnterior}
+                      className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
+                        }`}
+                      disabled={paginaActual === 1}
+                    >
+                      &laquo;
+                    </button>
+                  </li>
+                  {paginasVisibles.map((numero) => (
+                    <li key={numero} className="cursor-pointer mx-1">
+                      <button
+                        onClick={() => paginar(numero)}
+                        className={`px-3 py-1 ${paginaActual === numero
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-white text-blue-600'
+                          } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
+                      >
+                        {numero}
+                      </button>
+                    </li>
+                  ))}
+                  <li>
+                    <button
+                      onClick={manejarSiguiente}
+                      className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
+                        }`}
+                      disabled={paginaActual === numerosDePagina.length}
+                    >
+                      &raquo;
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default ListaProductos;
