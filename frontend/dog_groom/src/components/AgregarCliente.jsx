@@ -12,21 +12,21 @@ function AgregarCliente() {
     const [telefonoCliente, setTelefonoCliente] = useState('');
     const [nombreMascota, setNombreMascota] = useState('');
     const [razaMascota, setRazaMascota] = useState('');
-    const [tamanoMascota, setTamanoMascota] = useState({ ID_TipoMascota: 0, Descripcion: '' });
+    const [tamanoMascota, setTamanoMascota] = useState({ID_TipoMascota:0, Descripcion: ''});
     const [fotosMascota, setFotosMascota] = useState('');
     const [fotoActual, setFotoActual] = useState({});
     const [fotoUrl, setFotoUrl] = useState('');
     const [mascotas, setMascotas] = useState([]);
     const [tipoMascota, setTipoMascota] = useState([]);
 
-    useEffect(() => {
+    useEffect(() =>{
         cargarTipoMascota();
-    }, [])
+    },[])
 
-    const cargarTipoMascota = async () => {
+    const cargarTipoMascota = async () =>{
         const resTipoAnimal = await obtenerTipoMascotas();
         console.log(resTipoAnimal)
-        if (resTipoAnimal.ok) {
+        if(resTipoAnimal.ok){  
             setTipoMascota(resTipoAnimal.data)
         }
     }
@@ -36,7 +36,7 @@ function AgregarCliente() {
     const handleAgregarCliente = async (e) => {
         e.preventDefault()
 
-        const listaMascotas = mascotas.map((mascota) => ({
+        const listaMascotas = mascotas.map((mascota)  => ({
             nombre: mascota.nombre,
             raza: mascota.raza,
             cedula: mascota.cedula,
@@ -48,7 +48,7 @@ function AgregarCliente() {
         formData.append('nombre', nombreCliente);
         formData.append('telefono', telefonoCliente);
         formData.append('mascotas', JSON.stringify(listaMascotas));
-        console.log("fotosMascota:", fotosMascota)
+        console.log("fotosMascota:",fotosMascota)
         fotosMascota.forEach((file) => {
             formData.append('images', file);
         });
@@ -87,7 +87,7 @@ function AgregarCliente() {
             cedula: cedulaCliente,
             tipoMascota: tamanoMascota,
         }
-
+        
         setFotosMascota([...fotosMascota, fotoActual]);
         setMascotas([...mascotas, mascota])
     }
@@ -96,7 +96,7 @@ function AgregarCliente() {
         const { value } = e.target;
         const tipoMascotaSeleccionado = tipoMascota.find(tipo => tipo.ID_TipoMascota === parseInt(value, 10));
         setTamanoMascota(tipoMascotaSeleccionado)
-    };
+      };
 
 
     return (
@@ -163,11 +163,11 @@ function AgregarCliente() {
                                 required
                             >
                                 <option value="">Tamaño</option>
-                                {tipoMascota.map((tipo) => (
-                                    <option key={tipo.ID_TipoMascota} value={tipo.ID_TipoMascota}>
+                                    {tipoMascota.map((tipo) => (
+                                        <option key={tipo.ID_TipoMascota} value={tipo.ID_TipoMascota}>
                                         {tipo.Descripcion}
-                                    </option>
-                                ))}
+                                        </option>
+                                    ))}
                             </select>
                         </div>
 
@@ -221,7 +221,7 @@ function AgregarCliente() {
                                 <p className="text-center text-gray-500">No se han agregado mascotas aún.</p>
                             )}
                             {mascotas.map((mascota, index) => (
-
+                                
                                 <div key={index} className="bg-black my-2 p-2 rounded-md text-white cursor-pointer">
                                     <p><strong>Nombre:</strong> {mascota.nombre}</p>
                                     <p><strong>Raza:</strong> {mascota.raza}</p>
