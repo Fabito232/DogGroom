@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import imgPerro from '../assets/img_perro.jpg';
+import imgCliente from '../assets/img_perro.jpg'; // Imagen fija para los clientes
 import Header from "./Header";
 import { obtenerClientes, actualizarCliente, borrarCliente } from '../services/clienteService';
-import { actualizarMascota } from '../services/mascotaService';
+import ModalMascotas from './ModalMascotas'; // Importar el componente ModalMascotas
 import { URL_Hosting } from '../services/api';
 
 const ListaClientes = () => {
@@ -15,16 +15,30 @@ const ListaClientes = () => {
   const [isGuardarDisabled, setIsGuardarDisabled] = useState(true);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
 
+  const [mascotasModal, setMascotasModal] = useState(null); // Estado para el modal de mascotas
+
   const cargarClientes = async () => {
     try {
       const resClientes = await obtenerClientes();
+      // const listaClientes = resClientes.data.map(cliente => ({
+      //   id: cliente.Cedula,
+      //   cedula: cliente.Cedula,
+      //   nombre: cliente.Nombre,
+      //   telefono: cliente.Telefono,
+      //   mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '-',
+      //   raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '-',
+      //   image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : imgPerro,
+      //   idMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
+      //   ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '-'
+      // }));
       const listaClientes = resClientes.data.map(cliente => ({
         id: cliente.Cedula,
         cedula: cliente.Cedula,
         nombre: cliente.Nombre,
         telefono: cliente.Telefono,
-        mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0] : '-',
+        mascotas: cliente.Mascota, // Almacena todas las mascotas del cliente
       }));
+      console.log(listaClientes);
       setClientes(listaClientes);
     } catch (error) {
       console.log(error);
@@ -40,6 +54,7 @@ const ListaClientes = () => {
   };
 
   const manejarEditar = async (cliente) => {
+    console.log("Cliente editado",cliente)
     setClienteEditando(cliente);
   };
 
@@ -49,17 +64,10 @@ const ListaClientes = () => {
       nombre: clienteEditando.nombre,
       telefono: clienteEditando.telefono
     };
-    const mascota = {
-      nombre: clienteEditando.mascota.Nombre,
-      raza: clienteEditando.mascota.Raza,
-      image: clienteEditando.mascota.FotoURL,
-      cedula: clienteEditando.cedula,
-      ID_TipoMascota: clienteEditando.mascota.ID_TipoMascota
-    };
 
     const resCliente = await actualizarCliente(cliente, clienteEditando.id);
     if (resCliente.ok) {
-      await actualizarMascota(mascota, clienteEditando.mascota.ID_Mascota);
+      // Actualiza la mascota si es necesario
     }
 
     if (isGuardarDisabled) return;
@@ -76,11 +84,6 @@ const ListaClientes = () => {
     setClienteEditando({ ...clienteEditando, [name]: value });
   };
 
-  const manejarCambioImagen = (e) => {
-    const file = e.target.files[0];
-    setClienteEditando({ ...clienteEditando, image: file });
-  };
-
   const manejarEliminar = async (id) => {
     const confirmacion = window.confirm('¿Estás seguro de eliminar este cliente?');
     if (confirmacion) {
@@ -89,11 +92,18 @@ const ListaClientes = () => {
     }
   };
 
+  const abrirModalMascotas = (mascotas) => {
+    setMascotasModal(mascotas);
+  };
+
+  const cerrarModalMascotas = () => {
+    setMascotasModal(null);
+  };
+
   useEffect(() => {
     if (clienteEditando) {
-      const { cedula, nombre, telefono, mascota } = clienteEditando;
-      setIsGuardarDisabled(!cedula || !nombre || !telefono || !mascota || !mascota.Nombre || !mascota.Raza);
-
+      const { cedula, nombre, telefono } = clienteEditando;
+      setIsGuardarDisabled(!cedula || !nombre || !telefono);
     } else {
       setIsGuardarDisabled(true);
     }
@@ -105,8 +115,7 @@ const ListaClientes = () => {
 
   const clientesFiltrados = clientes.filter(cliente =>
     cliente.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-    cliente.cedula.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-    (cliente.mascota !== '-' && cliente.mascota.Nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()))
+    cliente.cedula.toLowerCase().includes(terminoBusqueda.toLowerCase())
   );
 
   const indiceUltimoCliente = paginaActual * clientesPorPagina;
@@ -127,7 +136,7 @@ const ListaClientes = () => {
             </div>
             <input
               type="text"
-              placeholder="Buscar por Nombre de Cliente, Cédula o Nombre de la Mascota"
+              placeholder="Buscar por Nombre de Cliente o Cédula"
               value={terminoBusqueda}
               onChange={manejarCambioBusqueda}
               className="mb-4 p-2 border border-gray-300 rounded w-full"
@@ -137,20 +146,11 @@ const ListaClientes = () => {
                 <div key={cliente.id} className="flex flex-col bg-amber-700 bg-opacity-90 border border-black w-full">
                   <div className="relative p-4 w-full flex justify-center">
                     <img
-                      src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.mascota.FotoURL : (cliente.mascota && cliente.mascota.FotoURL) ? URL_Hosting + cliente.mascota.FotoURL : imgPerro}
+                      src={imgCliente}
                       alt={cliente.nombre}
                       className="h-32 w-32 md:h-48 md:w-48 object-cover rounded-lg cursor-pointer"
-                      onClick={() => document.getElementById(`fileInput-${cliente.id}`).click()}
+                      onClick={() => abrirModalMascotas(cliente.mascotas)} // Abrir modal al hacer clic en la imagen
                     />
-                    {clienteEditando && clienteEditando.id === cliente.id && (
-                      <input
-                        id={`fileInput-${cliente.id}`}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={manejarCambioImagen}
-                      />
-                    )}
                   </div>
                   <div className="flex-grow flex flex-col justify-between p-4">
                     <div>
@@ -196,25 +196,6 @@ const ListaClientes = () => {
                           <div className="bg-white p-1 rounded flex-grow">{cliente.telefono}</div>
                         )}
                       </div>
-                      <div className="flex items-center mb-2">
-                        <div className="font-bold mr-2">Mascota:</div>
-                        {clienteEditando && clienteEditando.id === cliente.id ? (
-                          <input
-                            type="text"
-                            name="mascota"
-                            value={clienteEditando.mascota.Nombre}
-                            onChange={manejarCambioEntradaEdicion}
-                            className="block w-full p-1 border border-gray-300 rounded"
-                          />
-                        ) : (
-                          <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            onClick={() => manejarEditar(cliente)}
-                          >
-                            Ver
-                          </button>
-                        )}
-                      </div>
                     </div>
                     <div className="flex justify-between space-x-4 mt-4">
                       {clienteEditando && clienteEditando.id === cliente.id ? (
@@ -252,6 +233,7 @@ const ListaClientes = () => {
           </div>
         </div>
       </div>
+      {mascotasModal && <ModalMascotas mascotas={mascotasModal} onClose={cerrarModalMascotas} />} {/* Renderizar el modal si hay mascotas */}
     </div>
   );
 };
