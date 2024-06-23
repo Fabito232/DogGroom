@@ -1,24 +1,22 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import imgCliente from '../assets/img_perro.jpg'; // Imagen fija para los clientes
 import Header from "./Header";
 import { obtenerClientes, actualizarCliente, borrarCliente } from '../services/clienteService';
-import { actualizarMascota } from '../services/mascotaService';
-import { URL_Hosting } from '../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare,faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import AgregarCliente from './AgregarCliente';
-import MostrarMascota from './MostrarMascota'; // Importar el componente ModalMascotas
+import MostrarMascota from './MostrarMascota';
 
 const ListaClientes = () => {
   const [clientes, setClientes] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
   const [clientesPorPagina] = useState(8);
-  const navigate = useNavigate();
   const [clienteEditando, setClienteEditando] = useState(null);
   const [isGuardarDisabled, setIsGuardarDisabled] = useState(true);
   const [terminoBusqueda, setTerminoBusqueda] = useState(""); // Nuevo estado para el término de búsqueda
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalIsOpenMascotas, setModalIsOpenMascotas] = useState(false);
+  const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
 
   const abrirModal = () => {
     setModalIsOpen(true);
@@ -28,20 +26,19 @@ const ListaClientes = () => {
     setModalIsOpen(false);
   };
 
+  const abrirModalMascotas = (cliente) => {
+    setClienteSeleccionado(cliente);
+    setModalIsOpenMascotas(true); // Corregido para abrir el modal de mascotas
+  };
+
+  const cerrarModalMascotas = () => {
+    setModalIsOpenMascotas(false);
+    setClienteSeleccionado(null);
+  };
+
   const cargarClientes = async () => {
     try {
       const resClientes = await obtenerClientes();
-      // const listaClientes = resClientes.data.map(cliente => ({
-      //   id: cliente.Cedula,
-      //   cedula: cliente.Cedula,
-      //   nombre: cliente.Nombre,
-      //   telefono: cliente.Telefono,
-      //   mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '-',
-      //   raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '-',
-      //   image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : imgPerro,
-      //   idMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_Mascota : '-',
-      //   ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '-'
-      // }));
       const listaClientes = resClientes.data.map(cliente => ({
         id: cliente.Cedula,
         cedula: cliente.Cedula,
@@ -49,7 +46,6 @@ const ListaClientes = () => {
         telefono: cliente.Telefono,
         mascotas: cliente.Mascota, // Almacena todas las mascotas del cliente
       }));
-      console.log(listaClientes);
       setClientes(listaClientes);
     } catch (error) {
       console.log(error);
@@ -61,7 +57,6 @@ const ListaClientes = () => {
   }, [modalIsOpen]);
 
   const manejarEditar = async (cliente) => {
-    console.log("Cliente editado",cliente)
     setClienteEditando(cliente);
   };
 
@@ -99,14 +94,6 @@ const ListaClientes = () => {
     }
   };
 
-  const abrirModalMascotas = (mascotas) => {
-    setMascotasModal(mascotas);
-  };
-
-  const cerrarModalMascotas = () => {
-    setMascotasModal(null);
-  };
-
   useEffect(() => {
     if (clienteEditando) {
       const { cedula, nombre, telefono } = clienteEditando;
@@ -140,9 +127,9 @@ const ListaClientes = () => {
             <div className="flex flex-col md:flex-row items-center justify-between mb-4">
               <h1 className="bg-gray-300 rounded-lg text-3xl md:text-6xl font-bold flex-1 text-center mb-4 md:mb-0">Lista de Clientes</h1>
               <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 md:py-4 px-6 md:px-12 rounded ml-8" onClick={abrirModal}>Agregar</button>
-              <AgregarCliente 
-              isOpen={modalIsOpen}
-              cerrar={cerrarModal}
+              <AgregarCliente
+                isOpen={modalIsOpen}
+                cerrar={cerrarModal}
               />
             </div>
             <input
@@ -160,17 +147,15 @@ const ListaClientes = () => {
                       src={imgCliente}
                       alt={cliente.nombre}
                       className="h-32 w-32 md:h-48 md:w-48 object-cover rounded-lg cursor-pointer"
-                      onClick={() => abrirModalMascotas(cliente.mascotas)} // Abrir modal al hacer clic en la imagen
+                      onClick={() => abrirModalMascotas(cliente)} // Abrir modal al hacer clic en la imagen
                     />
-                    {clienteEditando && clienteEditando.id === cliente.id && (
-                      <input
-                        id={`fileInput-${cliente.id}`}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={manejarCambioImagen}
-                      />
-                    )}
+                    <MostrarMascota
+                      isOpen={modalIsOpenMascotas}
+                      mascotas={clienteSeleccionado ? clienteSeleccionado.mascotas : []} // Ajustado para usar clienteSeleccionado.mascotas
+                      cargarClientes={cargarClientes}
+                      cliente={clienteSeleccionado ? clienteSeleccionado.nombre : ''}
+                      cerrar={cerrarModalMascotas}
+                    />
                   </div>
                   <div className="flex-grow flex flex-col justify-between p-4">
                     <div>
@@ -214,34 +199,6 @@ const ListaClientes = () => {
                           />
                         ) : (
                           <div className="bg-white p-1 rounded flex-grow">{cliente.telefono}</div>
-                        )}
-                      </div>
-                      <div className="flex items-center mb-2">
-                        <div className="font-bold mr-2">Mascota:</div>
-                        {clienteEditando && clienteEditando.id === cliente.id ? (
-                          <input
-                            type="text"
-                            name="mascota"
-                            value={clienteEditando.mascota.Nombre}
-                            onChange={manejarCambioEntradaEdicion}
-                            className="block w-full p-1 border border-gray-300 rounded"
-                          />
-                        ) : (
-                          <div className="bg-white p-1 rounded flex-grow">{cliente.mascota.Nombre}</div>
-                        )}
-                      </div>
-                      <div className="flex items-center mb-2">
-                        <div className="font-bold mr-2">Raza:</div>
-                        {clienteEditando && clienteEditando.id === cliente.id ? (
-                          <input
-                            type="text"
-                            name="raza"
-                            value={clienteEditando.mascota.Raza}
-                            onChange={manejarCambioEntradaEdicion}
-                            className="block w-full p-1 border border-gray-300 rounded"
-                          />
-                        ) : (
-                          <div className="bg-white p-1 rounded flex-grow">{cliente.mascota.Raza}</div>
                         )}
                       </div>
                     </div>
