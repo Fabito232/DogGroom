@@ -4,6 +4,8 @@ import { actualizarProducto, borrarProducto, crearProducto, obtenerProductos } f
 import { useConfirm } from './ModalConfirmacion';
 import { notificarError, notificarExito } from '../utilis/notificaciones';
 import Header from './Header.jsx';
+import { FontAwesomeIcon, faTrashCan, faPenToSquare} from '../utilis/iconos.js'
+
 
 const ListaProductos = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -193,16 +195,16 @@ const ListaProductos = () => {
                     <td className="px-6 py-4 whitespace-nowrap">{producto.descripcion}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
-                        className="px-3 py-1 bg-red-600 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
-                        onClick={() => eliminarProducto(producto.id)}
-                      >
-                        Eliminar
-                      </button>
-                      <button
-                        className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+                        className="px-3 py-1 bg-blue-600 text-white rounded-md mr-2 hover:bg-blue-700 focus:outline-none"
                         onClick={() => abrirModal('editar', producto)}
                       >
-                        Editar
+                        <FontAwesomeIcon icon={faPenToSquare}/>
+                      </button>
+                      <button
+                        className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none"
+                        onClick={() => eliminarProducto(producto.id)}
+                      >
+                        <FontAwesomeIcon icon={faTrashCan}/>
                       </button>
                     </td>
                   </tr>
