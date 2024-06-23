@@ -122,7 +122,7 @@ function Citas() {
           selectable={true}
           onSelectEvent={handleEventClick}
           onSelectSlot={handleSelectSlot}
-          views={{ week: true, month: true, day: true, agenda: false }}
+          views={{ week: true, month: true, day: true, agenda: true }}
           min={dayjs('2024-12-23T08:00:00').toDate()}
           max={dayjs('2024-12-23T19:00:00').toDate()}
           formats={{
@@ -139,7 +139,7 @@ function Citas() {
             time: "Hora",
             event: "Cita"
           }}
-          eventPropGetter={eventStyleGetter}
+          
         />
       </div>
     </div>
