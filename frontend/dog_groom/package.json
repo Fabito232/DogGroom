@@ -22,10 +22,12 @@
     "modal": "^1.2.0",
     "react": "^18.2.0",
     "react-big-calendar": "^1.12.2",
+    "react-datepicker": "^7.1.0",
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.23.1",
-    "react-toastify": "^10.0.5"
+    "react-toastify": "^10.0.5",
+    "sweetalert2": "^11.12.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

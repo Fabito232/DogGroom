@@ -5,7 +5,8 @@ import Servicio from '../models/servicioModel.js';
 import TipoMascota from '../models/tipoMascota.js';
 
 export const createCita = async (req, res) => {
-    const {fechaYHora, descripcion, estado, montoTotal, cedula, ID_Servicio, montoAdicional } = req.body;
+    const {fechaYHora, descripcion, estado, montoTotal, cedula, ID_Servicio, montoAdicional, ID_Mascota } = req.body;
+
     try {
         const cita = await Cita.create({
             FechaYHora: fechaYHora,
@@ -14,7 +15,8 @@ export const createCita = async (req, res) => {
             MontoAdicional: montoAdicional,
             MontoTotal: montoTotal,
             ID_Cliente: cedula,
-            ID_Servicio: ID_Servicio
+            ID_Servicio: ID_Servicio,
+            ID_Mascota: ID_Mascota
         });
         return res.json({
             ok: true,
@@ -41,7 +43,7 @@ export const getCita = async (id) => {
                     model: Cliente, 
                     include: [
                         {
-                            model: Mascota
+                            model: Mascota,
                         }
                     ]
                 }
@@ -77,15 +79,16 @@ export const getListCita = async (req, res) => {
             include: [
                 {
                     model: Cliente,
-                    include: [{
-                        model: Mascota,
-                        include: [{
-                            model: TipoMascota, 
-                        }]
-                    }]
+                   
                 },
                 {
                     model: Servicio
+                },
+                {
+                    model: Mascota,
+                    include: [{
+                        model: TipoMascota, 
+                    }]
                 }
             ]
         });
@@ -133,7 +136,7 @@ export const updateCita = async (req, res) => {
     
     try {
         const id = req.params.id
-        const { fechaYHora, descripcion, estado, montoTotal, cedula, ID_Servicio, montoAdicional } = req.body;
+        const { fechaYHora, descripcion, estado, montoTotal, cedula, ID_Servicio, montoAdicional, ID_Mascota } = req.body;
         const [filasActualizadas]  = await Cita.update(
             {
                 FechaYHora: fechaYHora,
@@ -143,6 +146,7 @@ export const updateCita = async (req, res) => {
                 MontoTotal: montoTotal,
                 ID_Cliente: cedula,
                 ID_Servicio: ID_Servicio,
+                ID_Mascota: ID_Mascota
             },
             {
                 where:{
@@ -185,7 +189,8 @@ export const obtenerTodasCitas = async(req, res) => {
                     include: [{
                         model: Mascota,
                         include:[{
-                           model: TipoMascota
+                           model: TipoMascota,
+                            as: 'TipoMascota'   
                         }]
                     }]
                 }],

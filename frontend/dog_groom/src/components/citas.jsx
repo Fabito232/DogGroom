@@ -7,29 +7,50 @@ import "dayjs/locale/es";
 import Header from "./Header";
 import { obtenerCitas } from "../services/citaServices";
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const localizer = dayjsLocalizer(dayjs);
+dayjs.locale('es');
 
 function Citas() {
   const [events, setEvents] = useState([]);
+  const navigate = useNavigate();
   const location = useLocation();
   const nuevaCita = location.state?.nuevaCita;
+  const actualizar = location.state?.actualizar;
 
   const fetchCitas = async () => {
     try {
       const resCitas = await obtenerCitas();
-      console.log(resCitas)
       if (resCitas && resCitas.data) {
-        console.log(resCitas)
-        console.log(resCitas.data)
         const citasTransformadas = resCitas.data.map(cita => ({
-          start: dayjs(cita.FechaYHora).toDate(),
-          end: dayjs(cita.FechaYHora).add(1, 'hour').toDate(),
-          
-          title: cita.Cliente.Nombre// Asegúrate de acceder a nombreCliente correctamente
-          
+          id: cita.ID_Cita,
+          start: dayjs(cita.FechaYHora).toDate(), // Fecha y hora de inicio de la cita
+          end: dayjs(cita.FechaYHora).add(1, 'hour').toDate(), // Hora de fin de la cita (ejemplo: 1 hora después del inicio)
+          cedula: cita.Cliente.Cedula, // Cédula del cliente
+          title: cita.Cliente.Nombre, // Nombre del cliente
+          descripcion: cita.Descripcion, // Descripción de la cita
+          estado: cita.Estado ? 'En proceso' : 'Finalizado', // Estado de la cita
+          montoTotal: parseFloat(cita.MontoTotal), // Monto total de la cita
+          montoAdicional: parseFloat(cita.MontoAdicional), // Monto adicional de la cita
+          cliente: { // Detalles completos del cliente
+            nombre: cita.Cliente.Nombre,
+            cedula: cita.Cliente.Cedula,
+            telefono: cita.Cliente.Telefono,
+            mascotas: cita.Cliente.Mascota.map(mascota => ({
+              nombre: mascota.Nombre,
+              raza: mascota.Raza,
+              tipoMascota: mascota.TipoMascotum.Descripcion,
+              fotoURL: mascota.FotoURL
+            }))
+          },
+          servicio: { // Detalles del servicio de la 
+            id_servicio: cita.Servicio.ID_Servicio,
+            descripcion: cita.Servicio.Descripcion,
+            precio: parseFloat(cita.Servicio.Precio)
+          }
         }));
+        console.log(citasTransformadas)
         setEvents(citasTransformadas);
       } else {
         console.error("La respuesta de obtenerCitas no contiene datos.");
@@ -45,7 +66,7 @@ function Citas() {
 
   useEffect(() => {
     if (nuevaCita) {
-      console.log(nuevaCita);
+     
       const nuevaCitaTransformada = {
         start: dayjs(nuevaCita.fechaYHora).toDate(),
         end: dayjs(nuevaCita.fechaYHora).add(1, 'hour').toDate(),
@@ -55,15 +76,30 @@ function Citas() {
     }
   }, [nuevaCita]);
 
+  useEffect(() => {
+    if (actualizar) {
+      fetchCitas();
+    }
+  }, [actualizar]);
+
   const handleEventClick = (event) => {
-    alert(`
-      Cliente: ${event.title}
-      Fecha y Hora: ${dayjs(event.start).format('DD/MM/YYYY HH:mm')}
-    `);
+    navigate('/resumen', { state: { cita: event } });
   };
 
   const handleSelectSlot = ({ start }) => {
     console.log(start);
+  };
+
+  const eventStyleGetter = (event) => {
+    let style = {
+      backgroundColor: event.estado === 'En proceso' ? '#22c55e' : '#a1a1aa',
+      color: 'white',
+      borderRadius: '5px',
+      borderColor: 'black solid'
+    };
+    return {
+      style: style
+    };
   };
 
   const components = {
@@ -71,6 +107,8 @@ function Citas() {
       return <div>{props.title}</div>;
     }
   };
+  
+  
 
   return (
     <div className="img-backendC">
@@ -79,11 +117,12 @@ function Citas() {
         <Calendar
           localizer={localizer}
           events={events}
+          eventPropGetter={eventStyleGetter} 
           components={components}
           selectable={true}
           onSelectEvent={handleEventClick}
           onSelectSlot={handleSelectSlot}
-          views={{ week: true, month: true, day: true, agenda: false }}
+          views={{ week: true, month: true, day: true, agenda: true }}
           min={dayjs('2024-12-23T08:00:00').toDate()}
           max={dayjs('2024-12-23T19:00:00').toDate()}
           formats={{
@@ -100,6 +139,7 @@ function Citas() {
             time: "Hora",
             event: "Cita"
           }}
+          
         />
       </div>
     </div>

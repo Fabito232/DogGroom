@@ -16,13 +16,56 @@ const AgregarProducto = ({ isOpen, cerrar, agregarProducto, editarProducto, prod
       setProductoInfo(producto);
     } else {
       setProductoInfo({
+import { useState, useEffect } from 'react';
+import Modal from 'react-modal';
+import PropTypes from 'prop-types';
+
+Modal.setAppElement('#root'); // Esto es necesario para la accesibilidad
+
+const AgregarProducto = ({ isOpen, cerrar, agregarProducto, editarProducto, producto, modo }) => {
+  const [productoInfo, setProductoInfo] = useState({
+    nombre: '',
+    marca: '',
+    cantidad: '',
+    descripcion: ''});
+
+  useEffect(() => {
+    if (modo === 'editar' && producto) {
+      setProductoInfo(producto);
+    } else {
+      setProductoInfo({
         nombre: '',
         marca: '',
         cantidad: '',
         descripcion: ''});
     }
   }, [modo, producto]);
+        descripcion: ''});
+    }
+  }, [modo, producto]);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProductoInfo(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (modo === 'agregar') {
+      agregarProducto(productoInfo);
+      setProductoInfo({
+        nombre: '',
+        marca: '',
+        cantidad: '',
+        descripcion: ''});
+    } else if (modo === 'editar') {
+      editarProducto(productoInfo);
+    }
+    cerrar();
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProductoInfo(prevState => ({
@@ -131,3 +174,4 @@ AgregarProducto.propTypes = {
 };
 
 export default AgregarProducto;
+
