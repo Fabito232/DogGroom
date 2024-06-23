@@ -11,6 +11,7 @@ import Finanzas from './Finanzas';
 import ResumenCita from './resumenCita';
 import { ConfirmProvider } from './ModalConfirmacion';
 import ListaServicios from './ListaServicios';
+import ListaCitas from './ListaCitas';
 const App = () => {
   
   return (
@@ -28,6 +29,7 @@ const App = () => {
           <Route path='/agregarCliente' element={<AgregarCliente/>}/>
           <Route path='/f' element={<Finanzas/>}/>
           <Route path='/servicios' element={<ListaServicios/>}/>
+          <Route path='/listacitas' element={<ListaCitas/>}/>
         </Routes>
       </Router>
     </ConfirmProvider>
