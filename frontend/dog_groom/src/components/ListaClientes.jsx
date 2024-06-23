@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import imgCliente from '../assets/img_perro.jpg'; // Imagen fija para los clientes
 import Header from "./Header";
 import { obtenerClientes, actualizarCliente, borrarCliente } from '../services/clienteService';
-import ModalMascotas from './ModalMascotas'; // Importar el componente ModalMascotas
-import { URL_Hosting } from '../services/api';
+import MostrarMascota from './MostrarMascota'; // Importar el componente ModalMascotas
 
 const ListaClientes = () => {
   const [clientes, setClientes] = useState([]);
@@ -233,7 +232,7 @@ const ListaClientes = () => {
           </div>
         </div>
       </div>
-      {mascotasModal && <ModalMascotas mascotas={mascotasModal} onClose={cerrarModalMascotas} />} {/* Renderizar el modal si hay mascotas */}
+      {mascotasModal && <MostrarMascota mascotas={mascotasModal} onClose={cerrarModalMascotas} />} {/* Renderizar el modal si hay mascotas */}
     </div>
   );
 };

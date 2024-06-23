@@ -5,7 +5,7 @@ import { crearMascota, actualizarMascota, borrarMascota } from '../services/masc
 import AgregarMascota from './AgregarMascota';
 import { notificarError, notificarExito } from '../utilis/notificaciones';
 
-const ModalMascotas = ({ mascotas, onClose, cargarClientes, nombreCliente }) => {
+const MostrarMascota = ({ mascotas, onClose, cargarClientes, nombreCliente }) => {
     const [agregarNuevaMascota, setAgregarNuevaMascota] = useState([]);
     const [mascotaEditando, setMascotaEditando] = useState(null);
     const [clienteActual, setClienteActual] = useState(null);
@@ -223,4 +223,4 @@ const ModalMascotas = ({ mascotas, onClose, cargarClientes, nombreCliente }) => 
     );
 };
 
-export default ModalMascotas;
+export default MostrarMascota;

@@ -14,7 +14,7 @@ export default {
     "./src/components/AgregarServicio.jsx",
     "./src/components/AgendarCita.jsx",
     "./src/components/resumen.jsx",
-    "./src/components/ModalMascotas.jsx",
+    "./src/components/MostrarMascota.jsx",
     "./src/components/AgregarMascota.jsx",
   
   ],
