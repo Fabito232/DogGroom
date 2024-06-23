@@ -26,9 +26,9 @@ function Citas() {
         const citasTransformadas = resCitas.data.map(cita => ({
           start: dayjs(cita.FechaYHora).toDate(),
           end: dayjs(cita.FechaYHora).add(1, 'hour').toDate(),
-          
+
           title: cita.Cliente.Nombre// Asegúrate de acceder a nombreCliente correctamente
-          
+
         }));
         setEvents(citasTransformadas);
       } else {

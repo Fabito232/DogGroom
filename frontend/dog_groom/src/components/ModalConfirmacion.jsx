@@ -7,7 +7,7 @@ const ConfirmContext = createContext();
 
 export const ConfirmProvider = ({ children }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [confirmAction, setConfirmAction] = useState(() => () => {});
+  const [confirmAction, setConfirmAction] = useState(() => () => { });
   const [message, setMessage] = useState('');
 
   const openConfirmModal = useCallback((message, action) => {

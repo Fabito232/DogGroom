@@ -63,7 +63,7 @@ function validarRazaMascota(razaMascota) {
 }
 
 function validarFotoMascota(fotoMascota) {
-    return fotoMascota !== null && fotoMascota !== undefined;
+    return fotoMascota !== null;
 }
 
 // Validacion para los nombres y raza

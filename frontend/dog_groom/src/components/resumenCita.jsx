@@ -8,7 +8,7 @@ const ResumenCita = () => {
         // Cargar datos
         const cargarClientes = async () => {
             const datosSimulados = [
-                { date: '29/09/2024', time: '10:00', cedula: '208270199', nombre: 'Juan Perez', telefono: '1234567890', animal: 'Perro', raza: 'Labrador', servicio: 'Corte', precio: '10,000',adicional: 'Uñas' ,total: '12,000' ,image: 'https://via.placeholder.com/150' },
+                { date: '29/09/2024', time: '10:00', cedula: '208270199', nombre: 'Juan Perez', telefono: '1234567890', animal: 'Perro', raza: 'Labrador', servicio: 'Corte', precio: '10,000', adicional: 'Uñas', total: '12,000', image: 'https://via.placeholder.com/150' },
             ];
 
             setAppointments(datosSimulados);
@@ -111,7 +111,7 @@ const ResumenCita = () => {
                                 <div className="space-y-2">
                                     {isEditing === index ? (
                                         <>
-                                           <div className="flex flex-col space-y-4">
+                                            <div className="flex flex-col space-y-4">
                                                 <div className="flex items-center">
                                                     <label htmlFor="Cedula" className="w-24"><strong>Cedula:</strong></label>
                                                     <input
@@ -129,34 +129,34 @@ const ResumenCita = () => {
                                                     <label htmlFor="Nombre" className="w-24"><strong>Nombre:</strong></label>
                                                     <input
                                                         type="text"
-                                                        id = "nombre"
+                                                        id="nombre"
                                                         name="nombre"
                                                         value={appointment.nombre}
                                                         onChange={(e) => handleInputChange(e, index)}
                                                         className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  flex space-x-3"
                                                     />
-                        
+
                                                 </div>
                                             </div>
-                                            
-                                            <div className="flex flex-col space-y-4">
-                                                    <div className="flex items-center">
-                                                        <label htmlFor="Telefono" className="w-24"><strong>Teléfono:</strong></label>
-                                                        <input
-                                                            type="text"
-                                                            id="telefono"
-                                                            name="telefono"
-                                                            value={appointment.telefono}
-                                                            onChange={(e) => handleInputChange(e, index)}
-                                                            className="shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline flex space-x-1"
-                                                        />
 
-                                                    </div>
-                                            
+                                            <div className="flex flex-col space-y-4">
+                                                <div className="flex items-center">
+                                                    <label htmlFor="Telefono" className="w-24"><strong>Teléfono:</strong></label>
+                                                    <input
+                                                        type="text"
+                                                        id="telefono"
+                                                        name="telefono"
+                                                        value={appointment.telefono}
+                                                        onChange={(e) => handleInputChange(e, index)}
+                                                        className="shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline flex space-x-1"
+                                                    />
+
+                                                </div>
+
                                             </div>
                                             <div className="flex flex-col space-y-4">
                                                 <div className="flex items-center">
-                                                        <label htmlFor="Animal" className="w-24"><strong>Animal:</strong></label>
+                                                    <label htmlFor="Animal" className="w-24"><strong>Animal:</strong></label>
                                                     <input
                                                         type="text"
                                                         id="animal"
@@ -164,13 +164,13 @@ const ResumenCita = () => {
                                                         value={appointment.animal}
                                                         onChange={(e) => handleInputChange(e, index)}
                                                         className="shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  flex space-x-1 "
-                                                    />  
+                                                    />
                                                 </div>
                                             </div>
-                                            
+
                                             <div className="flex flex-col space-y-4">
                                                 <div className="flex items-center">
-                                                        <label htmlFor="Raza" className="w-24"><strong>Raza:</strong></label>
+                                                    <label htmlFor="Raza" className="w-24"><strong>Raza:</strong></label>
                                                     <input
                                                         type="text"
                                                         id="raza"
@@ -181,10 +181,10 @@ const ResumenCita = () => {
                                                     />
                                                 </div>
                                             </div>
-                                            
+
                                             <div className="flex flex-col space-y-4">
                                                 <div className="flex items-center">
-                                                        <label htmlFor="Servicio" className="w-24"><strong>Servicio:</strong></label>
+                                                    <label htmlFor="Servicio" className="w-24"><strong>Servicio:</strong></label>
                                                     <input
                                                         type="text"
                                                         id="servicio"
@@ -195,9 +195,9 @@ const ResumenCita = () => {
                                                     />
                                                 </div>
                                             </div>
-                                
-                                           <div className="flex flex-col space-y-4 ">
-                                             <div className="flex items-center">
+
+                                            <div className="flex flex-col space-y-4 ">
+                                                <div className="flex items-center">
                                                     <label htmlFor="Precio" className="w-24"><strong>Precio:</strong></label>
                                                     <input
                                                         type="text"
@@ -208,16 +208,16 @@ const ResumenCita = () => {
                                                         className="shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  flex space-y-4"
                                                     />
                                                 </div>
-                                           </div>
-                                            
+                                            </div>
+
                                         </>
                                     ) : (
                                         <>
-                                            <p className= "bg-gray-100 p-2 rounded-md mb-2"><strong>Cédula:</strong> {appointment.cedula}</p>
-                                            <p className= "bg-gray-100 p-2 rounded-md mb-2"><strong>Nombre:</strong> {appointment.nombre}</p>
-                                            <p className= "bg-gray-100 p-2 rounded-md mb-2"><strong>Teléfono:</strong> {appointment.telefono}</p>
-                                            <p className= "bg-gray-100 p-2 rounded-md mb-2"><strong>Animal:</strong> {appointment.animal}</p>
-                                            <p className= "bg-gray-100 p-2 rounded-md mb-2"><strong>Raza:</strong> {appointment.raza}</p>
+                                            <p className="bg-gray-100 p-2 rounded-md mb-2"><strong>Cédula:</strong> {appointment.cedula}</p>
+                                            <p className="bg-gray-100 p-2 rounded-md mb-2"><strong>Nombre:</strong> {appointment.nombre}</p>
+                                            <p className="bg-gray-100 p-2 rounded-md mb-2"><strong>Teléfono:</strong> {appointment.telefono}</p>
+                                            <p className="bg-gray-100 p-2 rounded-md mb-2"><strong>Animal:</strong> {appointment.animal}</p>
+                                            <p className="bg-gray-100 p-2 rounded-md mb-2"><strong>Raza:</strong> {appointment.raza}</p>
                                         </>
                                     )}
                                 </div>
@@ -268,10 +268,10 @@ const ResumenCita = () => {
                                             </>
                                         ) : (
                                             <>
-                                                <p className= "bg-gray-100 p-2 rounded-md mb-2 mt-4"><strong>Adicional:</strong> {appointment.adicional}</p>
-                                                <p className= "bg-gray-100 p-2 rounded-md mb-2"><strong>Total:</strong> {appointment.total}</p>
+                                                <p className="bg-gray-100 p-2 rounded-md mb-2 mt-4"><strong>Adicional:</strong> {appointment.adicional}</p>
+                                                <p className="bg-gray-100 p-2 rounded-md mb-2"><strong>Total:</strong> {appointment.total}</p>
                                             </>
-                                           
+
                                         )}
                                     </div>
                                 </div>
