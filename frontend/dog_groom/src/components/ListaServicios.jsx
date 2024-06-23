@@ -6,6 +6,7 @@ import { notificarError, notificarExito } from '../utilis/notificaciones';
 import AgregarServicio from './AgregarServicio';
 import { obtenerTipoMascotas } from '../services/tipoAnimal';
 import Header from './Header';
+import { FontAwesomeIcon, faTrashCan, faPenToSquare} from '../utilis/iconos.js'
 
 const ListaServicios = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -217,16 +218,16 @@ const ListaServicios = () => {
                 <td className="px-6 py-4 whitespace-nowrap">{servicio.tipoMascota.Descripcion}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <button
-                    className="px-3 py-1 bg-red-600 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
-                    onClick={() => eliminarGasto(servicio.id)}
-                  >
-                    Eliminar
-                  </button>
-                  <button
-                    className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+                    className="px-4 py-1 bg-blue-600 text-white rounded-md mr-2 hover:bg-blue-700 focus:outline-none"
                     onClick={() => abrirModal('editar', servicio)}
                   >
-                    Editar
+                   <FontAwesomeIcon icon={faPenToSquare} />
+                  </button>
+                  <button
+                    className="px-4 py-1 bg-red-600 text-white rounded-md  hover:bg-red-700 focus:outline-none"
+                    onClick={() => eliminarGasto(servicio.id)}
+                  >
+                    <FontAwesomeIcon icon={faTrashCan} />
                   </button>
                 </td>
               </tr>
