@@ -46,12 +46,14 @@ function AgregarCliente({ isOpen, cerrar }) {
     const handleAgregarCliente = async (e) => {
         e.preventDefault();
         console.log("fotourl: ",mascotas)
+        await agregarMascota();
         const listaMascotas = mascotas.map((mascota) => ({
             nombre: mascota.nombre,
             raza: mascota.raza,
             cedula: cedulaCliente,
             ID_TipoMascota: mascota.tipoMascota.ID_TipoMascota,
         }));
+        console.log("Listamascotas:",listaMascotas)
         const formData = new FormData();
         if (!listaMascotas.length) {
             const mascota = [{
@@ -94,7 +96,7 @@ function AgregarCliente({ isOpen, cerrar }) {
         e.target.value = null;
     };
 
-    const agregarMascota = () => {
+    const agregarMascota = async () => {
         console.log(mascotas.length === 0 ? false : true)
         if(nombreMascota && razaMascota && tamanoMascota.ID_TipoMascota !== 0){
         const mascota = {

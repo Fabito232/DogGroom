@@ -144,9 +144,10 @@ const ListaProductos = () => {
   return (
     <>
       <Header></Header>
-      <div className='md:container md:mx-auto p-5'>
-        <div className="p-6 bg-gray-100 container">
-          <h1 className="text-3xl font-bold mb-4">Lista de Productos</h1>
+      <div className="bg-slate-300 bg-cover min-h-screen">
+      <div className='md:container md:mx-auto p-5 '>
+        <div className="p-6 bg-amber-700 container bg-opacity-95 rounded-lg shadow-2xl">
+          <h1 className="text-3xl font-bold mb-4 text-center">Lista de Productos</h1>
           <div className='flex justify-between mb-4'>
             <div>
               <input
@@ -257,6 +258,7 @@ const ListaProductos = () => {
             </nav>
           </div>
         </div>
+      </div>
       </div>
     </>
   );

@@ -1,7 +1,7 @@
 import sequelize from '../database/database.js'
 import Cita from '../models/citaModel.js';
 import Gasto from '../models/gastosModel.js';
-import { Op } from 'sequelize';
+import { Op, and } from 'sequelize';
 
 export const createGasto = async (req, res) => {
 
@@ -154,8 +154,9 @@ export const resumenFinanzas = async (req, res) => {
           ],
           where:{
             FechaYHora:{
-              [Op.between]: [fechaInicio,fechaFin]
-            }
+              [Op.between]: [fechaInicio,fechaFin] 
+            },
+            Estado: false
           },
         })
 

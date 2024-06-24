@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import imgPerro from '../assets/img_perro.jpg';
 import Header from "./Header";
 import { obtenerClientes, actualizarCliente, borrarCliente } from '../services/clienteService';
-import { actualizarMascota } from '../services/mascotaService';
 import { actualizarMascota } from '../services/mascotaService';
 import { URL_Hosting } from '../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,7 +12,6 @@ const ListaClientes = () => {
   const [clientes, setClientes] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
   const [clientesPorPagina] = useState(8);
-  const navigate = useNavigate();
   const [clienteEditando, setClienteEditando] = useState(null);
   const [isGuardarDisabled, setIsGuardarDisabled] = useState(true);
   const [terminoBusqueda, setTerminoBusqueda] = useState(""); // Nuevo estado para el término de búsqueda
@@ -72,7 +69,6 @@ const ListaClientes = () => {
       nombre: clienteEditando.nombre,
       telefono: clienteEditando.telefono
     };
-    };
     const mascota = {
       nombre: clienteEditando.mascota.Nombre,
       raza: clienteEditando.mascota.Raza,
@@ -87,7 +83,6 @@ const ListaClientes = () => {
     }
 
     if (isGuardarDisabled) return;
-    setClientes(clientes.map(c => c.id === clienteEditando.id ? clienteEditando : c));
     setClientes(clientes.map(c => c.id === clienteEditando.id ? clienteEditando : c));
     setClienteEditando(null);
   };
@@ -116,7 +111,6 @@ const ListaClientes = () => {
   const manejarEliminar = async (id) => {
     const confirmacion = window.confirm('¿Estás seguro de eliminar este cliente?');
     if (confirmacion) {
-      await borrarCliente(id);
       await borrarCliente(id);
       setClientes(clientes.filter(cliente => cliente.id !== id));
     }
@@ -148,26 +142,9 @@ const ListaClientes = () => {
 
   const totalPaginas = Math.ceil(clientesFiltrados.length / clientesPorPagina);
 
-  const manejarCambioBusqueda = (e) => {
-    setTerminoBusqueda(e.target.value);
-  };
-
-  const clientesFiltrados = clientes.filter(cliente =>
-    cliente.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-    cliente.cedula.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-    cliente.mascota.toLowerCase().includes(terminoBusqueda.toLowerCase())
-  );
-
-  const indiceUltimoCliente = paginaActual * clientesPorPagina;
-  const indicePrimerCliente = indiceUltimoCliente - clientesPorPagina;
-  const clientesActuales = clientesFiltrados.slice(indicePrimerCliente, indiceUltimoCliente);
-
-  const totalPaginas = Math.ceil(clientesFiltrados.length / clientesPorPagina);
-
   return (
-    <div className="relative min-h-screen flex flex-col bg-fondo2 bg-cover">
+    <div className="relative min-h-screen flex flex-col bg-slate-300bg-cover">
       <Header />
-      <div className="flex-grow flex items-start justify-start p-4 md:p-12">
       <div className="flex-grow flex items-start justify-start p-4 md:p-12">
         <div className="shadow-lg w-full md:w-200 md:h-auto">
           <div className="shadow-md p-4 md:p-16 mb-8 overflow-auto max-h-[790px]" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
@@ -190,21 +167,9 @@ const ListaClientes = () => {
               {clientesActuales.map(cliente => (
                 <div key={cliente.id} className="flex flex-col bg-amber-700 bg-opacity-90 border border-black w-full">
                   <div className="relative p-4 w-full flex justify-center">
-            <input
-              type="text"
-              placeholder="Buscar por Nombre de Cliente, Cédula o Nombre de la Mascota"
-              value={terminoBusqueda}
-              onChange={manejarCambioBusqueda}
-              className="mb-4 p-2 border border-gray-300 rounded w-full"
-            />
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {clientesActuales.map(cliente => (
-                <div key={cliente.id} className="flex flex-col bg-amber-700 bg-opacity-90 border border-black w-full">
-                  <div className="relative p-4 w-full flex justify-center">
                     <img
                       src={clienteEditando && clienteEditando.id === cliente.id ? clienteEditando.mascota.FotoURL : (cliente.mascota && cliente.mascota.FotoURL) ? URL_Hosting + cliente.mascota.FotoURL : imgPerro}
                       alt={cliente.nombre}
-                      className="h-32 w-32 md:h-48 md:w-48 object-cover rounded-lg cursor-pointer"
                       className="h-32 w-32 md:h-48 md:w-48 object-cover rounded-lg cursor-pointer"
                       onClick={() => document.getElementById(`fileInput-${cliente.id}`).click()}
                     />
@@ -309,22 +274,6 @@ const ListaClientes = () => {
                   </div>
                 </div>
               ))}
-            </div>
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={() => setPaginaActual(paginaActual - 1)}
-                disabled={paginaActual === 1}
-                className="mx-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 text-black rounded disabled:opacity-50"
-              >
-                Anterior
-              </button>
-              <button
-                onClick={() => setPaginaActual(paginaActual + 1)}
-                disabled={paginaActual === totalPaginas}
-                className="mx-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 text-black rounded disabled:opacity-50"
-              >
-                Siguiente
-              </button>
             </div>
             <div className="flex justify-center mt-4">
               <button

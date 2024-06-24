@@ -36,7 +36,6 @@ Cita.init({
     MontoTotal: {
         type: DataTypes.DECIMAL,
         allowNull: true
-        allowNull: true
     },
     ID_Cliente: {
         type: DataTypes.STRING,
