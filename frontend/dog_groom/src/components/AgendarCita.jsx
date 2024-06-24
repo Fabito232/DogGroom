@@ -385,13 +385,18 @@ function AgendarCita() {
               </div>
                 
               
-              
-              <button
-                className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded"
-                type="submit"
-              >
-                Agendar Cita
-              </button>
+              <div className="flex space-x-4 mt-4">
+                <button
+                  className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded"
+                  type="submit"
+                >
+                  Agendar cita
+                </button>
+                    
+                  
+                   
+                
+                </div>
             </form>
           </div>
         </div>

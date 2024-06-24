@@ -51,7 +51,7 @@ function Citas() {
             precio: parseFloat(cita.Servicio.Precio)
           }
         }));
-        console.log(citasTransformadas)
+        console.log(citasTransformadas);
         setEvents(citasTransformadas);
       } else {
         console.error("La respuesta de obtenerCitas no contiene datos.");
@@ -60,6 +60,7 @@ function Citas() {
       console.error("Error al obtener citas:", error);
     }
   };
+
 
   useEffect(() => {
     fetchCitas();
@@ -90,6 +91,11 @@ function Citas() {
   const handleSelectSlot = ({ start }) => {
     console.log(start);
   };
+  const handleViewChange =(view) => {
+    if (view === 'agenda')
+      navigate('/agendarCita')
+  }
+ 
 
   const eventStyleGetter = (event) => {
     let style = {
@@ -110,6 +116,7 @@ function Citas() {
   };
   
   
+  
 
   return (
     <div className="img-backendC">
@@ -123,11 +130,13 @@ function Citas() {
           selectable={true}
           onSelectEvent={handleEventClick}
           onSelectSlot={handleSelectSlot}
+          onView={handleViewChange}
           views={{ week: true, month: true, day: true, agenda: true }}
           min={dayjs('2024-12-23T08:00:00').toDate()}
           max={dayjs('2024-12-23T19:00:00').toDate()}
           formats={{
-            dayHeaderFormat: date => dayjs(date).format("DD/MM/YYYY")
+            dayHeaderFormat: date => dayjs(date).format("DD/MM/YYYY"),
+            
           }}
           messages={{
             next: "Siguiente",

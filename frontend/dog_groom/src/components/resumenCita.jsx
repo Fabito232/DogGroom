@@ -20,8 +20,12 @@ function ResumenCita() {
   const [citaEditada, setCitaEditada] = useState({});
   const [montoTotal, setMontoTotal] = useState(0); // Estado para manejar montoTotal
   const [montoAdicionalInicial, setMontoAdicionalInicial] = useState(0);
+  const [fecha, setFecha] = useState('');
+  const [hora, setHora] = useState('');
+
   const { cita } = location.state || {};
-  console.log("Hola", cita)
+  console.log("Hola", cita);
+  
   useEffect(() => {
     if (cita) {
       setCitaEditada({
@@ -37,16 +41,43 @@ function ResumenCita() {
       });
       setMontoTotal(parseFloat(cita.montoTotal)); // Inicializar montoTotal con el valor actual de la cita
       setMontoAdicionalInicial(parseFloat(cita.montoAdicional));
+      setFecha(dayjs(cita.start).format('YYYY-MM-DD'));
+      setHora(dayjs(cita.start).format('HH:mm'));
     }
   }, [cita]);
-  console.log(cita)
+  console.log(cita);
   
-
   if (!cita) {
     return <div>No hay datos de la cita disponible.</div>;
   }
 
-  const { id, cliente, servicio, mascota } = cita;
+  const { id, cliente, servicio, mascotas } = cita;
+  
+  const manejarCambioFecha = (e) => {
+    const nuevaFecha = e.target.value;
+    setFecha(nuevaFecha);
+    actualizarFechaYHora(nuevaFecha, hora);
+  };
+
+  const manejarCambioHora = (e) => {
+    const nuevaHora = e.target.value;
+    setHora(nuevaHora);
+    actualizarFechaYHora(fecha, nuevaHora);
+  };
+
+  const actualizarFechaYHora = (fecha, hora) => {
+    const nuevaFechaYHora = dayjs(`${fecha}T${hora}`).toISOString();
+    setCitaEditada({ ...citaEditada, fechaYHora: nuevaFechaYHora });
+  };
+
+  const limitanteTiempo = () => {
+    const times = [];
+    for (let h = 8; h < 18; h++) {
+      times.push(`${String(h).padStart(2, '0')}:00`);
+      times.push(`${String(h).padStart(2, '0')}:30`);
+    }
+    return times;
+  };
 
   const manejarEditar = () => {
     setEditando(true);
@@ -115,6 +146,9 @@ function ResumenCita() {
   const manejarSalir = () => {
     navigate('/citas');
   };
+  const agenda = () =>{
+    navigate('/agendarCita')
+  }
 
   const manejarCambioMontoAdicional = (e) => {
     const nuevoMontoAdicional = parseFloat(e.target.value) || 0;
@@ -130,14 +164,43 @@ function ResumenCita() {
         <div className="flex flex-col md:flex-row md:space-x-8 justify-center">
           <div className="flex-1 space-y-8">
             <div>
-              <label className="block text-gray-900 text-sm font-bold mb-2">Fecha y Hora:</label>
-              <input
-                type="text"
-                readOnly={!editando}
-                className="p-3 border border-gray-300 rounded w-full md:w-80"
-                value={editando ? new Date(citaEditada.fechaYHora).toString() : formatFechaHora(cita.start)}
-                onChange={(e) => setCitaEditada({ ...citaEditada, fechaYHora: new Date(e.target.value).toISOString() })}
-              />
+              <label className="block text-gray-900 text-sm font-bold mb-2">Fecha:</label>
+              {editando ? (
+                <input
+                  type="date"
+                  className="p-3 border border-gray-300 rounded w-full md:w-80"
+                  value={fecha}
+                  onChange={manejarCambioFecha}
+                />
+              ) : (
+                <input
+                  type="text"
+                  readOnly
+                  className="p-3 border border-gray-300 rounded w-full md:w-80"
+                  value={dayjs(cita.start).format('DD/MM/YYYY')}
+                />
+              )}
+            </div>
+            <div>
+              <label className="block text-gray-900 text-sm font-bold mb-2">Hora:</label>
+              {editando ? (
+                <select
+                  className="p-3 border border-gray-300 rounded w-full md:w-80"
+                  value={hora}
+                  onChange={manejarCambioHora}
+                >
+                  {limitanteTiempo().map((time) => (
+                    <option key={time} value={time}>{time}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  readOnly
+                  className="p-3 border border-gray-300 rounded w-full md:w-80"
+                  value={dayjs(cita.start).format('H:mm a')}
+                />
+              )}
             </div>
             {cita.mascotas.fotoURL && (
               <div>
@@ -148,12 +211,19 @@ function ResumenCita() {
                 />
               </div>
             )}
-            <div className="mt-4">
+            <div className="flex space-x-4 mt-4">
               <button
-                className="bg-red-700 hover:bg-red-900 text-white font-bold w-40 h-12 rounded-md"
+                className="bg-red-700 hover:bg-red-900 text-white font-bold w-20 h-12 rounded-md"
                 onClick={manejarSalir}
               >
                 Salir
+              </button>
+
+              <button
+                className="bg-green-700 hover:bg-green-900 text-white font-bold w-40 h-12 rounded-md"
+                onClick={agenda}
+              >
+                Agendar otra cita
               </button>
             </div>
           </div>
