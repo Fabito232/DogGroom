@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import PropTypes from 'prop-types';
 
 Modal.setAppElement('#root');
 
 const AgregarMascota = ({ isOpen, cerrar, agregarMascota, mascota, modo, tiposMascota }) => {
-    const [nuevaMascota, setNuevaMascota] = useState({ nombre: '', raza: '', tipo: {}, foto: '' });
+    const [nuevaMascota, setNuevaMascota] = useState({ nombre: '', raza: '', tipoMascota: {}, foto: '' });
 
     useEffect(() => {
         if (modo === 'editar' && mascota) {
             setNuevaMascota(mascota);
         } else {
-            setNuevaMascota({ nombre: '', raza: '', tipo: {}, foto: '' });
+            setNuevaMascota({ nombre: '', raza: '', tipoMascota: {}, foto: '' });
         }
     }, [modo, mascota]);
 
@@ -24,18 +24,18 @@ const AgregarMascota = ({ isOpen, cerrar, agregarMascota, mascota, modo, tiposMa
     };
 
     const handleChangeSelect = (e) => {
-        const { value } = e.target;
+        const { name, value } = e.target;
         const tipoMascotaSeleccionado = tiposMascota.find(tipo => tipo.ID_TipoMascota === parseInt(value, 10));
         setNuevaMascota(prevState => ({
             ...prevState,
-            tipo: tipoMascotaSeleccionado || {}
+            [name]: tipoMascotaSeleccionado || {}
         }));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         agregarMascota(nuevaMascota);
-        setNuevaMascota({ nombre: '', raza: '', tipo: {}, foto: '' });
+        setNuevaMascota({ nombre: '', raza: '', tipoMascota: {}, foto: '' });
         cerrar();
     };
 
@@ -55,7 +55,6 @@ const AgregarMascota = ({ isOpen, cerrar, agregarMascota, mascota, modo, tiposMa
                         <label htmlFor="nombre" className="block text-black-700">Nombre</label>
                         <input
                             type="text"
-                            id="nombre"
                             name="nombre"
                             value={nuevaMascota.nombre}
                             onChange={handleChange}
@@ -67,7 +66,6 @@ const AgregarMascota = ({ isOpen, cerrar, agregarMascota, mascota, modo, tiposMa
                         <label htmlFor="raza" className="block text-gray-700">Raza</label>
                         <input
                             type="text"
-                            id="raza"
                             name="raza"
                             value={nuevaMascota.raza}
                             onChange={handleChange}
@@ -76,19 +74,18 @@ const AgregarMascota = ({ isOpen, cerrar, agregarMascota, mascota, modo, tiposMa
                         />
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="tipo" className="block text-gray-700">Tipo de Mascota</label>
+                        <label className="block text-gray-700">Tipo de Mascota</label>
                         <select
-                            id="tipo"
-                            name="tipo"
-                            value={nuevaMascota.tipo.ID_TipoMascota || ''}
-                            onChange={handleChangeSelect}
                             className="w-full p-2 border border-gray-500 rounded mt-1"
+                            value={nuevaMascota.tipoMascota.ID_TipoMascota || ''}
+                            onChange={handleChangeSelect}
+                            name="tipoMascota"
                             required
                         >
                             <option value="">Selecciona un tipo de mascota</option>
-                            {tiposMascota.map(tipo => (
+                            {tiposMascota.map((tipo) => (
                                 <option key={tipo.ID_TipoMascota} value={tipo.ID_TipoMascota}>
-                                    {tipo.nombre}
+                                    {tipo.Descripcion}
                                 </option>
                             ))}
                         </select>
@@ -97,7 +94,6 @@ const AgregarMascota = ({ isOpen, cerrar, agregarMascota, mascota, modo, tiposMa
                         <label htmlFor="foto" className="block text-gray-700">Foto</label>
                         <input
                             type="text"
-                            id="foto"
                             name="foto"
                             value={nuevaMascota.foto}
                             onChange={handleChange}
@@ -128,12 +124,12 @@ const AgregarMascota = ({ isOpen, cerrar, agregarMascota, mascota, modo, tiposMa
 };
 
 AgregarMascota.propTypes = {
-    isOpen: PropTypes.bool.isRequired,
-    cerrar: PropTypes.func.isRequired,
-    agregarMascota: PropTypes.func.isRequired,
+    isOpen: PropTypes.bool,
+    cerrar: PropTypes.func,
+    agregarMascota: PropTypes.func,
     mascota: PropTypes.object,
-    modo: PropTypes.string.isRequired,
-    tiposMascota: PropTypes.array.isRequired
+    modo: PropTypes.string,
+    tiposMascota: PropTypes.array
 };
 
 export default AgregarMascota;

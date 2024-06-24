@@ -13,7 +13,7 @@ const ListaClientes = () => {
   const [clientesPorPagina] = useState(8);
   const [clienteEditando, setClienteEditando] = useState(null);
   const [isGuardarDisabled, setIsGuardarDisabled] = useState(true);
-  const [terminoBusqueda, setTerminoBusqueda] = useState(""); // Nuevo estado para el término de búsqueda
+  const [terminoBusqueda, setTerminoBusqueda] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalIsOpenMascotas, setModalIsOpenMascotas] = useState(false);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
@@ -28,7 +28,7 @@ const ListaClientes = () => {
 
   const abrirModalMascotas = (cliente) => {
     setClienteSeleccionado(cliente);
-    setModalIsOpenMascotas(true); // Corregido para abrir el modal de mascotas
+    setModalIsOpenMascotas(true);
   };
 
   const cerrarModalMascotas = () => {
@@ -44,7 +44,7 @@ const ListaClientes = () => {
         cedula: cliente.Cedula,
         nombre: cliente.Nombre,
         telefono: cliente.Telefono,
-        mascotas: cliente.Mascota, // Almacena todas las mascotas del cliente
+        mascotas: cliente.Mascota,
       }));
       setClientes(listaClientes);
     } catch (error) {
@@ -151,7 +151,7 @@ const ListaClientes = () => {
                     />
                     <MostrarMascota
                       isOpen={modalIsOpenMascotas}
-                      mascotas={clienteSeleccionado ? clienteSeleccionado.mascotas : []} // Ajustado para usar clienteSeleccionado.mascotas
+                      mascotas={clienteSeleccionado ? clienteSeleccionado.mascotas : []}
                       cargarClientes={cargarClientes}
                       cliente={clienteSeleccionado ? clienteSeleccionado.nombre : ''}
                       cerrar={cerrarModalMascotas}

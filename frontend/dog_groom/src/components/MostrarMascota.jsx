@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { URL_Hosting } from '../services/api';
 import Cliente from '../assets/img_perro.jpg';
 import { crearMascota, actualizarMascota, borrarMascota } from '../services/mascotaService';
@@ -6,16 +6,18 @@ import { notificarError, notificarExito } from '../utilis/notificaciones';
 import AgregarMascota from './AgregarMascota';
 import Modal from 'react-modal';
 import PropTypes from 'prop-types';
+import { obtenerTipoMascotas } from '../services/tipoAnimal';
 
 Modal.setAppElement('#root');
 
-const MostrarMascota = ({ isOpen, mascotas = [], cargarClientes, cliente, cerrar }) => {
+const MostrarMascota = ({ isOpen, mascotas = [], setMascotas, cargarClientes, cliente, cerrar }) => {
     const [mascotaEditando, setMascotaEditando] = useState(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modo, setModo] = useState('agregar');
+    const [tiposMascota, setTiposMascota] = useState([]);
 
     const MASCOTAS_POR_PAGINA = 2;
-    const paginaActual = 0;  // No es necesario el estado local si no se actualiza dinámicamente
+    const paginaActual = 0;
 
     const manejarCambioEntradaEdicion = (e) => {
         if (!mascotaEditando) return;
@@ -46,7 +48,7 @@ const MostrarMascota = ({ isOpen, mascotas = [], cargarClientes, cliente, cerrar
         }
     };
 
-    const abrirModal = (modo, cliente = null) => {
+    const abrirModal = (modo) => {
         setModo(modo);
         setModalIsOpen(true);
     };
@@ -55,6 +57,23 @@ const MostrarMascota = ({ isOpen, mascotas = [], cargarClientes, cliente, cerrar
         setModalIsOpen(false);
     };
 
+    const cargarTiposMascotas = async () => {
+        try {
+            const resTipoAnimal = await obtenerTipoMascotas();
+
+            if (resTipoAnimal.ok) {
+                setTiposMascota(resTipoAnimal.data);
+            }
+
+        } catch (error) {
+            notificarError(error);
+        }
+    }
+
+    useEffect(() => {
+        cargarTiposMascotas();
+    }, []);
+
     const agregarMascota = async (mascota) => {
         try {
             const nuevaMascota = {
@@ -62,7 +81,7 @@ const MostrarMascota = ({ isOpen, mascotas = [], cargarClientes, cliente, cerrar
                 raza: mascota.raza,
                 tipoMascota: mascota.tipoMascota.ID_TipoMascota,
                 foto: mascota.FotoURL
-            };
+            }
 
             const resMascota = await crearMascota(nuevaMascota);
 
@@ -70,7 +89,8 @@ const MostrarMascota = ({ isOpen, mascotas = [], cargarClientes, cliente, cerrar
                 const nuevaMascota = {
                     id: resMascota.data.ID_Mascota,
                     ...mascota
-                };
+                }
+
                 setModalIsOpen(false);
                 notificarExito(resMascota.message);
             } else {
@@ -81,7 +101,7 @@ const MostrarMascota = ({ isOpen, mascotas = [], cargarClientes, cliente, cerrar
         }
     };
 
-    const mascotasPaginadas = mascotas && mascotas.length > 0 ? 
+    const mascotasPaginadas = mascotas && mascotas.length > 0 ?
         mascotas.slice(paginaActual * MASCOTAS_POR_PAGINA, (paginaActual + 1) * MASCOTAS_POR_PAGINA) : [];
 
     return (
@@ -107,7 +127,7 @@ const MostrarMascota = ({ isOpen, mascotas = [], cargarClientes, cliente, cerrar
                     agregarMascota={agregarMascota}
                     mascota={null}  // Ajusta según tu implementación de AgregarMascota
                     modo={modo}
-                    tiposMascota={[]}  // Ajusta según tus tipos de mascota
+                    tiposMascota={tiposMascota}  // Ajusta según tus tipos de mascota
                 />
                 <div className="grid grid-cols-2 gap-4">
                     {mascotasPaginadas.map((mascota) => (
