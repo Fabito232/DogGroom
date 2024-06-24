@@ -40,6 +40,9 @@ function AgendarCita() {
   const [id_cedula, setIDCedula] = useState('');
   const [id_servicio, setIDServicio] = useState('');
   const [precio, setPrecio] = useState(' ');
+  const [mascotasCliente, setMascotasCliente] = useState([]);
+  const [mascotaSeleccionada, setMascotaSeleccionada] = useState(null);
+
 
 
   useEffect(() => {
@@ -54,11 +57,14 @@ function AgendarCita() {
           cedula: cliente.Cedula,
           nombre: cliente.Nombre,
           telefono: cliente.Telefono,
-          mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '',
-          raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '',
-          tamano: cliente.Mascota.length > 0 ? cliente.Mascota[0].TipoMascotum.Descripcion : '',
-          image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : imgPerro,
-          ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '',
+          mascotas: cliente.Mascota.map(mascota => ({
+            id: mascota.ID_Mascota,
+            nombre: mascota.Nombre,
+            raza: mascota.Raza,
+            tamano: mascota.TipoMascotum.Descripcion,
+            fotoURL: mascota.FotoURL,
+            ID_TipoMascota: mascota.ID_TipoMascota,
+          }))
           
 
         }));
@@ -71,31 +77,41 @@ function AgendarCita() {
     };
     cargarClientes();
   }, []);
-
+ 
+  //Va a cargar el cliente con las mascotas
   const handleSelectCliente = (cliente) => {
     setCedulaCliente(cliente.cedula);
     setNombreCliente(cliente.nombre);
     setTelefonoCliente(cliente.telefono);
-    setNombreMascota(cliente.mascota);
-    setRazaMascota(cliente.raza);
-    setTamanoMascota(cliente.tamano);
-    SetFotoMascota(cliente.image);
-    setFotoUrl(cliente.image );
+    setMascotasCliente(cliente.mascotas);
+    
+    if (cliente.mascotas.length > 0) {
+      const primeraMascota = cliente.mascotas[0];
+      setMascotaSeleccionada(primeraMascota);
+      actualizarServicioParaMascota(primeraMascota);
+    } else {
+      setMascotaSeleccionada(null);
+    }
+  };
+  
 
-    const servicio = servicios.find(serv => serv.ID_TipoMascota === cliente.ID_TipoMascota);
-      if (servicio) {
-        setIDServicio(servicio.ID_Servicio);
-        setPrecio(servicio.Precio);
-        setMontoTotal(parseFloat(servicio.Precio)+parseFloat(montoAdicional||0))
-      }
-
-
+  const actualizarServicioParaMascota = (mascota) => {
+    const servicio = servicios.find(serv => serv.ID_TipoMascota === mascota.ID_TipoMascota);
+    if (servicio) {
+      setIDServicio(servicio.ID_Servicio);
+      setPrecio(servicio.Precio);
+      setMontoTotal(parseFloat(servicio.Precio) + parseFloat(montoAdicional || 0));
+    } else {
+      setIDServicio('');
+      setPrecio('');
+      setMontoTotal(parseFloat(montoAdicional || 0));
+    }
   };
 
   const handleAgendaCita = async (e) => {
     e.preventDefault();
     
-    const fechaYHora = `${fecha}T${hora}`;
+    const fechaYHora =  `${fecha}T${hora}`;
     const cita = {
       fechaYHora: fechaYHora,
       estado: estado,
@@ -103,10 +119,10 @@ function AgendarCita() {
       descripcion: descripcion,
       cedula: cedulaCliente,
       montoAdicional: montoAdicional,
-      ID_Servicio: id_servicio
-      
-
+      ID_Servicio: id_servicio,
+      ID_Mascota: mascotaSeleccionada.id
     };
+    console.log("Hola",cita)
     try {
       console.log(cita);
       const resCita = await crearCita(cita);
@@ -129,6 +145,7 @@ function AgendarCita() {
       toast.error(error.message, { autoClose: 1500, theme: "colored" });
     }
   };
+  
   
   
 
@@ -209,38 +226,68 @@ function AgendarCita() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <input
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
-                  type="text"
-                  id="nombreMascota"
-                  name="nombreMascota"
-                  placeholder="Nombre del Perro"
-                  value={nombreMascota}
-                  onChange={(e) => setNombreMascota(e.target.value)}
-                  required
-                />
-                <input
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
-                  type="text"
-                  id="raza"
-                  name="raza"
-                  placeholder="Raza"
-                  value={razaMascota}
-                  onChange={(e) => setRazaMascota(e.target.value)}
-                  required
-                />
-                <input
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
-                  type="text"
-                  id="tamano"
-                  name="tamano"
-                  placeholder="Tamaño"
-                  value={tamanoMascota}
-                  onChange={(e) => setTamanoMascota(e.target.value)}
-                  required
-                />
+                  <select
+                    className="p-3 border border-gray-300 rounded w-full mb-2"
+                    
+                    value={mascotaSeleccionada?.id || ''}
+                    onChange={(e) => {
+                      const mascota = mascotasCliente.find(m => m.id === parseInt(e.target.value));
+                      setMascotaSeleccionada(mascota);
+                      actualizarServicioParaMascota(mascota);
+                    }}
+                    required
+                  >
+                    <option value="" disabled>Seleccione una mascota</option>
+                    
+                    {mascotasCliente.map(mascota => (
+                      <option key={mascota.id} value={mascota.id}>{mascota.nombre}</option>
+                    ))}
+                  </select>
+                    
+                  
+                </div>
+
+                {mascotaSeleccionada && (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <input
+                        className="p-3 border border-gray-300 rounded w-full mb-2"
+                        type="text"
+                        placeholder="Nombre del Perro"
+                        value={mascotaSeleccionada.nombre}
+                        readOnly
+                      />
+                      <input
+                        className="p-3 border border-gray-300 rounded w-full mb-2"
+                        type="text"
+                        placeholder="Raza"
+                        value={mascotaSeleccionada.raza}
+                        readOnly
+                      />
+                      <input
+                        className="p-3 border border-gray-300 rounded w-full mb-2"
+                        type="text"
+                        placeholder="Tamaño"
+                        value={mascotaSeleccionada.tamano}
+                        readOnly
+                      />
+                    </div>
+                    <div className="mb-8 md:mr-8 md:mb-0">
+                      {mascotaSeleccionada.fotoURL && (
+                        <img
+                          src={URL_Hosting + mascotaSeleccionada.fotoURL || imgPerro}
+                          alt="Mascota"
+                          className="w-48 h-48 object-cover rounded-md mt-4"
+                        />
+                      )}
+                  </div>
+
+
+                    
+                  </>
+                )}
                 
-              </div>
+              
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <input
@@ -337,17 +384,8 @@ function AgendarCita() {
                
               </div>
                 
-              <div className="mb-8 md:mr-8 md:mb-0">
-                
-                {fotoUrl && (
-                  <img
-                    src={URL_Hosting + fotoUrl || imgPerro}
-                    alt="Mascota"
-                    className="w-48 h-48 object-cover rounded-md mt-4"
-                  />
-                )}
-              </div>
-
+              
+              
               <button
                 className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded"
                 type="submit"

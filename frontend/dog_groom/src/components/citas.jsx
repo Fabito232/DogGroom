@@ -36,13 +36,14 @@ function Citas() {
           cliente: { // Detalles completos del cliente
             nombre: cita.Cliente.Nombre,
             cedula: cita.Cliente.Cedula,
-            telefono: cita.Cliente.Telefono,
-            mascotas: cita.Cliente.Mascota.map(mascota => ({
-              nombre: mascota.Nombre,
-              raza: mascota.Raza,
-              tipoMascota: mascota.TipoMascotum.Descripcion,
-              fotoURL: mascota.FotoURL
-            }))
+            telefono: cita.Cliente.Telefono
+          },
+          mascotas:{
+              id: cita.Mascotum.ID_Mascota,
+              nombre: cita.Mascotum.Nombre,
+              raza: cita.Mascotum.Raza,
+              tipoMascota: cita.Mascotum.TipoMascotum.Descripcion,
+              fotoURL: cita.Mascotum.FotoURL
           },
           servicio: { // Detalles del servicio de la 
             id_servicio: cita.Servicio.ID_Servicio,

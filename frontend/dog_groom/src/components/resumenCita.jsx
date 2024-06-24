@@ -21,7 +21,7 @@ function ResumenCita() {
   const [montoTotal, setMontoTotal] = useState(0); // Estado para manejar montoTotal
   const [montoAdicionalInicial, setMontoAdicionalInicial] = useState(0);
   const { cita } = location.state || {};
-
+  console.log("Hola", cita)
   useEffect(() => {
     if (cita) {
       setCitaEditada({
@@ -32,18 +32,21 @@ function ResumenCita() {
         montoTotal: cita.montoTotal,
         montoAdicional: cita.montoAdicional,
         Cedula: cita.cliente.Cedula,
-        ID_Servicio: cita.servicio.id_servicio
+        ID_Servicio: cita.servicio.id_servicio,
+        ID_Mascota: cita.mascotas.id
       });
       setMontoTotal(parseFloat(cita.montoTotal)); // Inicializar montoTotal con el valor actual de la cita
       setMontoAdicionalInicial(parseFloat(cita.montoAdicional));
     }
   }, [cita]);
+  console.log(cita)
+  
 
   if (!cita) {
     return <div>No hay datos de la cita disponible.</div>;
   }
 
-  const { id, cliente, servicio } = cita;
+  const { id, cliente, servicio, mascota } = cita;
 
   const manejarEditar = () => {
     setEditando(true);
@@ -122,9 +125,9 @@ function ResumenCita() {
   };
 
   return (
-    <div className="flex items-start justify-center w-full bg-fondo1 bg-cover py-10">
-      <div className="bg-lime-800 rounded-3xl p-8 m-4 space-y-8 w-full max-w-5xl">
-        <div className="flex flex-col md:flex-row md:space-x-8">
+    <div className="min-h-screen bg-primary bg-opacity-80 bg-fondo1 bg-cover flex items-center justify-center">
+      <div className="bg-lime-800 object-center rounded-3xl p-8 m-4 space-y-14 w-full max-w-5xl">
+        <div className="flex flex-col md:flex-row md:space-x-8 justify-center">
           <div className="flex-1 space-y-8">
             <div>
               <label className="block text-gray-900 text-sm font-bold mb-2">Fecha y Hora:</label>
@@ -136,10 +139,10 @@ function ResumenCita() {
                 onChange={(e) => setCitaEditada({ ...citaEditada, fechaYHora: new Date(e.target.value).toISOString() })}
               />
             </div>
-            {cliente.mascotas[0].fotoURL && (
+            {cita.mascotas.fotoURL && (
               <div>
                 <img
-                  src={URL_Hosting + cliente.mascotas[0].fotoURL}
+                  src={URL_Hosting + cita.mascotas.fotoURL}
                   alt="Mascota"
                   className="w-48 h-48 object-cover rounded-md"
                 />
@@ -191,7 +194,7 @@ function ResumenCita() {
                   type="text"
                   readOnly
                   className="p-3 border border-gray-300 rounded w-full"
-                  value={cliente.mascotas[0].nombre}
+                  value={cita.mascotas.nombre}
                 />
               </div>
               <div>
@@ -200,7 +203,7 @@ function ResumenCita() {
                   type="text"
                   readOnly
                   className="p-3 border border-gray-300 rounded w-full"
-                  value={cliente.mascotas[0].raza}
+                  value={cita.mascotas.raza}
                 />
               </div>
               <div>
@@ -209,7 +212,7 @@ function ResumenCita() {
                   type="text"
                   readOnly
                   className="p-3 border border-gray-300 rounded w-full"
-                  value={cliente.mascotas[0].tipoMascota}
+                  value={cita.mascotas.tipoMascota}
                 />
               </div>
             </div>
