@@ -170,7 +170,7 @@ const ListaServicios = () => {
     <>
     <Header></Header>
     <div className='md:container md:mx-auto p-5'>
-    <div className="p-6 bg-gray-100 container">
+    <div className="p-6 bg-amber-700 container bg-opacity-95 rounded-lg">
       <h1 className="text-3xl font-bold mb-4">Servicios de La Bandada </h1>
       <div className='flex justify-between mb-4'>
         <div>
@@ -204,10 +204,11 @@ const ListaServicios = () => {
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
-            <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Animal</th>              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+            <tr className="bg-lime-600 border-b text-lg">
+              <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Descripción</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Precio</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Tipo Animal</th>              
+              <th className="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -216,7 +217,7 @@ const ListaServicios = () => {
                 <td className="px-6 py-4 whitespace-nowrap">{servicio.descripcion}</td>
                 <td className="px-6 py-4 whitespace-nowrap">${servicio.precio}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{servicio.tipoMascota.Descripcion}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 whitespace-nowrap flex justify-center items-center space-x-2">
                   <button
                     className="px-4 py-1 bg-blue-600 text-white rounded-md mr-2 hover:bg-blue-700 focus:outline-none"
                     onClick={() => abrirModal('editar', servicio)}

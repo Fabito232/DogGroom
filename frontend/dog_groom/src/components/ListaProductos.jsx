@@ -4,6 +4,7 @@ import { actualizarProducto, borrarProducto, crearProducto, obtenerProductos } f
 import { useConfirm } from './ModalConfirmacion';
 import { notificarError, notificarExito } from '../utilis/notificaciones';
 import Header from './Header.jsx';
+import { FontAwesomeIcon, faTrashCan, faPenToSquare } from '../utilis/iconos.js'
 
 const ListaProductos = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -110,7 +111,7 @@ const ListaProductos = () => {
         if (resProducto.ok) {
           const updatedProductos = productos.filter((producto) => producto.id !== id);
           setProductos(updatedProductos);
-          notificarExito("Se borro existosamente el producto")
+          notificarExito("Se borró exitosamente el producto")
         }
       } catch (error) {
         console.log(error);
@@ -138,6 +139,14 @@ const ListaProductos = () => {
         nuevoOrden = { campo: 'nombre', direccion: 'asc', label: 'Nombre (A-Z)' };
     }
     setOrden(nuevoOrden);
+  };
+
+  const reducirCantidad = async (id) => {
+    const producto = productos.find(p => p.id === id);
+    if (producto && producto.cantidad > 0) {
+      const productoEditado = { ...producto, cantidad: producto.cantidad - 1 };
+      await editarProducto(productoEditado);
+    }
   };
 
   // Paginación
@@ -170,7 +179,7 @@ const ListaProductos = () => {
 
   return (
     <>
-      <Header></Header>
+      <Header />
       <div className="bg-fondo1 bg-cover min-h-screen">
         <div className='md:container md:mx-auto p-5'>
           <div className="p-6 bg-amber-700 container bg-opacity-95 rounded-lg">
@@ -225,19 +234,30 @@ const ListaProductos = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {productosActuales.map((producto) => (
-                    <tr key={producto.id} className="border-b border-gray-300">
-                      <td className="px-6 py-4 whitespace-nowrap">{producto.nombre}</td>
+                  {productosActuales.map((producto, index) => (
+                    <tr key={producto.id} className={`border-b border-gray-300 ${index % 2 === 0 ? 'bg-gray-100' : ''}`}>
+                      <td className="px-6 py-4 whitespace-nowrap flex items-center">
+                        <button
+                          className="px-3 py-1 bg-red-600 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
+                          onClick={() => reducirCantidad(producto.id)}>
+                          -
+                        </button>
+                        {producto.nombre}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">{producto.marca}</td>
                       <td className="px-6 py-4 whitespace-nowrap">{producto.cantidad}</td>
                       <td className="px-6 py-4 whitespace-nowrap">{producto.descripcion}</td>
                       <td className="px-6 py-4 whitespace-nowrap flex justify-center items-center space-x-2">
                         <button
-                          className="px-3 py-1 bg-red-600 w-24 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
-                          onClick={() => eliminarProducto(producto.id)}>Eliminar </button>
-                        <button
                           className="px-3 py-1 bg-blue-600 w-24 text-white rounded-md hover:bg-blue-700 focus:outline-none"
-                          onClick={() => abrirModal('editar', producto)}>Editar</button>
+                          onClick={() => abrirModal('editar', producto)}>
+                          <FontAwesomeIcon icon={faPenToSquare} />
+                        </button>
+                        <button
+                          className="px-3 py-1 bg-red-600 w-24 text-white rounded-md hover:bg-red-700 focus:outline-none"
+                          onClick={() => eliminarProducto(producto.id)}>
+                          <FontAwesomeIcon icon={faTrashCan} />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -249,11 +269,10 @@ const ListaProductos = () => {
             <div className="flex justify-center mt-4">
               <nav>
                 <ul className="flex items-center">
-                  <li>
+                  <li className="mr-6">
                     <button
                       onClick={manejarAnterior}
-                      className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
-                        }`}
+                      className={`px-8 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''}`}
                       disabled={paginaActual === 1}
                     >
                       &laquo;
@@ -263,20 +282,16 @@ const ListaProductos = () => {
                     <li key={numero} className="cursor-pointer mx-1">
                       <button
                         onClick={() => paginar(numero)}
-                        className={`px-3 py-1 ${paginaActual === numero
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-white text-blue-600'
-                          } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
+                        className={`px-4 py-2 text-xl ${paginaActual === numero ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'} rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
                       >
                         {numero}
                       </button>
                     </li>
                   ))}
-                  <li>
+                  <li className="ml-6">
                     <button
                       onClick={manejarSiguiente}
-                      className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
-                        }`}
+                      className={`px-8 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''}`}
                       disabled={paginaActual === numerosDePagina.length}
                     >
                       &raquo;
