@@ -87,10 +87,10 @@ const AgregarMascota = ({ isOpen, cerrar, guardarMascota, mascota, modo, tiposMa
                 <h2 className="text-xl font-bold mb-4">{modo === 'agregar' ? 'Agregar Mascota' : 'Editar Mascota'}</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label htmlFor="nombre" className="block text-black-700">Nombre</label>
                         <input
                             type="text"
                             name="nombre"
+                            placeholder="Nombre de la Mascota"
                             value={nuevaMascota.nombre}
                             onChange={handleChange}
                             className="w-full p-2 border border-gray-500 rounded mt-1"
@@ -98,10 +98,10 @@ const AgregarMascota = ({ isOpen, cerrar, guardarMascota, mascota, modo, tiposMa
                         />
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="raza" className="block text-gray-700">Raza</label>
                         <input
                             type="text"
                             name="raza"
+                            placeholder="Raza de la Mascota"
                             value={nuevaMascota.raza}
                             onChange={handleChange}
                             className="w-full p-2 border border-gray-500 rounded mt-1"
