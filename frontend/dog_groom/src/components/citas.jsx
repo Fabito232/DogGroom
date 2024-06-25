@@ -109,11 +109,7 @@ function Citas() {
     };
   };
 
-  const components = {
-    event: props => {
-      return <div>{props.title}</div>;
-    }
-  };
+  
   
   
   
@@ -126,7 +122,6 @@ function Citas() {
           localizer={localizer}
           events={events}
           eventPropGetter={eventStyleGetter} 
-          components={components}
           selectable={true}
           onSelectEvent={handleEventClick}
           onSelectSlot={handleSelectSlot}

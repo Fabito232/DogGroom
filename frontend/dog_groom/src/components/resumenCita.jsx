@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { borrarCita, actualizarCita } from '../services/citaServices';
+import { actualizarCita, borrarCita } from '../services/citaServices';
 import { notificarError, notificarExito } from '../utilis/notificaciones';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
@@ -18,41 +18,44 @@ function ResumenCita() {
 
   const [editando, setEditando] = useState(false);
   const [citaEditada, setCitaEditada] = useState({});
-  const [montoTotal, setMontoTotal] = useState(0); // Estado para manejar montoTotal
+  const [montoTotal, setMontoTotal] = useState(0);
+  const [montoAdicional, setMontoAdicional] = useState(0);
   const [montoAdicionalInicial, setMontoAdicionalInicial] = useState(0);
   const [fecha, setFecha] = useState('');
   const [hora, setHora] = useState('');
 
   const { cita } = location.state || {};
-  console.log("Hola", cita);
-  
+
   useEffect(() => {
     if (cita) {
+      const { start, montoTotal, montoAdicional} = cita;
       setCitaEditada({
-        fechaYHora: formatFechaHora(cita.start),
+        
+        fechaYHora: formatFechaHora(start),
         cedula: cita.cedula,
         descripcion: cita.descripcion,
         estado: cita.estado,
         montoTotal: cita.montoTotal,
-        montoAdicional: cita.montoAdicional,
+        montoAdicional: montoAdicional || 0, 
         Cedula: cita.cliente.Cedula,
         ID_Servicio: cita.servicio.id_servicio,
         ID_Mascota: cita.mascotas.id
+
       });
-      setMontoTotal(parseFloat(cita.montoTotal)); // Inicializar montoTotal con el valor actual de la cita
-      setMontoAdicionalInicial(parseFloat(cita.montoAdicional));
-      setFecha(dayjs(cita.start).format('YYYY-MM-DD'));
-      setHora(dayjs(cita.start).format('HH:mm'));
+      setMontoTotal(parseFloat(montoTotal));
+      setMontoAdicional(parseFloat(montoAdicional) || 0);
+      setMontoAdicionalInicial(parseFloat(montoAdicional) || 0);
+      setFecha(dayjs(start).format('YYYY-MM-DD'));
+      setHora(dayjs(start).format('HH:mm'));
     }
   }, [cita]);
-  console.log(cita);
-  
+
   if (!cita) {
     return <div>No hay datos de la cita disponible.</div>;
   }
 
   const { id, cliente, servicio, mascotas } = cita;
-  
+
   const manejarCambioFecha = (e) => {
     const nuevaFecha = e.target.value;
     setFecha(nuevaFecha);
@@ -146,16 +149,18 @@ function ResumenCita() {
   const manejarSalir = () => {
     navigate('/citas');
   };
-  const agenda = () =>{
-    navigate('/agendarCita')
-  }
+
+  const agenda = () => {
+    navigate('/agendarCita');
+  };
 
   const manejarCambioMontoAdicional = (e) => {
     const nuevoMontoAdicional = parseFloat(e.target.value) || 0;
     const diferencia = nuevoMontoAdicional - montoAdicionalInicial;
     const nuevoMontoTotal = parseFloat(cita.montoTotal) + diferencia;
     setCitaEditada({ ...citaEditada, montoAdicional: nuevoMontoAdicional });
-    setMontoTotal(nuevoMontoTotal); // Actualizar montoTotal en el estado local
+    setMontoTotal(nuevoMontoTotal);
+    setMontoAdicional(nuevoMontoAdicional);
   };
 
   return (
@@ -223,14 +228,15 @@ function ResumenCita() {
                 className="bg-green-700 hover:bg-green-900 text-white font-bold w-40 h-12 rounded-md"
                 onClick={agenda}
               >
-                Agendar otra cita
+                Agendar Cita
               </button>
             </div>
           </div>
+
           <div className="flex-1 space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-gray-900 text-sm font-bold mb-2">Nombre:</label>
+                <label className="block text-gray-900 text-sm font-bold mb-2">Cliente:</label>
                 <input
                   type="text"
                   readOnly
@@ -321,7 +327,7 @@ function ResumenCita() {
                   type="text"
                   readOnly={!editando}
                   className="p-3 border border-gray-300 rounded w-full md:w-64"
-                  value={editando ? citaEditada.montoAdicional : cita.montoAdicional}
+                  value={editando ? citaEditada.montoAdicional : cita.montoAdicional || 0}
                   onChange={manejarCambioMontoAdicional}
                 />
               </div>
