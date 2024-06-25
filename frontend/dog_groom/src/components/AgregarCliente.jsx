@@ -46,7 +46,6 @@ function AgregarCliente({ isOpen, cerrar }) {
 
     const handleAgregarCliente = async (e) => {
         e.preventDefault();
-        console.log("fotourl: ", mascotas)
         const listaMascotas = mascotas.map((mascota) => ({
             nombre: mascota.nombre,
             raza: mascota.raza,
@@ -87,7 +86,6 @@ function AgregarCliente({ isOpen, cerrar }) {
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        console.log('file: ', file)
         if (file) {
             setFotoActual(file);
             setFotoUrl(URL.createObjectURL(file));
@@ -96,7 +94,6 @@ function AgregarCliente({ isOpen, cerrar }) {
     };
 
     const agregarMascota = () => {
-        console.log(mascotas.length === 0 ? false : true)
         if (nombreMascota && razaMascota && tamanoMascota.ID_TipoMascota !== 0) {
             const mascota = {
                 nombre: nombreMascota,

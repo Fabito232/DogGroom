@@ -5,13 +5,13 @@ import PropTypes from 'prop-types';
 Modal.setAppElement('#root');
 
 const AgregarMascota = ({ isOpen, cerrar, agregarMascota, mascota, modo, tiposMascota }) => {
-    const [nuevaMascota, setNuevaMascota] = useState({ nombre: '', raza: '', tipoMascota: {}, foto: '' });
+    const [nuevaMascota, setNuevaMascota] = useState({ nombre: '', raza: '', tipoMascota: {}, fotoURL: '' });
 
     useEffect(() => {
         if (modo === 'editar' && mascota) {
             setNuevaMascota(mascota);
         } else {
-            setNuevaMascota({ nombre: '', raza: '', tipoMascota: {}, foto: '' });
+            setNuevaMascota({ nombre: '', raza: '', tipoMascota: {}, fotoURL: '' });
         }
     }, [modo, mascota]);
 
@@ -35,7 +35,7 @@ const AgregarMascota = ({ isOpen, cerrar, agregarMascota, mascota, modo, tiposMa
     const handleSubmit = (e) => {
         e.preventDefault();
         agregarMascota(nuevaMascota);
-        setNuevaMascota({ nombre: '', raza: '', tipoMascota: {}, foto: '' });
+        setNuevaMascota({ nombre: '', raza: '', tipoMascota: {}, fotoURL: '' });
         cerrar();
     };
 
@@ -95,7 +95,7 @@ const AgregarMascota = ({ isOpen, cerrar, agregarMascota, mascota, modo, tiposMa
                         <input
                             type="text"
                             name="foto"
-                            value={nuevaMascota.foto}
+                            value={nuevaMascota.fotoURL}
                             onChange={handleChange}
                             className="w-full p-2 border border-gray-500 rounded mt-1"
                             required
