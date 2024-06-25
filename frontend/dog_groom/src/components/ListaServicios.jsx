@@ -21,7 +21,7 @@ const ListaServicios = () => {
     const [paginaActual, setPaginaActual] = useState(1);
     const [servicioPorPagina] = useState(5); // Cantidad de servicios por página
 
-    const openConfirmModal = useConfirm();
+    // const openConfirmModal = useConfirm();
 
     useEffect(() => {
         setServiciosFiltrados(

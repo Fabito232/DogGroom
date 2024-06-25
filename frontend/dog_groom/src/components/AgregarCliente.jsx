@@ -21,6 +21,7 @@ function AgregarCliente({ isOpen, cerrar }) {
     useEffect(() => {
         cargarTipoMascota();
     }, []);
+
     useEffect(() => {
         return () => {
             setCedulaCliente('');
@@ -88,7 +89,6 @@ function AgregarCliente({ isOpen, cerrar }) {
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        console.log('file: ', file)
         if (file) {
             setFotoActual(file);
             setFotoUrl(URL.createObjectURL(file));
@@ -124,144 +124,144 @@ function AgregarCliente({ isOpen, cerrar }) {
     };
 
     return (
-        <Modal 
-              isOpen={isOpen} 
-              onRequestClose={cerrar} 
-              contentLabel="Agregar Cliente y Mascotas" 
-              className="fixed inset-0 flex items-center justify-center p-4 bg-gray-800 bg-opacity-75 overflow-y-auto"
-            >
-                
-            <div className="bg-slate-200 rounded-3xl p-4 md:p-10 m-6 flex flex-col items-center justify-center shadow-lg max-w-7xl ">          
-                 <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">Agregar Cliente y Mascotas</h2>
-                    <form onSubmit={handleAgregarCliente} className="space-y-4 w-full">
-                        <div className="grid md:grid-cols-3 gap-6">
-                            <input
-                                className="p-3 text-lg border border-gray-300 rounded-md "
-                                type="text"
-                                id="cedula"
-                                placeholder="Cédula"
-                                value={cedulaCliente}
-                                onChange={(e) => setCedulaCliente(e.target.value)}
-                                required
-                            />
-                            <input
-                                className="p-3 text-lg border border-gray-300 rounded-md w-full "
-                                type="text"
-                                id="NombreCliente"
-                                placeholder="Nombre del Cliente"
-                                value={nombreCliente}
-                                onChange={(e) => setNombreCliente(e.target.value)}
-                                required
-                            />
-                            <input
-                                className="p-3 text-lg border border-gray-300 rounded-md w-full "
-                                type="text"
-                                id="telefono"
-                                placeholder="Teléfono"
-                                value={telefonoCliente}
-                                onChange={(e) => setTelefonoCliente(e.target.value)}
-                                required
-                            />
-                        </div>
+        <Modal
+            isOpen={isOpen}
+            onRequestClose={cerrar}
+            contentLabel="Agregar Cliente y Mascotas"
+            className="fixed inset-0 flex items-center justify-center p-4 bg-gray-800 bg-opacity-75 overflow-y-auto"
+        >
 
-                        <div className="grid md:grid-cols-3 gap-6">
-                            <input
-                                className="p-3 text-lg border border-gray-300 rounded-md w-full"
-                                type="text"
-                                id="NombrePerro"
-                                placeholder="Nombre de la Mascota"
-                                value={nombreMascota}
-                                onChange={(e) => setNombreMascota(e.target.value)}
-                                required= {mascotas.length === 0}
-                            />
-                            <input
-                                className="p-3 text-lg border border-gray-300 rounded-md w-full"
-                                type="text"
-                                id="raza"
-                                placeholder="Raza"
-                                value={razaMascota}
-                                onChange={(e) => setRazaMascota(e.target.value)}
-                                required= {mascotas.length === 0}
-                            />
-                            <select
-                                className="p-3 text-lg border border-gray-300 rounded-md w-full "
-                                id="tamanno"
-                                value={tamanoMascota.ID_TipoMascota}
-                                onChange={handleChangeSelect}
-                                required= {mascotas.length === 0}
-                            >
-                                <option value="">Seleccionar Tamaño</option>
-                                    {tipoMascota.map((tipo) => (
-                                        <option key={tipo.ID_TipoMascota} value={tipo.ID_TipoMascota}>
-                                        {tipo.Descripcion}
-                                        </option>
-                                    ))}
-                            </select>
-                        </div>
+            <div className="bg-slate-200 rounded-3xl p-4 md:p-10 m-6 flex flex-col items-center justify-center shadow-lg max-w-7xl ">
+                <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">Agregar Cliente y Mascotas</h2>
+                <form onSubmit={handleAgregarCliente} className="space-y-4 w-full">
+                    <div className="grid md:grid-cols-3 gap-6">
+                        <input
+                            className="p-3 text-lg border border-gray-300 rounded-md "
+                            type="text"
+                            id="cedula"
+                            placeholder="Cédula"
+                            value={cedulaCliente}
+                            onChange={(e) => setCedulaCliente(e.target.value)}
+                            required
+                        />
+                        <input
+                            className="p-3 text-lg border border-gray-300 rounded-md w-full "
+                            type="text"
+                            id="NombreCliente"
+                            placeholder="Nombre del Cliente"
+                            value={nombreCliente}
+                            onChange={(e) => setNombreCliente(e.target.value)}
+                            required
+                        />
+                        <input
+                            className="p-3 text-lg border border-gray-300 rounded-md w-full "
+                            type="text"
+                            id="telefono"
+                            placeholder="Teléfono"
+                            value={telefonoCliente}
+                            onChange={(e) => setTelefonoCliente(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                        <div className="flex justify-center items-center mb-6">
-                            <input
-                                type="file"
-                                id="imagenMascota"
-                                className="hidden"
-                                onChange={handleImageChange}
-                            />
-                            <label htmlFor="imagenMascota" className="cursor-pointer p-4 bg-gray-100 rounded-lg shadow-md">
-                                <span className="text-lg text-gray-700">Seleccionar Imagen de la Mascota</span>
-                            </label>
-                            {fotoUrl && (
-                                <img src={fotoUrl} alt="Imagen de la mascota" className="h-40 w-40 object-cover mt-4 ml-4 rounded-lg" />
-                            )}
-                        </div>
+                    <div className="grid md:grid-cols-3 gap-6">
+                        <input
+                            className="p-3 text-lg border border-gray-300 rounded-md w-full"
+                            type="text"
+                            id="NombrePerro"
+                            placeholder="Nombre de la Mascota"
+                            value={nombreMascota}
+                            onChange={(e) => setNombreMascota(e.target.value)}
+                            required={mascotas.length === 0}
+                        />
+                        <input
+                            className="p-3 text-lg border border-gray-300 rounded-md w-full"
+                            type="text"
+                            id="raza"
+                            placeholder="Raza"
+                            value={razaMascota}
+                            onChange={(e) => setRazaMascota(e.target.value)}
+                            required={mascotas.length === 0}
+                        />
+                        <select
+                            className="p-3 text-lg border border-gray-300 rounded-md w-full "
+                            id="tamanno"
+                            value={tamanoMascota.ID_TipoMascota}
+                            onChange={handleChangeSelect}
+                            required={mascotas.length === 0}
+                        >
+                            <option value="">Seleccionar Tamaño</option>
+                            {tipoMascota.map((tipo) => (
+                                <option key={tipo.ID_TipoMascota} value={tipo.ID_TipoMascota}>
+                                    {tipo.Descripcion}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                        <div className="flex justify-center items-center mb-6">
-                            <button
-                                type="button"
-                                onClick={agregarMascota}
-                                className="p-4 bg-blue-500 text-white text-lg rounded-lg shadow-md w-full"
-                            >
-                                Agregar Mascota
-                            </button>
-                        </div>
-
-                        {mascotas.length > 0 && (
-                            <div className="mb-6">
-                                <h3 className="text-xl font-bold mb-2 text-gray-800">Mascotas Agregadas</h3>
-                                <ul className="list-disc pl-5">
-                                    {mascotas.map((mascota, index) => (
-                                        <li key={index} className="text-gray-700">
-                                            {mascota.nombre} - {mascota.raza} ({mascota.tipoMascota.Descripcion})
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                    <div className="flex justify-center items-center mb-6">
+                        <input
+                            type="file"
+                            id="imagenMascota"
+                            className="hidden"
+                            onChange={handleImageChange}
+                        />
+                        <label htmlFor="imagenMascota" className="cursor-pointer p-4 bg-gray-100 rounded-lg shadow-md">
+                            <span className="text-lg text-gray-700">Seleccionar Imagen de la Mascota</span>
+                        </label>
+                        {fotoUrl && (
+                            <img src={fotoUrl} alt="Imagen de la mascota" className="h-40 w-40 object-cover mt-4 ml-4 rounded-lg" />
                         )}
+                    </div>
 
-                        <div className="flex justify-between items-center mb-6">
-                            <button
-                                type="submit"
-                                className="p-4 bg-green-500 text-white text-lg rounded-lg shadow-md w-1/2 mr-2"
-                            >
-                                Crear Cliente
-                            </button>
-                            <button
-                                type="button"
-                                onClick={cerrar}
-                                className="p-4 bg-red-500 text-white text-lg rounded-lg shadow-md w-1/2 ml-2"
-                            >
-                                Cancelar
-                            </button>
+                    <div className="flex justify-center items-center mb-6">
+                        <button
+                            type="button"
+                            onClick={agregarMascota}
+                            className="p-4 bg-blue-500 text-white text-lg rounded-lg shadow-md w-full"
+                        >
+                            Agregar Mascota
+                        </button>
+                    </div>
+
+                    {mascotas.length > 0 && (
+                        <div className="mb-6">
+                            <h3 className="text-xl font-bold mb-2 text-gray-800">Mascotas Agregadas</h3>
+                            <ul className="list-disc pl-5">
+                                {mascotas.map((mascota, index) => (
+                                    <li key={index} className="text-gray-700">
+                                        {mascota.nombre} - {mascota.raza} ({mascota.tipoMascota.Descripcion})
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
-                    </form>
-                </div>
-           
+                    )}
+
+                    <div className="flex justify-between items-center mb-6">
+                        <button
+                            type="submit"
+                            className="p-4 bg-green-500 text-white text-lg rounded-lg shadow-md w-1/2 mr-2"
+                        >
+                            Crear Cliente
+                        </button>
+                        <button
+                            type="button"
+                            onClick={cerrar}
+                            className="p-4 bg-red-500 text-white text-lg rounded-lg shadow-md w-1/2 ml-2"
+                        >
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
         </Modal>
     );
 }
 
 AgregarCliente.propTypes = {
-    isOpen: PropTypes.bool, 
+    isOpen: PropTypes.bool,
     cerrar: PropTypes.func,
-  };
+};
 
 export default AgregarCliente;

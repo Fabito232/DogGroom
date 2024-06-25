@@ -5,6 +5,7 @@ import { obtenerClientes, actualizarCliente, borrarCliente } from '../services/c
 import { crearMascota, actualizarMascota, borrarMascota } from '../services/mascotaService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import AgregarCliente from './AgregarCliente';
 import MostrarMascotas from './MostrarMascotas';
 import Swal from 'sweetalert2';
@@ -23,6 +24,9 @@ const ListaClientes = () => {
     const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
     const [mascotasSelecionadas, setMascotasSelecionadas] = useState([]);
 
+    const abrirModal = () => {
+        setModalIsOpen(true);
+    };
     const abrirModal = () => {
         setModalIsOpen(true);
     };
@@ -159,7 +163,16 @@ const ListaClientes = () => {
     const manejarEditar = async (cliente) => {
         setClienteEditando(cliente);
     };
+    const manejarEditar = async (cliente) => {
+        setClienteEditando(cliente);
+    };
 
+    const manejarGuardar = async () => {
+        const cliente = {
+            cedula: clienteEditando.cedula,
+            nombre: clienteEditando.nombre,
+            telefono: clienteEditando.telefono
+        };
     const manejarGuardar = async () => {
         const cliente = {
             cedula: clienteEditando.cedula,
@@ -171,7 +184,15 @@ const ListaClientes = () => {
         if (resCliente.ok) {
             // Actualiza la mascota si es necesario
         }
+        const resCliente = await actualizarCliente(cliente, clienteEditando.id);
+        if (resCliente.ok) {
+            // Actualiza la mascota si es necesario
+        }
 
+        if (isGuardarDisabled) return;
+        setClientes(clientes.map(c => c.id === clienteEditando.id ? clienteEditando : c));
+        setClienteEditando(null);
+    };
         if (isGuardarDisabled) return;
         setClientes(clientes.map(c => c.id === clienteEditando.id ? clienteEditando : c));
         setClienteEditando(null);
@@ -180,7 +201,14 @@ const ListaClientes = () => {
     const manejarCancelar = () => {
         setClienteEditando(null);
     };
+    const manejarCancelar = () => {
+        setClienteEditando(null);
+    };
 
+    const manejarCambioEntradaEdicion = (e) => {
+        const { name, value } = e.target;
+        setClienteEditando({ ...clienteEditando, [name]: value });
+    };
     const manejarCambioEntradaEdicion = (e) => {
         const { name, value } = e.target;
         setClienteEditando({ ...clienteEditando, [name]: value });
@@ -234,7 +262,18 @@ const ListaClientes = () => {
             setIsGuardarDisabled(true);
         }
     }, [clienteEditando]);
+    useEffect(() => {
+        if (clienteEditando) {
+            const { cedula, nombre, telefono } = clienteEditando;
+            setIsGuardarDisabled(!cedula || !nombre || !telefono);
+        } else {
+            setIsGuardarDisabled(true);
+        }
+    }, [clienteEditando]);
 
+    const manejarCambioBusqueda = (e) => {
+        setTerminoBusqueda(e.target.value);
+    };
     const manejarCambioBusqueda = (e) => {
         setTerminoBusqueda(e.target.value);
     };
@@ -243,11 +282,19 @@ const ListaClientes = () => {
         cliente.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
         cliente.cedula.toLowerCase().includes(terminoBusqueda.toLowerCase())
     );
+    const clientesFiltrados = clientes.filter(cliente =>
+        cliente.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
+        cliente.cedula.toLowerCase().includes(terminoBusqueda.toLowerCase())
+    );
 
     const indiceUltimoCliente = paginaActual * clientesPorPagina;
     const indicePrimerCliente = indiceUltimoCliente - clientesPorPagina;
     const clientesActuales = clientesFiltrados.slice(indicePrimerCliente, indiceUltimoCliente);
+    const indiceUltimoCliente = paginaActual * clientesPorPagina;
+    const indicePrimerCliente = indiceUltimoCliente - clientesPorPagina;
+    const clientesActuales = clientesFiltrados.slice(indicePrimerCliente, indiceUltimoCliente);
 
+    const totalPaginas = Math.ceil(clientesFiltrados.length / clientesPorPagina);
     const totalPaginas = Math.ceil(clientesFiltrados.length / clientesPorPagina);
 
     return (
