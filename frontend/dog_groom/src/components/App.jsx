@@ -11,27 +11,28 @@ import Finanzas from './Finanzas';
 import ResumenCita from './resumenCita';
 import { ConfirmProvider } from './ModalConfirmacion';
 import ListaServicios from './ListaServicios';
-
+import ListaCitas from './ListaCitas';
 const App = () => {
 
   return (
     <>
-      <ConfirmProvider>
-        <ToastContainer />
-        <Router>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/citas" element={<Citas />} />
-            <Route path="/agendarCita" element={<AgendarCita />} />
-            <Route path='/productos' element={<ListaProductos />} />
-            <Route path='/resumen' element={<ResumenCita />} />
-            <Route path='/clientes' element={<ListaClientes />} />
-            <Route path='/agregarCliente' element={<AgregarCliente />} />
-            <Route path='/f' element={<Finanzas />} />
-            <Route path='/servicios' element={<ListaServicios />} />
-          </Routes>
-        </Router>
-      </ConfirmProvider>
+    <ConfirmProvider>
+      <ToastContainer/>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login/>}/>
+          <Route path="/citas" element={<Citas />}/>
+          <Route path="/agendarCita" element={<AgendarCita />}/>
+          <Route path='/productos' element={<ListaProductos/>}/>
+          <Route path='/resumen'element={<ResumenCita/>}/>
+          <Route path='/clientes' element={<ListaClientes/>}/>
+          <Route path='/agregarCliente' element={<AgregarCliente/>}/>
+          <Route path='/f' element={<Finanzas/>}/>
+          <Route path='/servicios' element={<ListaServicios/>}/>
+          <Route path='/listacitas' element={<ListaCitas/>}/>
+        </Routes>
+      </Router>
+    </ConfirmProvider>
     </>
   )
 }

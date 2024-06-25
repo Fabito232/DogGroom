@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import logo from '../assets/Logo.png';
+import { FontAwesomeIcon,faBoxes,faCalendarAlt,faCalendarCheck,faDog,faMoneyBillTrendUp,faUsers } from '../utilis/iconos.js';
+
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +18,7 @@ const Header = () => {
           <h1 className="text-2xl sm:text-3xl font-bold">La Bandada</h1>
         </div>
         <nav className="md:ml-auto">
-          <div className="md:hidden flex justify-end">
+          <div className="lg:hidden flex justify-end">
             <button
               className="flex items-center px-3 py-2 rounded text-white hover:text-gray-400"
               onClick={handleSubmit}
@@ -31,19 +33,17 @@ const Header = () => {
               </svg>
             </button>
           </div>
-          <div
-            className={`${isOpen ? 'block' : 'hidden'
-              } md:flex md:items-center md:space-x-4`}
-          >
-            <ul className="md:flex md:space-x-4">
+          <div className={`${isOpen ? 'block' : 'hidden'  } lg:flex md:items-center md:space-x-4`}>
+            <ul className="lg:flex md:space-x-4">
               <li>
                 <a href="/citas" className="block px-3 py-2 hover:text-gray-400">
-                  Agenda
+                <FontAwesomeIcon icon={faCalendarAlt} />  Agenda
                 </a>
               </li>
               <li>
                 <a href="/agendarCita" className="block px-3 py-2 hover:text-gray-400">
-                  Citas
+                <FontAwesomeIcon icon={faCalendarCheck} />  Citas
+                
                 </a>
               </li>
               <li>
@@ -51,7 +51,7 @@ const Header = () => {
                   href="/clientes"
                   className="block px-3 py-2 hover:text-gray-400"
                 >
-                  Clientes
+                  <FontAwesomeIcon icon={faUsers} />  Clientes
                 </a>
               </li>
               <li>
@@ -59,17 +59,19 @@ const Header = () => {
                   href="/productos"
                   className="block px-3 py-2 hover:text-gray-400"
                 >
-                  Inventario
+                  <FontAwesomeIcon icon={faBoxes } />  Inventario
                 </a>
               </li>
               <li>
-                <a href="/f" className="block px-3 py-2 hover:text-gray-400">
-                  Finanzas
+                <a href="/f" className="block px-3 py-2  hover:text-gray-400">
+                <FontAwesomeIcon icon={faMoneyBillTrendUp} />  Finanzas
+                
                 </a>
+                  
               </li>
               <li>
                 <a href="/servicios" className="block px-3 py-2 hover:text-gray-400">
-                  Servicios
+                  <FontAwesomeIcon icon={faDog} /> Servicios
                 </a>
               </li>
             </ul>

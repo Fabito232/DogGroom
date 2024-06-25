@@ -1,19 +1,24 @@
 import { useState, useEffect } from 'react';
-import { crearCliente } from "../services/clienteService";
-import { crearMascota } from "../services/mascotaService";
+
 import { obtenerClientes } from '../services/clienteService'; // Importamos el servicio para obtener clientes
 import Header from "./Header";
 import { crearCita } from '../services/citaServices';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import ListaServicios from './ListaServicios';
 import { obtenerServicios } from '../services/paqueteServices';
+import imgPerro from '../assets/img_perro.jpg';
+import { URL_Hosting } from '../services/api';
+//import ListaServicios from './ListaServicios';
+
+
+
 
 function AgendarCita() {
   const [clientes, setClientes] = useState([]);
   const [citas, setCitas] = useState([]);
-  const [servicios, setServicios] = useState([]);
+  const [servicios, setServicios] =useState([]);
   const navigate = useNavigate();
+  const [tipoMascota, setTipoMascota]=useState('');
 
   const [cedulaCliente, setCedulaCliente] = useState('');
   const [nombreCliente, setNombreCliente] = useState('');
@@ -26,18 +31,24 @@ function AgendarCita() {
   const [fotoUrl, setFotoUrl] = useState('');
 
   const [fechaYHora, setFechaYHora] = useState('');
+  const [fecha, setFecha] = useState(' ');
+  const [hora, setHora] = useState('');
   const [estado, setEstado] = useState('');
   const [montoTotal, setMontoTotal] = useState('');
+  const [montoAdicional, setMontoAdicional]=useState('');
   const [descripcion, setDescripcion] = useState('');
   const [id_cedula, setIDCedula] = useState('');
+  const [id_servicio, setIDServicio] = useState('');
+  const [precio, setPrecio] = useState(' ');
 
-  const [servicioSeleccionado, setServicioSeleccionado] = useState(null);
 
   useEffect(() => {
     const cargarClientes = async () => {
       try {
         const resClientes = await obtenerClientes();
-        console.log(resClientes)
+        const resServicios = await obtenerServicios();
+        setServicios(resServicios.data);
+        
         const listaClientes = resClientes.data.map(cliente => ({
           id: cliente.Cedula,
           cedula: cliente.Cedula,
@@ -45,13 +56,15 @@ function AgendarCita() {
           telefono: cliente.Telefono,
           mascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].Nombre : '',
           raza: cliente.Mascota.length > 0 ? cliente.Mascota[0].Raza : '',
-          tamano: cliente.Mascota.length > 0 ? cliente.Mascota[0].Tamano : '',
-          image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : '',
-          ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : ''
+          tamano: cliente.Mascota.length > 0 ? cliente.Mascota[0].TipoMascotum.Descripcion : '',
+          image: cliente.Mascota.length > 0 ? cliente.Mascota[0].FotoURL : imgPerro,
+          ID_TipoMascota: cliente.Mascota.length > 0 ? cliente.Mascota[0].ID_TipoMascota : '',
+          
 
         }));
         setClientes(listaClientes);
-        console.log("Hola")
+        console.log(listaClientes)
+        
       } catch (error) {
         console.log(error);
       }
@@ -67,22 +80,33 @@ function AgendarCita() {
     setRazaMascota(cliente.raza);
     setTamanoMascota(cliente.tamano);
     SetFotoMascota(cliente.image);
-    setFotoUrl(cliente.image);
+    setFotoUrl(cliente.image );
+
+    const servicio = servicios.find(serv => serv.ID_TipoMascota === cliente.ID_TipoMascota);
+      if (servicio) {
+        setIDServicio(servicio.ID_Servicio);
+        setPrecio(servicio.Precio);
+        setMontoTotal(parseFloat(servicio.Precio)+parseFloat(montoAdicional||0))
+      }
+
 
   };
 
   const handleAgendaCita = async (e) => {
     e.preventDefault();
-
+    
+    const fechaYHora = `${fecha}T${hora}`;
     const cita = {
       fechaYHora: fechaYHora,
       estado: estado,
       montoTotal: montoTotal,
       descripcion: descripcion,
       cedula: cedulaCliente,
+      montoAdicional: montoAdicional,
+      ID_Servicio: id_servicio
+      
 
     };
-
     try {
       console.log(cita);
       const resCita = await crearCita(cita);
@@ -94,8 +118,9 @@ function AgendarCita() {
           autoClose: 1500,
           theme: "colored",
         });
+        console.log(resCita.data)
         navigate('/citas', { state: { nuevaCita: resCita.data } });
-
+        
         navigate('/citas');
       } else {
         toast.error(resCita.message, { autoClose: 1500, theme: "colored" });
@@ -104,16 +129,25 @@ function AgendarCita() {
       toast.error(error.message, { autoClose: 1500, theme: "colored" });
     }
   };
+  
+  
 
+  const handleMontoAdicionalChange = (e)=>{
+    const nuevoMontoAdicional = e.target.value;
+    setMontoAdicional(nuevoMontoAdicional);
+    setMontoTotal(parseFloat(precio || 0) + parseFloat(nuevoMontoAdicional || 0));
+  }
 
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      SetFotoMascota(file);
-      setFotoUrl(URL.createObjectURL(file));
+  const generateTimeOptions = () => {
+    const times = [];
+    for (let h = 8; h < 18; h++) {
+      times.push(`${String(h).padStart(2, '0')}:00`);
+      times.push(`${String(h).padStart(2, '0')}:30`);
     }
+    return times;
   };
+
+ 
 
   return (
     <div className="relative min-h-screen flex flex-col bg-primary bg-opacity-80 bg-fondo1 bg-cover">
@@ -131,7 +165,7 @@ function AgendarCita() {
                   >
                     <span>
                       {cliente.nombre} - {cliente.cedula}
-
+                      
                     </span>
                   </li>
                 ))}
@@ -195,34 +229,55 @@ function AgendarCita() {
                   onChange={(e) => setRazaMascota(e.target.value)}
                   required
                 />
-                <select
+                <input
                   className="p-3 border border-gray-300 rounded w-full mb-2"
-                  id="tamanno"
-                  name="tamanno"
+                  type="text"
+                  id="tamano"
+                  name="tamano"
+                  placeholder="Tamaño"
                   value={tamanoMascota}
                   onChange={(e) => setTamanoMascota(e.target.value)}
                   required
-                >
-                  <option value="" disabled>
-                    Tamaño
-                  </option>
-                  <option value="pequeño">Pequeño</option>
-                  <option value="mediano">Mediano</option>
-                  <option value="grande">Grande</option>
-                </select>
-
+                />
+                
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <input
+              <input
                   className="p-3 border border-gray-300 rounded w-full mb-2"
-                  type="datetime-local"
-                  id="fechaYHora"
-                  name="fechaYHora"
-                  value={fechaYHora}
-                  onChange={(e) => setFechaYHora(e.target.value)}
+                  type="date"
+                  id="fecha"
+                  name="fecha"
+                  value={fecha}
+                  onChange={(e) => setFecha(e.target.value)}
                   required
                 />
+                <select
+                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                  id="hora"
+                  name="hora"
+                  value={hora}
+                  onChange={(e) => setHora(e.target.value)}
+                  required
+                >
+                  <option value="" disabled>
+                    Selecciona la hora
+                  </option>
+                  {generateTimeOptions().map((time, index) => (
+                    <option key={index} value={time}>
+                      {time}
+                    </option>
+                  ))}
+                </select>
+                  <input
+                    className="p-3 border border-gray-300 rounded w-full mb-2"
+                    type="text"
+                    id="servicio"
+                    name="servicio"
+                    placeholder="Servicio"
+                    value={servicios.find(serv => serv.ID_Servicio === id_servicio)?.Descripcion || ''}
+                    readOnly
+                  />
                 <input
                   className="p-3 border border-gray-300 rounded w-full mb-2"
                   type="text"
@@ -244,47 +299,49 @@ function AgendarCita() {
                   <option value="" disabled>
                     Estado
                   </option>
-                  <option value="Finalizar">Finalizar</option>
-                  <option value="En proceso">En proceso</option>
-                </select>
-
-                <select
+                  <option value="true">En proceso</option>
+                  <option value="false">Finalizadar</option>
+                  
+                </select> 
+                <input
                   className="p-3 border border-gray-300 rounded w-full mb-2"
-                  id="servicio"
-                  name="servicio"
-                  value={servicioSeleccionado ? servicioSeleccionado.id : ''}
-                  onChange={(e) => {
-                    const servicioSeleccionado = servicios.find(servicio => servicio.id === parseInt(e.target.value));
-                    setServicioSeleccionado(servicioSeleccionado);
-                    setMontoTotal(servicioSeleccionado ? servicioSeleccionado.precio : ''); // Actualiza el monto total con el precio del servicio seleccionado
-                  }}
+                  type="text"
+                  id="precio"
+                  name="precio"
+                  placeholder="Precio"
+                  value={precio}
+                  readOnly
                   required
-                >
-                  <option value="" disabled>
-                    Selecciona un Servicio
-                  </option>
-                  {servicios.map(servicio => (
-                    <option key={servicio.id} value={servicio.id}>{servicio.descripcion}</option>
-                  ))}
-                </select>
-
+                />
+                <input
+                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                  type="text"
+                  id="montoAdicional"
+                  name="montoAdicional"
+                  placeholder="Monto Adicional"
+                  value={montoAdicional}
+                  onChange={handleMontoAdicionalChange}
+                />
+                              
                 <input
                   className="p-3 border border-gray-300 rounded w-full mb-2"
                   type="text"
                   id="montoTotal"
                   name="montoTotal"
                   placeholder="Monto Total"
-                  value={montoTotal}
-                  onChange={(e) => setMontoTotal(e.target.value)}
+                  value ={montoTotal}
+                  readOnly
                   required
                 />
+                
+               
               </div>
-
+                
               <div className="mb-8 md:mr-8 md:mb-0">
-
+                
                 {fotoUrl && (
                   <img
-                    src={fotoUrl}
+                    src={URL_Hosting + fotoUrl || imgPerro}
                     alt="Mascota"
                     className="w-48 h-48 object-cover rounded-md mt-4"
                   />

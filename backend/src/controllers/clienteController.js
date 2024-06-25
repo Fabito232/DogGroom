@@ -1,5 +1,6 @@
 import  Cliente  from "../models/clienteModel.js"
 import Mascota from "../models/mascotaModel.js";
+import TipoMascota from "../models/tipoMascota.js";
 import fs from 'fs';
 import sequelize from "../database/database.js";
 import { fileURLToPath } from 'url';
@@ -159,7 +160,13 @@ export const getListCliente = async (req, res) => {
             {
                 include:[
                     {
-                        model: Mascota
+                        model: Mascota,
+                        include:[
+                            {
+                                model: TipoMascota,
+
+                            }
+                        ]
                     }
                 ]
         

@@ -4,8 +4,8 @@ import { obtenerGastos, crearGasto, actualizarGasto, borrarGasto } from '../serv
 import PropTypes from 'prop-types'
 import { useConfirm } from './ModalConfirmacion';
 import { notificarError, notificarExito } from '../utilis/notificaciones';
-
-const ListaGastos = ({ actualizarFinanzasAnuales }) => {
+import { FontAwesomeIcon, faTrashCan, faPenToSquare} from '../utilis/iconos.js'
+const ListaGastos = ({actualizarFinanzasAnuales}) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [gastos, setGastos] = useState([]);
   const [buscarPalabra, setBuscarPalabra] = useState('');
@@ -194,16 +194,16 @@ const ListaGastos = ({ actualizarFinanzasAnuales }) => {
                 <td className="px-6 py-4 whitespace-nowrap">{gasto.fecha}</td>
                 <td className="px-6 py-4 whitespace-nowrap flex justify-center items-center space-x-2">
                   <button
-                    className="px-3 py-1 w-24 bg-red-600 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
-                    onClick={() => eliminarGasto(gasto.id)}
-                  >
-                    Eliminar
-                  </button>
-                  <button
-                    className="px-3 py-1 w-24 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+                    className="px-4 py-1 bg-blue-600 text-white rounded-md mr-2 hover:bg-blue-700 focus:outline-none"
                     onClick={() => abrirModal('editar', gasto)}
                   >
-                    Editar
+                   <FontAwesomeIcon icon={faPenToSquare}/>
+                  </button>
+                  <button
+                    className="px-4 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none"
+                    onClick={() => eliminarGasto(gasto.id)}
+                  >
+                    <FontAwesomeIcon icon={faTrashCan}/>
                   </button>
                 </td>
               </tr>

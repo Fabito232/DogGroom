@@ -4,6 +4,8 @@ import { actualizarProducto, borrarProducto, crearProducto, obtenerProductos } f
 import { useConfirm } from './ModalConfirmacion';
 import { notificarError, notificarExito } from '../utilis/notificaciones';
 import Header from './Header.jsx';
+import { FontAwesomeIcon, faTrashCan, faPenToSquare} from '../utilis/iconos.js'
+
 
 const ListaProductos = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -171,122 +173,121 @@ const ListaProductos = () => {
   return (
     <>
       <Header></Header>
-      <div className="bg-fondo1 bg-cover min-h-screen">
-        <div className='md:container md:mx-auto p-5'>
-          <div className="p-6 bg-amber-700 container bg-opacity-95 rounded-lg">
-            <h1 className="text-3xl font-bold mb-4 text-center">Lista de Productos</h1>
-            <div className='flex flex-col md:flex-row justify-between mb-4 items-center'>
-              <div className="flex items-center mb-2 md:mb-0">
-                <input
-                  type="text"
-                  placeholder="Buscar producto..."
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  value={buscarPalabra}
-                  onChange={(e) => setBuscarPalabra(e.target.value)}
-                />
-              </div>
-              <div className="flex items-center mb-2 md:mb-0 ml-0 md:ml-4">
-                <select
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  onChange={manejarOrden}
-                  value={orden.campo + '_' + orden.direccion}
-                >
-                  <option value="nombre_asc">Nombre (A-Z)</option>
-                  <option value="nombre_desc">Nombre (Z-A)</option>
-                  <option value="cantidad_asc">Menor Cantidad</option>
-                  <option value="cantidad_desc">Mayor Cantidad</option>
-                </select>
-              </div>
-              <div className="ml-0 md:ml-auto">
-                <button
-                  onClick={() => abrirModal('agregar')}
-                  className="mb-2 md:mb-0 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"> Agregar Producto
-                </button>
-                <AgregarProducto
-                  isOpen={modalIsOpen}
-                  cerrar={cerrarModal}
-                  agregarProducto={agregarProducto}
-                  editarProducto={editarProducto}
-                  producto={productoActual}
-                  modo={modo}
-                />
-              </div>
+      <div className="bg-slate-300 bg-cover min-h-screen">
+      <div className='md:container md:mx-auto p-5 '>
+        <div className="p-6 bg-amber-700 container bg-opacity-95 rounded-lg shadow-2xl">
+          <h1 className="text-3xl font-bold mb-4 text-center">Lista de Productos</h1>
+          <div className='flex justify-between mb-4'>
+            <div>
+              <input
+                type="text"
+                placeholder="Buscar producto..."
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                value={buscarPalabra}
+                onChange={(e) => setBuscarPalabra(e.target.value)}
+              />
             </div>
-
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white border border-gray-300">
-                <thead>
-                  <tr className="bg-lime-600 border-b text-lg">
-                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Nombre</th>
-                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Marca</th>
-                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Cantidad</th>
-                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Descripción</th>
-                    <th className="px-6 py-3 text-center text-base font-medium text-black uppercase tracking-wider">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {productosActuales.map((producto) => (
-                    <tr key={producto.id} className="border-b border-gray-300">
-                      <td className="px-6 py-4 whitespace-nowrap">{producto.nombre}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{producto.marca}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{producto.cantidad}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{producto.descripcion}</td>
-                      <td className="px-6 py-4 whitespace-nowrap flex justify-center items-center space-x-2">
-                        <button
-                          className="px-3 py-1 bg-red-600 w-24 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
-                          onClick={() => eliminarProducto(producto.id)}>Eliminar </button>
-                        <button
-                          className="px-3 py-1 bg-blue-600 w-24 text-white rounded-md hover:bg-blue-700 focus:outline-none"
-                          onClick={() => abrirModal('editar', producto)}>Editar</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Paginación */}
-            <div className="flex justify-center mt-4">
-              <nav>
-                <ul className="flex items-center">
-                  <li>
-                    <button
-                      onClick={manejarAnterior}
-                      className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
-                        }`}
-                      disabled={paginaActual === 1}
-                    >
-                      &laquo;
-                    </button>
-                  </li>
-                  {paginasVisibles.map((numero) => (
-                    <li key={numero} className="cursor-pointer mx-1">
-                      <button
-                        onClick={() => paginar(numero)}
-                        className={`px-3 py-1 ${paginaActual === numero
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-white text-blue-600'
-                          } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
-                      >
-                        {numero}
-                      </button>
-                    </li>
-                  ))}
-                  <li>
-                    <button
-                      onClick={manejarSiguiente}
-                      className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
-                        }`}
-                      disabled={paginaActual === numerosDePagina.length}
-                    >
-                      &raquo;
-                    </button>
-                  </li>
-                </ul>
-              </nav>
+            <div>
+              <button
+                onClick={() => abrirModal('agregar')}
+                className="mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Agregar Producto
+              </button>
+              <AgregarProducto
+                isOpen={modalIsOpen}
+                cerrar={cerrarModal}
+                agregarProducto={agregarProducto}
+                editarProducto={editarProducto}
+                producto={productoActual}
+                modo={modo}
+              />
             </div>
           </div>
+  
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead>
+                <tr className="bg-gray-100 border-b border-gray-300">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marca</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {productosActuales.map((producto) => (
+                  <tr key={producto.id} className="border-b border-gray-300">
+                    <td className="px-6 py-4 whitespace-nowrap">{producto.nombre}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{producto.marca}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{producto.cantidad}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{producto.descripcion}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        className="px-3 py-1 bg-blue-600 text-white rounded-md mr-2 hover:bg-blue-700 focus:outline-none"
+                        onClick={() => abrirModal('editar', producto)}
+                      >
+                        <FontAwesomeIcon icon={faPenToSquare}/>
+                      </button>
+                      <button
+                        className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none"
+                        onClick={() => eliminarProducto(producto.id)}
+                      >
+                        <FontAwesomeIcon icon={faTrashCan}/>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+  
+          {/* Paginación */}
+          <div className="flex justify-center mt-4">
+            <nav>
+              <ul className="flex items-center">
+                <li>
+                  <button
+                    onClick={manejarAnterior}
+                    className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
+                      paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
+                    }`}
+                    disabled={paginaActual === 1}
+                  >
+                    &laquo;
+                  </button>
+                </li>
+                {paginasVisibles.map((numero) => (
+                  <li key={numero} className="cursor-pointer mx-1">
+                    <button
+                      onClick={() => paginar(numero)}
+                      className={`px-3 py-1 ${
+                        paginaActual === numero
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-white text-blue-600'
+                      } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
+                    >
+                      {numero}
+                    </button>
+                  </li>
+                ))}
+                <li>
+                  <button
+                    onClick={manejarSiguiente}
+                    className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
+                      paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
+                    }`}
+                    disabled={paginaActual === numerosDePagina.length}
+                  >
+                    &raquo;
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
+      </div>
       </div>
     </>
   );

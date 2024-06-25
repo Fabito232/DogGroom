@@ -1,68 +1,66 @@
 import { useState, useEffect } from 'react';
-import { obtenerServicios, actualizarServicio, borrarServicio, crearServicio } from '../services/paqueteServices';
-import PropTypes from 'prop-types';
+import { obtenerCitas, actualizarCita, borrarCita, crearCita } from '../services/citaServices.js'
 import { useConfirm } from './ModalConfirmacion';
 import { notificarError, notificarExito } from '../utilis/notificaciones';
-import AgregarServicio from './AgregarServicio';
-import { obtenerTipoMascotas } from '../services/tipoAnimal';
 import Header from './Header';
 import { FontAwesomeIcon, faTrashCan, faPenToSquare} from '../utilis/iconos.js'
+import dayjs from 'dayjs';
 
-const ListaServicios = () => {
+const ListaCitas = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [servicios, setServicios] = useState([]);
-  const [tiposMascota, setTiposMascota] = useState([]);
+  const [citas, setCitas] = useState([]);
   const [buscarPalabra, setBuscarPalabra] = useState('');
-  const [serviciosFiltrados, setServiciosFiltrados] = useState([]);
+  const [citasFiltrados, setCitasFiltrados] = useState([]);
   const [modo, setModo] = useState('agregar');
-  const [servicioActual, setServicioActual] = useState(null);
+  const [citaActual, setCitaActual] = useState(null);
   const [paginaActual, setPaginaActual] = useState(1);
-  const [servicioPorPagina] = useState(5); // Cantidad de servicios por página
+  const [citaPorPagina] = useState(5); // Cantidad de citas por página
 
   const openConfirmModal = useConfirm();
 
   useEffect(() => {
-    setServiciosFiltrados(
-      servicios.filter((servicio) =>
-        servicio.descripcion.toLowerCase().includes(buscarPalabra.toLowerCase())
+    setCitasFiltrados(
+      citas.filter((cita) =>
+        cita.cliente.toLowerCase().includes(buscarPalabra.toLowerCase()) ||
+        cita.fechaYHora.toLowerCase().includes(buscarPalabra.toLowerCase()) 
       )
     );
-  }, [servicios, buscarPalabra]);
+  }, [citas, buscarPalabra]);
 
   useEffect(() => {
-    cargarServicios();
+    cargarCitas();
   }, []);
 
-  const cargarServicios = async () => {
+  const cargarCitas = async () => {
     try {
-      const resServicio = await obtenerServicios();
-      const resTipoAnimal = await obtenerTipoMascotas();
-
-      if (resServicio.ok) {
-        const ListaServicios = resServicio.data.map(servicio => ({
-          id: servicio.ID_Servicio,
-          descripcion: servicio.Descripcion,
-          precio: servicio.Precio,
-          tipoMascota: servicio.TipoMascota
+      const resCita = await obtenerCitas();
+      console.log(resCita)
+      if (resCita.ok) {
+        const ListaCitas = resCita.data.map(cita => ({
+          id: cita.ID_Cita,
+          descripcion: cita.Descripcion,
+          servicio:cita.Servicio.Descripcion,
+          estado: cita.Estado,
+          montoAdicional: cita.MontoAdicional,
+          montoTotal: cita.MontoTotal,
+          fechaYHora: dayjs(cita.FechaYHora).format('YYYY-MM-DD HH:mm'),
+          cliente: cita.Cliente.Nombre
         }));
-
-        setServicios(ListaServicios);
-        console.log(resServicio);
+        
+        console.log( )
+        setCitas(ListaCitas);
+        console.log(ListaCitas);
       } else {
-        console.log(resServicio);
-      }
-
-      if(resTipoAnimal.ok){  
-        setTiposMascota(resTipoAnimal.data)
+        console.log(resCita);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const abrirModal = (modo, servicio = null) => {
+  const abrirModal = (modo, cita = null) => {
     setModo(modo);
-    setServicioActual(servicio);
+    setCitaActual(cita);
     setModalIsOpen(true);
   };
 
@@ -70,52 +68,26 @@ const ListaServicios = () => {
     setModalIsOpen(false);
   };
 
-  const agregarServicio = async (servicio) => {
-    try {
+  const agregarCita = async (cita) => {
 
-        console.log("antes",servicio)
-        const nuevoServicio = {
-            descripcion: servicio.descripcion,
-            precio: servicio.precio,
-            ID_TipoMascota: servicio.tipoMascota.ID_TipoMascota
-        }
-        console.log("despues",nuevoServicio)
-      const resServicio = await crearServicio(nuevoServicio);
-
-      if (resServicio.ok) {
-        console.log(resServicio);
-        const nuevoServicio = {
-          id: resServicio.data.ID_Servicio,
-          ...servicio,
-        };
-        console.log("sss",nuevoServicio)
-        setServicios([...servicios, nuevoServicio]);
-        setModalIsOpen(false);
-        notificarExito(resServicio.message);
-      } else {
-        notificarError(resServicio);
-      }
-    } catch (error) {
-      notificarError(error);
-    }
   };
 
-  const editarServicio = async (servicioEditado) => {
+  const editarCita = async (citaEditado) => {
     try {
-      console.log(servicioEditado);
-      const servicioActualizado = {
-        descripcion: servicioEditado.descripcion,
-        precio: servicioEditado.precio,
-        ID_TipoMascota: servicioEditado.tipoMascota.ID_TipoMascota
-      };
-      const resServicio = await actualizarServicio(servicioActualizado, servicioEditado.id);
-      if (resServicio.ok) {
-        const servicioActualizado = servicios.map((servicio) =>
-          servicio.id === servicioEditado.id ? servicioEditado : servicio
+      console.log(citaEditado);
+      const citaActualizado = {
+        descripcion: citaEditado.descripcion,
+        precio: citaEditado.precio,
+        ID_TipoMascota: citaEditado.tipoMascota.ID_TipoMascota
+      }
+      const resCita = await actualizarCita(citaActualizado, citaEditado.id);
+      if (resCita.ok) {
+        const citaActualizado = citas.map((cita) =>
+          cita.id === citaEditado.id ? citaEditado : cita
         );
-        setServicios(servicioActualizado);
+        setCitas(citaActualizado);
         setModalIsOpen(false);
-        notificarExito("Se actualizó el servicio correctamente");
+        notificarExito("Se actualizó el cita correctamente")
       }
     } catch (error) {
       console.log(error);
@@ -123,28 +95,30 @@ const ListaServicios = () => {
   };
 
   const eliminarGasto = async (id) => {
+
     openConfirmModal('¿Estás seguro de que deseas eliminar este elemento?', async () => {
       try {
-        const resGasto = await borrarServicio(id);
+        const resGasto = await borrarCita(id);
         if (resGasto.ok) {
-          const updatedGastos = servicios.filter((servicio) => servicio.id !== id);
-          setServicios(updatedGastos);
-          notificarExito("Se borró exitosamente el servicio");
+          const updatedGastos = citas.filter((cita) => cita.id !== id);
+          setCitas(updatedGastos);
+          notificarExito("Se borro existosamente el cita")
         }
       } catch (error) {
         console.log(error);
       }
       console.log('Elemento eliminado');
     });
+
   };
 
   // Paginación
-  const indiceUltimoGasto = paginaActual * servicioPorPagina;
-  const indicePrimerGasto = indiceUltimoGasto - servicioPorPagina;
-  const serviciosActuales = serviciosFiltrados.slice(indicePrimerGasto, indiceUltimoGasto);
+  const indiceUltimoGasto = paginaActual * citaPorPagina;
+  const indicePrimerGasto = indiceUltimoGasto - citaPorPagina;
+  const citasActuales = citasFiltrados.slice(indicePrimerGasto, indiceUltimoGasto);
 
   const numerosDePagina = [];
-  for (let i = 1; i <= Math.ceil(serviciosFiltrados.length / servicioPorPagina); i++) {
+  for (let i = 1; i <= Math.ceil(citasFiltrados.length / citaPorPagina); i++) {
     numerosDePagina.push(i);
   }
 
@@ -171,12 +145,12 @@ const ListaServicios = () => {
     <Header></Header>
     <div className='md:container md:mx-auto p-5'>
     <div className="p-6 bg-gray-100 container">
-      <h1 className="text-3xl font-bold mb-4">Servicios de La Bandada </h1>
+      <h1 className="text-3xl font-bold mb-4">Citas de La Bandada </h1>
       <div className='flex justify-between mb-4'>
         <div>
           <input
             type="text"
-            placeholder="Buscar servicio..."
+            placeholder="Buscar cita..."
             className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             value={buscarPalabra}
             onChange={(e) => setBuscarPalabra(e.target.value)}
@@ -187,17 +161,9 @@ const ListaServicios = () => {
             onClick={() => abrirModal('agregar')}
             className="mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
           >
-            Agregar Servicio
+            Agregar Cita
           </button>
-          <AgregarServicio
-            isOpen={modalIsOpen}
-            cerrar={cerrarModal}
-            agregarServicio={agregarServicio}
-            editarServicio={editarServicio}
-            servicio={servicioActual}
-            modo={modo}
-            tiposMascota={tiposMascota}
-          />
+
         </div>
       </div>
 
@@ -205,27 +171,40 @@ const ListaServicios = () => {
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
             <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Animal</th>              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider ">Fecha</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>   
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Descripcion</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Servicio</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>              
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Monto Adicional</th>              
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Monto Total</th>                          
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {serviciosActuales.map((servicio) => (
-              <tr key={servicio.id} className="border-b border-gray-300">
-                <td className="px-6 py-4 whitespace-nowrap">{servicio.descripcion}</td>
-                <td className="px-6 py-4 whitespace-nowrap">${servicio.precio}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{servicio.tipoMascota.Descripcion}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
+            {citasActuales.map((cita) => (
+              <tr key={cita.id} className="border-b border-gray-300">
+                <td className="px-6 py-4 whitespace-nowrap text-center">{cita.fechaYHora}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-center">{cita.cliente}</td>
+                <td className="px-6 py-4 whitespace-normal text-center">{cita.descripcion}</td>
+                <td className="px-6 py-4 whitespace-normal text-center">{cita.servicio}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <span className={`inline-flex items-center justify-center h-8 w-8 rounded-full ${cita.estado ? 'bg-green-500' : 'bg-gray-500'}`}>
+
+                    </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-center">{cita.montoAdicional}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-center">{cita.montoTotal}</td>   
+                <td className="px-6 py-4 whitespace-nowrap text-center">
                   <button
                     className="px-4 py-1 bg-blue-600 text-white rounded-md mr-2 hover:bg-blue-700 focus:outline-none"
-                    onClick={() => abrirModal('editar', servicio)}
+                    onClick={() => abrirModal('editar', cita)}
                   >
                    <FontAwesomeIcon icon={faPenToSquare} />
                   </button>
                   <button
                     className="px-4 py-1 bg-red-600 text-white rounded-md  hover:bg-red-700 focus:outline-none"
-                    onClick={() => eliminarGasto(servicio.id)}
+                    onClick={() => eliminarGasto(cita.id)}
                   >
                     <FontAwesomeIcon icon={faTrashCan} />
                   </button>
@@ -284,8 +263,4 @@ const ListaServicios = () => {
   );
 };
 
-ListaServicios.propTypes = {
-  actualizarFinanzasAnuales: PropTypes.func
-};
-
-export default ListaServicios;
+export default ListaCitas;
