@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { URL_Hosting } from '../services/api';
 import Cliente from '../assets/img_perro.jpg';
@@ -10,21 +9,21 @@ import { obtenerTipoMascotas } from '../services/tipoAnimal';
 
 Modal.setAppElement('#root');
 
-const MostrarMascota = ({ isOpen, mascotas, nombreCliente,cedula, agregarMascota,actualizarMascota,eliminarCliente, cerrar}) => {
+const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascota, actualizarMascota, eliminarCliente, cerrar }) => {
     const [mascotaEditando, setMascotaEditando] = useState(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modo, setModo] = useState('agregar');
     const [tiposMascota, setTiposMascota] = useState([]);
+    const [paginaActual, setPaginaActual] = useState(0);
     const MASCOTAS_POR_PAGINA = 2;
-    const paginaActual = 0;
 
     const manejarEliminar = async (id) => {
-        eliminarCliente(id)
+        eliminarCliente(id);
     };
 
     const abrirModal = (modo, mascota = null) => {
         setModo(modo);
-        setMascotaEditando(mascota)
+        setMascotaEditando(mascota);
         setModalIsOpen(true);
     };
 
@@ -35,15 +34,13 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente,cedula, agregarMascota
     const cargarTiposMascotas = async () => {
         try {
             const resTipoAnimal = await obtenerTipoMascotas();
-
             if (resTipoAnimal.ok) {
                 setTiposMascota(resTipoAnimal.data);
             }
-
         } catch (error) {
             notificarError(error);
         }
-    }
+    };
 
     useEffect(() => {
         cargarTiposMascotas();
@@ -57,17 +54,29 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente,cedula, agregarMascota
             Foto: mascota.fotoURL,
             ID_Cliente: cedula,
             TipoMascotum: mascota.tipoMascota,
+        };
+        if (modo === 'agregar') {
+            agregarMascota(nuevaMascota);
+        } else if (modo === "editar") {
+            actualizarMascota(nuevaMascota, mascota.ID_Mascota);
         }
-        if(modo === 'agregar'){
-            agregarMascota(nuevaMascota)
-        }else if(modo === "editar"){
-            console.log(nuevaMascota,mascota.ID_Mascota )
-            actualizarMascota(nuevaMascota, mascota.ID_Mascota)
-        } 
     };
 
-    const mascotasPaginadas = mascotas && mascotas.length > 0 ?
-        mascotas.slice(paginaActual * MASCOTAS_POR_PAGINA, (paginaActual + 1) * MASCOTAS_POR_PAGINA) : [];
+    const mascotasPaginadas = mascotas && mascotas.length > 0
+        ? mascotas.slice(paginaActual * MASCOTAS_POR_PAGINA, (paginaActual + 1) * MASCOTAS_POR_PAGINA)
+        : [];
+
+    const paginaAnterior = () => {
+        if (paginaActual > 0) {
+            setPaginaActual(paginaActual - 1);
+        }
+    };
+
+    const paginaSiguiente = () => {
+        if ((paginaActual + 1) * MASCOTAS_POR_PAGINA < mascotas.length) {
+            setPaginaActual(paginaActual + 1);
+        }
+    };
 
     return (
         <Modal
@@ -75,7 +84,7 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente,cedula, agregarMascota
             onRequestClose={cerrar}
             contentLabel="Mascotas del Cliente"
             className="fixed inset-0 flex items-center justify-center p-4 bg-gray-800 bg-opacity-25"
-            overlayClassName="fixed inset-0 "
+            overlayClassName="fixed inset-0"
         >
             <div className="bg-gray-300 p-4 rounded-lg max-w-6xl w-full relative">
                 <button onClick={cerrar} className="absolute top-2 right-2 text-gray-500 hover:text-white hover:bg-red-500 text-2xl p-1 rounded">X</button>
@@ -90,9 +99,9 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente,cedula, agregarMascota
                     isOpen={modalIsOpen}
                     cerrar={cerrarModal}
                     guardarMascota={guardarMascota}
-                    mascota={mascotaEditando}  // Ajusta según tu implementación de AgregarMascota
+                    mascota={mascotaEditando}
                     modo={modo}
-                    tiposMascota={tiposMascota}  // Ajusta según tus tipos de mascota
+                    tiposMascota={tiposMascota}
                 />
                 <div className="grid grid-cols-2 gap-4">
                     {mascotasPaginadas.map((mascota) => (
@@ -109,34 +118,34 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente,cedula, agregarMascota
                                 <div className="w-full">
                                     <div className="flex items-center mb-2">
                                         <div className="font-bold mr-2">Nombre:</div>
-                                            <div className="bg-white p-1 rounded flex-grow">{mascota.Nombre}</div>
+                                        <div className="bg-white p-1 rounded flex-grow">{mascota.Nombre}</div>
                                     </div>
                                     <div className="flex items-center mb-2">
                                         <div className="font-bold mr-2">Raza:</div>
-                                            <div className="bg-white p-1 rounded flex-grow">{mascota.Raza}</div>
+                                        <div className="bg-white p-1 rounded flex-grow">{mascota.Raza}</div>
                                     </div>
                                     <div className="flex items-center">
                                         <div className="font-bold mr-2">Tamaño:</div>
-                                            <div className="bg-white p-1 rounded flex-grow">
-                                                {mascota.ID_TipoMascota === 1 ? "Grande" : "Pequeño"}
-                                            </div>
+                                        <div className="bg-white p-1 rounded flex-grow">
+                                            {mascota.ID_TipoMascota === 1 ? "Grande" : "Pequeño"}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="flex justify-end space-x-2 mt-2">
-                                        <div className="flex w-full space-x-2">
-                                            <button
-                                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md flex-1"
-                                                onClick={() => abrirModal('editar', mascota)}
-                                            >
-                                                Editar
-                                            </button>
-                                            <button
-                                                className="bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded-md flex-1"
-                                                onClick={() => manejarEliminar(mascota.ID_Mascota)}
-                                            >
-                                                Eliminar
-                                            </button>
-                                        </div>
+                                    <div className="flex w-full space-x-2">
+                                        <button
+                                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md flex-1"
+                                            onClick={() => abrirModal('editar', mascota)}
+                                        >
+                                            Editar
+                                        </button>
+                                        <button
+                                            className="bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded-md flex-1"
+                                            onClick={() => manejarEliminar(mascota.ID_Mascota)}
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -144,14 +153,14 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente,cedula, agregarMascota
                 </div>
                 <div className="flex justify-between items-center mt-4 w-full">
                     <button
-                        onClick={() => console.log("Anterior")}  // Ajusta según necesidades
+                        onClick={paginaAnterior}
                         disabled={paginaActual === 0}
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
                     >
                         Anterior
                     </button>
                     <button
-                        onClick={() => console.log("Siguiente")}  // Ajusta según necesidades
+                        onClick={paginaSiguiente}
                         disabled={(paginaActual + 1) * MASCOTAS_POR_PAGINA >= mascotas.length}
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
                     >

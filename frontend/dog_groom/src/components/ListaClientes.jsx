@@ -132,7 +132,7 @@ const ListaClientes = () => {
     }
   }
 
-  const eliminarCliente = async (ID_Mascota) => {
+  const eliminarMascota = async (ID_Mascota) => {
 
     try {
       const resMascota = await borrarMascota(ID_Mascota);
@@ -144,6 +144,7 @@ const ListaClientes = () => {
         }
          return cliente;
       });
+      console.log(nuevasMascotas)
       setMascotasSelecionadas(nuevasMascotas);
       setClientes(nuevaListaM);
     } catch (error) {
@@ -253,7 +254,7 @@ const ListaClientes = () => {
                       cedula={clienteSeleccionado ? clienteSeleccionado.cedula : ''}
                       agregarMascota={agregarMascota}
                       actualizarMascota={editarMascota}
-                      eliminarCliente={eliminarCliente}
+                      eliminarCliente={eliminarMascota}
                       setMascotasSelecionadas={setMascotasSelecionadas}
                       cerrar={cerrarModalMascotas}
                     />
