@@ -10,7 +10,8 @@ const mascotaSchema = Joi.object({
     raza: Joi.string().required(),
     cedula: Joi.string().required(),
     ID_TipoMascota: Joi.number().integer().positive().required(),
-    images: Joi.any().optional() 
+    images: Joi.any().optional(),
+    image: Joi.any().optional() 
 });
 
 const clienteSchema = Joi.object({

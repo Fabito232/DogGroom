@@ -184,14 +184,14 @@ export const updateMascota = async (req, res) => {
                     }
                 })
         }
-
-      
+         const mascota = await Mascota.findByPk(id)
+         console.log(mascota)
             if (filasActualizadas > 0) {
                 return res.json({
                     ok: true,
                     status: 200,
                     message: "Se actualizo la Mascota correctamente",
-                    data: filasActualizadas
+                    data: mascota
                 });
             } else {
                 return res.status(404).json({
