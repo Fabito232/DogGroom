@@ -13,7 +13,7 @@ export default {
     "./src/components/ListaServicios.jsx",
     "./src/components/AgregarServicio.jsx",
     "./src/components/AgendarCita.jsx",
-    "./src/components/resumen.jsx",
+    "./src/components/resumenCita.jsx",
     "./src/components/MostrarMascota.jsx",
     "./src/components/AgregarMascota.jsx",
     "./src/components/ListaCitas.jsx",
