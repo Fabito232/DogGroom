@@ -146,8 +146,8 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
   const paginasVisibles = obtenerPaginasVisibles();
 
   return (
-    <div className="p-6 bg-gray-100 container">
-      <h1 className="text-3xl font-bold mb-4">Control de Gastos La Bandada {new Date().getFullYear()}</h1>
+    <div className="p-6 bg-amber-800 bg-opacity-90 container rounded-lg">
+      <h1 className="text-3xl font-bold mb-4 text-center">Control de Gastos La Bandada {new Date().getFullYear()}</h1>
       <div className='flex justify-between mb-4'>
         <div>
           <input
@@ -179,11 +179,11 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
-            <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+            <tr className="bg-lime-700 border-b border-gray-300 text-lg">
+              <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Descripción</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Monto</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Fecha</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -192,7 +192,7 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
                 <td className="px-6 py-4 whitespace-nowrap">{gasto.descripcion}</td>
                 <td className="px-6 py-4 whitespace-nowrap">${gasto.monto}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{gasto.fecha}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 whitespace-nowrap flex justify-center items-center space-x-2">
                   <button
                     className="px-4 py-1 bg-blue-600 text-white rounded-md mr-2 hover:bg-blue-700 focus:outline-none"
                     onClick={() => abrirModal('editar', gasto)}
@@ -218,9 +218,8 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
             <li>
               <button
                 onClick={manejarAnterior}
-                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
-                  paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
-                }`}
+                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
+                  }`}
                 disabled={paginaActual === 1}
               >
                 &laquo;
@@ -230,11 +229,10 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
               <li key={numero} className="cursor-pointer mx-1">
                 <button
                   onClick={() => paginar(numero)}
-                  className={`px-3 py-1 ${
-                    paginaActual === numero
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-blue-600'
-                  } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
+                  className={`px-3 py-1 ${paginaActual === numero
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-blue-600'
+                    } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
                 >
                   {numero}
                 </button>
@@ -243,9 +241,8 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
             <li>
               <button
                 onClick={manejarSiguiente}
-                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
-                  paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
-                }`}
+                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
+                  }`}
                 disabled={paginaActual === numerosDePagina.length}
               >
                 &raquo;
@@ -258,7 +255,7 @@ const ListaGastos = ({actualizarFinanzasAnuales}) => {
   );
 };
 
-ListaGastos.propTypes ={
+ListaGastos.propTypes = {
   actualizarFinanzasAnuales: PropTypes.func
 }
 

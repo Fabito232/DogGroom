@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { obtenerServicios, actualizarServicio, borrarServicio, crearServicio } from '../services/paqueteServices';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import { useConfirm } from './ModalConfirmacion';
 import { notificarError, notificarExito } from '../utilis/notificaciones';
 import AgregarServicio from './AgregarServicio';
@@ -37,7 +37,7 @@ const ListaServicios = () => {
     try {
       const resServicio = await obtenerServicios();
       const resTipoAnimal = await obtenerTipoMascotas();
-    
+
       if (resServicio.ok) {
         const ListaServicios = resServicio.data.map(servicio => ({
           id: servicio.ID_Servicio,
@@ -81,9 +81,9 @@ const ListaServicios = () => {
         }
         console.log("despues",nuevoServicio)
       const resServicio = await crearServicio(nuevoServicio);
-      
+
       if (resServicio.ok) {
-        console.log(resServicio)
+        console.log(resServicio);
         const nuevoServicio = {
           id: resServicio.data.ID_Servicio,
           ...servicio,
@@ -91,12 +91,12 @@ const ListaServicios = () => {
         console.log("sss",nuevoServicio)
         setServicios([...servicios, nuevoServicio]);
         setModalIsOpen(false);
-        notificarExito(resServicio.message)
+        notificarExito(resServicio.message);
       } else {
-        notificarError(resServicio)
+        notificarError(resServicio);
       }
     } catch (error) {
-      notificarError(error)
+      notificarError(error);
     }
   };
 
@@ -107,7 +107,7 @@ const ListaServicios = () => {
         descripcion: servicioEditado.descripcion,
         precio: servicioEditado.precio,
         ID_TipoMascota: servicioEditado.tipoMascota.ID_TipoMascota
-      }
+      };
       const resServicio = await actualizarServicio(servicioActualizado, servicioEditado.id);
       if (resServicio.ok) {
         const servicioActualizado = servicios.map((servicio) =>
@@ -115,7 +115,7 @@ const ListaServicios = () => {
         );
         setServicios(servicioActualizado);
         setModalIsOpen(false);
-        notificarExito("Se actualizó el servicio correctamente")
+        notificarExito("Se actualizó el servicio correctamente");
       }
     } catch (error) {
       console.log(error);
@@ -123,21 +123,19 @@ const ListaServicios = () => {
   };
 
   const eliminarGasto = async (id) => {
-
     openConfirmModal('¿Estás seguro de que deseas eliminar este elemento?', async () => {
       try {
         const resGasto = await borrarServicio(id);
         if (resGasto.ok) {
           const updatedGastos = servicios.filter((servicio) => servicio.id !== id);
           setServicios(updatedGastos);
-          notificarExito("Se borro existosamente el servicio")
+          notificarExito("Se borró exitosamente el servicio");
         }
       } catch (error) {
         console.log(error);
       }
       console.log('Elemento eliminado');
     });
-
   };
 
   // Paginación
@@ -172,7 +170,7 @@ const ListaServicios = () => {
     <>
     <Header></Header>
     <div className='md:container md:mx-auto p-5'>
-    <div className="p-6 bg-gray-100 container">
+    <div className="p-6 bg-amber-700 container bg-opacity-95 rounded-lg">
       <h1 className="text-3xl font-bold mb-4">Servicios de La Bandada </h1>
       <div className='flex justify-between mb-4'>
         <div>
@@ -206,10 +204,11 @@ const ListaServicios = () => {
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
-            <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Animal</th>              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+            <tr className="bg-lime-600 border-b text-lg">
+              <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Descripción</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Precio</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Tipo Animal</th>              
+              <th className="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -218,7 +217,7 @@ const ListaServicios = () => {
                 <td className="px-6 py-4 whitespace-nowrap">{servicio.descripcion}</td>
                 <td className="px-6 py-4 whitespace-nowrap">${servicio.precio}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{servicio.tipoMascota.Descripcion}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 whitespace-nowrap flex justify-center items-center space-x-2">
                   <button
                     className="px-4 py-1 bg-blue-600 text-white rounded-md mr-2 hover:bg-blue-700 focus:outline-none"
                     onClick={() => abrirModal('editar', servicio)}
@@ -286,8 +285,8 @@ const ListaServicios = () => {
   );
 };
 
-ListaServicios.propTypes ={
+ListaServicios.propTypes = {
   actualizarFinanzasAnuales: PropTypes.func
-}
+};
 
 export default ListaServicios;

@@ -13,7 +13,7 @@ import { ConfirmProvider } from './ModalConfirmacion';
 import ListaServicios from './ListaServicios';
 import ListaCitas from './ListaCitas';
 const App = () => {
-  
+
   return (
     <>
     <ConfirmProvider>
