@@ -11,7 +11,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-green-700 text-white py-4">
+    <header className="bg-green-700  text-white py-4">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between">
         <div className="flex items-center flex-shrink-0">
           <img className="h-16 sm:h-20 md:h-24 mr-4" src={logo} alt="Logo" />
@@ -37,12 +37,12 @@ const Header = () => {
             <ul className="lg:flex md:space-x-4">
               <li>
                 <a href="/citas" className="block px-3 py-2 hover:text-gray-400">
-                <FontAwesomeIcon icon={faCalendarAlt} />  Agenda
+                <FontAwesomeIcon icon={faCalendarAlt} />  Calendario
                 </a>
               </li>
               <li>
                 <a href="/agendarCita" className="block px-3 py-2 hover:text-gray-400">
-                <FontAwesomeIcon icon={faCalendarCheck} />  Citas
+                <FontAwesomeIcon icon={faCalendarCheck} />  Agendar
                 
                 </a>
               </li>

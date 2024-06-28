@@ -36,13 +36,14 @@ function Citas() {
           cliente: { // Detalles completos del cliente
             nombre: cita.Cliente.Nombre,
             cedula: cita.Cliente.Cedula,
-            telefono: cita.Cliente.Telefono,
-            mascotas: cita.Cliente.Mascota.map(mascota => ({
-              nombre: mascota.Nombre,
-              raza: mascota.Raza,
-              tipoMascota: mascota.TipoMascotum.Descripcion,
-              fotoURL: mascota.FotoURL
-            }))
+            telefono: cita.Cliente.Telefono
+          },
+          mascotas:{
+              id: cita.Mascotum.ID_Mascota,
+              nombre: cita.Mascotum.Nombre,
+              raza: cita.Mascotum.Raza,
+              tipoMascota: cita.Mascotum.TipoMascotum.Descripcion,
+              fotoURL: cita.Mascotum.FotoURL
           },
           servicio: { // Detalles del servicio de la 
             id_servicio: cita.Servicio.ID_Servicio,
@@ -50,7 +51,7 @@ function Citas() {
             precio: parseFloat(cita.Servicio.Precio)
           }
         }));
-        console.log(citasTransformadas)
+        console.log(citasTransformadas);
         setEvents(citasTransformadas);
       } else {
         console.error("La respuesta de obtenerCitas no contiene datos.");
@@ -59,6 +60,7 @@ function Citas() {
       console.error("Error al obtener citas:", error);
     }
   };
+
 
   useEffect(() => {
     fetchCitas();
@@ -89,6 +91,11 @@ function Citas() {
   const handleSelectSlot = ({ start }) => {
     console.log(start);
   };
+  const handleViewChange =(view) => {
+    if (view === 'agenda')
+      navigate('/agendarCita')
+  }
+ 
 
   const eventStyleGetter = (event) => {
     let style = {
@@ -102,11 +109,8 @@ function Citas() {
     };
   };
 
-  const components = {
-    event: props => {
-      return <div>{props.title}</div>;
-    }
-  };
+  
+  
   
   
 
@@ -118,15 +122,16 @@ function Citas() {
           localizer={localizer}
           events={events}
           eventPropGetter={eventStyleGetter} 
-          components={components}
           selectable={true}
           onSelectEvent={handleEventClick}
           onSelectSlot={handleSelectSlot}
+          onView={handleViewChange}
           views={{ week: true, month: true, day: true, agenda: true }}
           min={dayjs('2024-12-23T08:00:00').toDate()}
           max={dayjs('2024-12-23T19:00:00').toDate()}
           formats={{
-            dayHeaderFormat: date => dayjs(date).format("DD/MM/YYYY")
+            dayHeaderFormat: date => dayjs(date).format("DD/MM/YYYY"),
+            
           }}
           messages={{
             next: "Siguiente",

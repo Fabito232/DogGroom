@@ -41,11 +41,16 @@ export const getCita = async (id) => {
             include: [
                 {
                     model: Cliente, 
-                    include: [
-                        {
-                            model: Mascota,
-                        }
-                    ]
+                    
+                },
+                {
+                    model: Servicio
+                },
+                {
+                    model: Mascota,
+                    include: [{
+                        model: TipoMascota, 
+                    }]
                 }
             ]
         });

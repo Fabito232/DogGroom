@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { borrarCita, actualizarCita } from '../services/citaServices';
+import { actualizarCita, borrarCita } from '../services/citaServices';
 import { notificarError, notificarExito } from '../utilis/notificaciones';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
@@ -18,24 +18,35 @@ function ResumenCita() {
 
   const [editando, setEditando] = useState(false);
   const [citaEditada, setCitaEditada] = useState({});
-  const [montoTotal, setMontoTotal] = useState(0); // Estado para manejar montoTotal
+  const [montoTotal, setMontoTotal] = useState(0);
+  const [montoAdicional, setMontoAdicional] = useState(0);
   const [montoAdicionalInicial, setMontoAdicionalInicial] = useState(0);
+  const [fecha, setFecha] = useState('');
+  const [hora, setHora] = useState('');
+
   const { cita } = location.state || {};
 
   useEffect(() => {
     if (cita) {
+      const { start, montoTotal, montoAdicional} = cita;
       setCitaEditada({
-        fechaYHora: formatFechaHora(cita.start),
+        
+        fechaYHora: formatFechaHora(start),
         cedula: cita.cedula,
         descripcion: cita.descripcion,
         estado: cita.estado,
         montoTotal: cita.montoTotal,
-        montoAdicional: cita.montoAdicional,
+        montoAdicional: montoAdicional || 0, 
         Cedula: cita.cliente.Cedula,
-        ID_Servicio: cita.servicio.id_servicio
+        ID_Servicio: cita.servicio.id_servicio,
+        ID_Mascota: cita.mascotas.id
+
       });
-      setMontoTotal(parseFloat(cita.montoTotal)); // Inicializar montoTotal con el valor actual de la cita
-      setMontoAdicionalInicial(parseFloat(cita.montoAdicional));
+      setMontoTotal(parseFloat(montoTotal));
+      setMontoAdicional(parseFloat(montoAdicional) || 0);
+      setMontoAdicionalInicial(parseFloat(montoAdicional) || 0);
+      setFecha(dayjs(start).format('YYYY-MM-DD'));
+      setHora(dayjs(start).format('HH:mm'));
     }
   }, [cita]);
 
@@ -43,7 +54,33 @@ function ResumenCita() {
     return <div>No hay datos de la cita disponible.</div>;
   }
 
-  const { id, cliente, servicio } = cita;
+  const { id, cliente, servicio, mascotas } = cita;
+
+  const manejarCambioFecha = (e) => {
+    const nuevaFecha = e.target.value;
+    setFecha(nuevaFecha);
+    actualizarFechaYHora(nuevaFecha, hora);
+  };
+
+  const manejarCambioHora = (e) => {
+    const nuevaHora = e.target.value;
+    setHora(nuevaHora);
+    actualizarFechaYHora(fecha, nuevaHora);
+  };
+
+  const actualizarFechaYHora = (fecha, hora) => {
+    const nuevaFechaYHora = dayjs(`${fecha}T${hora}`).toISOString();
+    setCitaEditada({ ...citaEditada, fechaYHora: nuevaFechaYHora });
+  };
+
+  const limitanteTiempo = () => {
+    const times = [];
+    for (let h = 8; h < 18; h++) {
+      times.push(`${String(h).padStart(2, '0')}:00`);
+      times.push(`${String(h).padStart(2, '0')}:30`);
+    }
+    return times;
+  };
 
   const manejarEditar = () => {
     setEditando(true);
@@ -113,51 +150,93 @@ function ResumenCita() {
     navigate('/citas');
   };
 
+  const agenda = () => {
+    navigate('/agendarCita');
+  };
+
   const manejarCambioMontoAdicional = (e) => {
     const nuevoMontoAdicional = parseFloat(e.target.value) || 0;
     const diferencia = nuevoMontoAdicional - montoAdicionalInicial;
     const nuevoMontoTotal = parseFloat(cita.montoTotal) + diferencia;
     setCitaEditada({ ...citaEditada, montoAdicional: nuevoMontoAdicional });
-    setMontoTotal(nuevoMontoTotal); // Actualizar montoTotal en el estado local
+    setMontoTotal(nuevoMontoTotal);
+    setMontoAdicional(nuevoMontoAdicional);
   };
 
   return (
-    <div className="flex items-start justify-center w-full bg-fondo1 bg-cover py-10">
-      <div className="bg-lime-800 rounded-3xl p-8 m-4 space-y-8 w-full max-w-5xl">
-        <div className="flex flex-col md:flex-row md:space-x-8">
+    <div className="min-h-screen bg-primary bg-opacity-80 bg-fondo1 bg-cover flex items-center justify-center">
+      <div className="bg-lime-800 object-center rounded-3xl p-8 m-4 space-y-14 w-full max-w-5xl">
+        <div className="flex flex-col md:flex-row md:space-x-8 justify-center">
           <div className="flex-1 space-y-8">
             <div>
-              <label className="block text-gray-900 text-sm font-bold mb-2">Fecha y Hora:</label>
-              <input
-                type="text"
-                readOnly={!editando}
-                className="p-3 border border-gray-300 rounded w-full md:w-80"
-                value={editando ? new Date(citaEditada.fechaYHora).toString() : formatFechaHora(cita.start)}
-                onChange={(e) => setCitaEditada({ ...citaEditada, fechaYHora: new Date(e.target.value).toISOString() })}
-              />
+              <label className="block text-gray-900 text-sm font-bold mb-2">Fecha:</label>
+              {editando ? (
+                <input
+                  type="date"
+                  className="p-3 border border-gray-300 rounded w-full md:w-80"
+                  value={fecha}
+                  onChange={manejarCambioFecha}
+                />
+              ) : (
+                <input
+                  type="text"
+                  readOnly
+                  className="p-3 border border-gray-300 rounded w-full md:w-80"
+                  value={dayjs(cita.start).format('DD/MM/YYYY')}
+                />
+              )}
             </div>
-            {cliente.mascotas[0].fotoURL && (
+            <div>
+              <label className="block text-gray-900 text-sm font-bold mb-2">Hora:</label>
+              {editando ? (
+                <select
+                  className="p-3 border border-gray-300 rounded w-full md:w-80"
+                  value={hora}
+                  onChange={manejarCambioHora}
+                >
+                  {limitanteTiempo().map((time) => (
+                    <option key={time} value={time}>{time}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  readOnly
+                  className="p-3 border border-gray-300 rounded w-full md:w-80"
+                  value={dayjs(cita.start).format('H:mm a')}
+                />
+              )}
+            </div>
+            {cita.mascotas.fotoURL && (
               <div>
                 <img
-                  src={URL_Hosting + cliente.mascotas[0].fotoURL}
+                  src={URL_Hosting + cita.mascotas.fotoURL}
                   alt="Mascota"
                   className="w-48 h-48 object-cover rounded-md"
                 />
               </div>
             )}
-            <div className="mt-4">
+            <div className="flex space-x-4 mt-4">
               <button
-                className="bg-red-700 hover:bg-red-900 text-white font-bold w-40 h-12 rounded-md"
+                className="bg-red-700 hover:bg-red-900 text-white font-bold w-20 h-12 rounded-md"
                 onClick={manejarSalir}
               >
                 Salir
               </button>
+
+              <button
+                className="bg-green-700 hover:bg-green-900 text-white font-bold w-40 h-12 rounded-md"
+                onClick={agenda}
+              >
+                Agendar Cita
+              </button>
             </div>
           </div>
+
           <div className="flex-1 space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-gray-900 text-sm font-bold mb-2">Nombre:</label>
+                <label className="block text-gray-900 text-sm font-bold mb-2">Cliente:</label>
                 <input
                   type="text"
                   readOnly
@@ -191,7 +270,7 @@ function ResumenCita() {
                   type="text"
                   readOnly
                   className="p-3 border border-gray-300 rounded w-full"
-                  value={cliente.mascotas[0].nombre}
+                  value={cita.mascotas.nombre}
                 />
               </div>
               <div>
@@ -200,7 +279,7 @@ function ResumenCita() {
                   type="text"
                   readOnly
                   className="p-3 border border-gray-300 rounded w-full"
-                  value={cliente.mascotas[0].raza}
+                  value={cita.mascotas.raza}
                 />
               </div>
               <div>
@@ -209,7 +288,7 @@ function ResumenCita() {
                   type="text"
                   readOnly
                   className="p-3 border border-gray-300 rounded w-full"
-                  value={cliente.mascotas[0].tipoMascota}
+                  value={cita.mascotas.tipoMascota}
                 />
               </div>
             </div>
@@ -248,7 +327,7 @@ function ResumenCita() {
                   type="text"
                   readOnly={!editando}
                   className="p-3 border border-gray-300 rounded w-full md:w-64"
-                  value={editando ? citaEditada.montoAdicional : cita.montoAdicional}
+                  value={editando ? citaEditada.montoAdicional : cita.montoAdicional || 0}
                   onChange={manejarCambioMontoAdicional}
                 />
               </div>
