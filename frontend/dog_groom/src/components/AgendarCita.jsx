@@ -16,7 +16,7 @@ import { URL_Hosting } from '../services/api';
 function AgendarCita() {
   const [clientes, setClientes] = useState([]);
   const [citas, setCitas] = useState([]);
-  const [servicios, setServicios] = useState([]);
+  const [servicios, setServicios] =useState([]);
   const navigate = useNavigate();
   const [tipoMascota, setTipoMascota]=useState('');
 
@@ -120,7 +120,7 @@ function AgendarCita() {
         });
         console.log(resCita.data)
         navigate('/citas', { state: { nuevaCita: resCita.data } });
-
+        
         navigate('/citas');
       } else {
         toast.error(resCita.message, { autoClose: 1500, theme: "colored" });
@@ -129,8 +129,8 @@ function AgendarCita() {
       toast.error(error.message, { autoClose: 1500, theme: "colored" });
     }
   };
-
-
+  
+  
 
   const handleMontoAdicionalChange = (e)=>{
     const nuevoMontoAdicional = e.target.value;
@@ -165,7 +165,7 @@ function AgendarCita() {
                   >
                     <span>
                       {cliente.nombre} - {cliente.cedula}
-
+                      
                     </span>
                   </li>
                 ))}
@@ -336,9 +336,9 @@ function AgendarCita() {
                 
                
               </div>
-
+                
               <div className="mb-8 md:mr-8 md:mb-0">
-
+                
                 {fotoUrl && (
                   <img
                     src={URL_Hosting + fotoUrl || imgPerro}

@@ -6,6 +6,10 @@ import AgregarMascota from './AgregarMascota';
 import Modal from 'react-modal';
 import PropTypes from 'prop-types';
 import { obtenerTipoMascotas } from '../services/tipoAnimal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 Modal.setAppElement('#root');
 
@@ -18,7 +22,42 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascot
     const MASCOTAS_POR_PAGINA = 2;
 
     const manejarEliminar = async (id) => {
-        eliminarCliente(id);
+        const resultado = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No podrás revertir esta acción!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar!',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (resultado.isConfirmed) {
+            try {
+                await eliminarCliente(id);
+                toast.success('Se eliminó la mascota', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            } catch (error) {
+                toast.error(`Error al eliminar la mascota: ${error.message}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                console.error('Error al eliminar la mascota:', error);
+            }
+        }
     };
 
     const abrirModal = (modo, mascota = null) => {
@@ -87,7 +126,7 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascot
             overlayClassName="fixed inset-0"
         >
             <div className="bg-gray-300 p-4 rounded-lg max-w-6xl w-full relative">
-                <button onClick={cerrar} className="absolute top-2 right-2 text-gray-500 hover:text-white hover:bg-red-500 text-2xl p-1 rounded">X</button>
+                <button onClick={cerrar} className="absolute top-2 right-2 bg-red-600 text-white hover:bg-red-700 text-2xl p-1 rounded">X</button>
                 <h2 className="text-xl font-bold mb-4">Mascotas de: {nombreCliente}</h2>
                 <button
                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md mb-4"
@@ -132,18 +171,18 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascot
                                     </div>
                                 </div>
                                 <div className="flex justify-end space-x-2 mt-2">
-                                    <div className="flex w-full space-x-2">
+                                    <div className="flex w-full space-x-2 mt-4">
                                         <button
                                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md flex-1"
-                                            onClick={() => abrirModal('editar', mascota)}
+                                            onClick={() => abrirModal('editar', mascota)} 
                                         >
-                                            Editar
+                                            <FontAwesomeIcon icon={faPenToSquare} />
                                         </button>
                                         <button
                                             className="bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded-md flex-1"
                                             onClick={() => manejarEliminar(mascota.ID_Mascota)}
                                         >
-                                            Eliminar
+                                            <FontAwesomeIcon icon={faTrashCan} />
                                         </button>
                                     </div>
                                 </div>
@@ -170,6 +209,7 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascot
             </div>
         </Modal>
     );
+    
 };
 
 MostrarMascota.propTypes = {
