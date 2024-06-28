@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import AgregarProducto from './AgregarProducto.jsx';
 import { actualizarProducto, borrarProducto, crearProducto, obtenerProductos } from '../services/productoService.js';
-import { useConfirm } from './ModalConfirmacion';
 import { notificarError, notificarExito } from '../utilis/notificaciones';
 import Header from './Header.jsx';
 import { FontAwesomeIcon, faTrashCan, faPenToSquare } from '../utilis/iconos.js'
@@ -9,193 +8,200 @@ import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 
 const ListaProductos = () => {
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [productos, setProductos] = useState([]);
-    const [buscarPalabra, setBuscarPalabra] = useState('');
-    const [productosFiltrados, setProductosFiltrados] = useState([]);
-    const [modo, setModo] = useState('agregar');
-    const [productoActual, setProductoActual] = useState(null);
-    const [paginaActual, setPaginaActual] = useState(1);
-    const [productosPorPagina] = useState(5);
-    const [orden, setOrden] = useState({ campo: 'nombre', direccion: 'asc', label: 'Nombre (A-Z)' });
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [productos, setProductos] = useState([]);
+  const [buscarPalabra, setBuscarPalabra] = useState('');
+  const [productosFiltrados, setProductosFiltrados] = useState([]);
+  const [modo, setModo] = useState('agregar');
+  const [productoActual, setProductoActual] = useState(null);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [productosPorPagina] = useState(5); // Cantidad de productos por página
+  const [orden, setOrden] = useState({ campo: 'nombre', direccion: 'asc', label: 'Nombre (A-Z)' });
 
-    const openConfirmModal = useConfirm();
 
-    useEffect(() => {
-        setProductosFiltrados(
-            productos
-                .filter((producto) =>
-                    producto.nombre.toLowerCase().includes(buscarPalabra.toLowerCase())
-                )
-                .sort((a, b) => {
-                    if (orden.campo === 'cantidad') {
-                        return orden.direccion === 'asc' ? a.cantidad - b.cantidad : b.cantidad - a.cantidad;
-                    } else {
-                        return orden.direccion === 'asc' ? a[orden.campo].localeCompare(b[orden.campo]) : b[orden.campo].localeCompare(a[orden.campo]);
-                    }
-                })
-        );
-    }, [productos, buscarPalabra, orden]);
+  useEffect(() => {
+    setProductosFiltrados(
+      productos
+        .filter((producto) =>
+          producto.nombre.toLowerCase().includes(buscarPalabra.toLowerCase())
+        )
+        .sort((a, b) => {
+          if (orden.campo === 'cantidad') {
+            return orden.direccion === 'asc' ? a.cantidad - b.cantidad : b.cantidad - a.cantidad;
+          } else {
+            return orden.direccion === 'asc' ? a[orden.campo].localeCompare(b[orden.campo]) : b[orden.campo].localeCompare(a[orden.campo]);
+          }
+        })
+    );
+  }, [productos, buscarPalabra, orden]);
 
-    useEffect(() => {
-        cargarProductos();
-    }, []);
+  useEffect(() => {
+    cargarProductos();
+  }, []);
 
-    const cargarProductos = async () => {
-        try {
-            const resProducto = await obtenerProductos();
-            if (resProducto.ok) {
-                const listaProducto = resProducto.data.map(producto => ({
-                    id: producto.ID_Producto,
-                    nombre: producto.Nombre,
-                    marca: producto.Marca,
-                    descripcion: producto.Descripcion,
-                    cantidad: producto.Cantidad
-                }));
-                setProductos(listaProducto);
-            }
-        } catch (error) {
-            console.log(error.message);
-        }
-    };
-
-    const abrirModal = (modo, producto = null) => {
-        setModo(modo);
-        setProductoActual(producto);
-        setModalIsOpen(true);
-    };
-
-    const cerrarModal = () => {
-        setModalIsOpen(false);
-    };
-
-    const agregarProducto = async (producto) => {
-        try {
-            const resProducto = await crearProducto(producto);
-            if (resProducto.ok) {
-                const nuevoProducto = {
-                    id: resProducto.data.ID_Producto,
-                    ...producto,
-                };
-                setProductos([...productos, nuevoProducto]);
-                setModalIsOpen(false);
-                notificarExito("Se guardó con éxito el producto")
-            } else {
-                notificarError(resProducto)
-            }
-        } catch (error) {
-            notificarError(error)
-        }
-    };
-
-    const editarProducto = async (productoEditado) => {
-        try {
-            const { id, ...producto } = productoEditado;
-            console.log(producto);
-            const resProducto = await actualizarProducto(producto, productoEditado.id);
-            if (resProducto.ok) {
-                const updatedProductos = productos.map((producto) =>
-                    producto.id === productoEditado.id ? productoEditado : producto
-                );
-                setProductos(updatedProductos);
-                setModalIsOpen(false);
-                notificarExito("Se guardó con éxito el producto")
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const eliminarProducto = async (id) => {
-        const resultado = await Swal.fire({
-            title: '¿Estás seguro?',
-            text: "No podrás revertir esta acción!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, eliminar!',
-            cancelButtonText: 'Cancelar'
-        });
-
-        if (resultado.isConfirmed) {
-            try {
-                await borrarProducto(id);
-                toast.success('Se eliminó el producto', {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-                const updatedProductos = productos.filter((producto) => producto.id !== id);
-                setProductos(updatedProductos);
-            } catch (error) {
-                toast.error(`Error al eliminar el producto: ${error.message}`, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-                console.error('Error al eliminar el producto:', error);
-            }
-        }
-    };
-
-    // const manejarOrden = (evento) => {
-    //     const valor = evento.target.value;
-    //     let nuevoOrden;
-    //     switch (valor) {
-    //         case 'nombre_asc':
-    //             nuevoOrden = { campo: 'nombre', direccion: 'asc', label: 'Nombre (A-Z)' };
-    //             break;
-    //         case 'nombre_desc':
-    //             nuevoOrden = { campo: 'nombre', direccion: 'desc', label: 'Nombre (Z-A)' };
-    //             break;
-    //         case 'cantidad_asc':
-    //             nuevoOrden = { campo: 'cantidad', direccion: 'asc', label: 'Menor Cantidad' };
-    //             break;
-    //         case 'cantidad_desc':
-    //             nuevoOrden = { campo: 'cantidad', direccion: 'desc', label: 'Mayor Cantidad' };
-    //             break;
-    //         default:
-    //             nuevoOrden = { campo: 'nombre', direccion: 'asc', label: 'Nombre (A-Z)' };
-    //     }
-    //     setOrden(nuevoOrden);
-    // };
-
-    // Paginación
-    const indiceUltimoProducto = paginaActual * productosPorPagina;
-    const indicePrimerProducto = indiceUltimoProducto - productosPorPagina;
-    const productosActuales = productosFiltrados.slice(indicePrimerProducto, indiceUltimoProducto);
-
-    const numerosDePagina = [];
-    for (let i = 1; i <= Math.ceil(productosFiltrados.length / productosPorPagina); i++) {
-        numerosDePagina.push(i);
+  const cargarProductos = async () => {
+    try {
+      const resProducto = await obtenerProductos();
+      if (resProducto.ok) {
+        const listaProducto = resProducto.data.map(producto => ({
+          id: producto.ID_Producto,
+          nombre: producto.Nombre,
+          marca: producto.Marca,
+          descripcion: producto.Descripcion,
+          cantidad: producto.Cantidad
+        }));
+        setProductos(listaProducto);
+      }
+    } catch (error) {
+      console.log(error.message);
     }
+  };
 
-    const paginar = (numeroDePagina) => setPaginaActual(numeroDePagina);
-    const manejarAnterior = () => setPaginaActual((prev) => Math.max(prev - 1, 1));
-    const manejarSiguiente = () => setPaginaActual((prev) => Math.min(prev + 1, numerosDePagina.length));
+  const abrirModal = (modo, producto = null) => {
+    setModo(modo);
+    setProductoActual(producto);
+    setModalIsOpen(true);
+  };
 
-    const obtenerPaginasVisibles = () => {
-        if (numerosDePagina.length <= 3) {
-            return numerosDePagina;
-        } else if (paginaActual <= 2) {
-            return [1, 2, 3];
-        } else if (paginaActual >= numerosDePagina.length - 1) {
-            return [numerosDePagina.length - 2, numerosDePagina.length - 1, numerosDePagina.length];
-        } else {
-            return [paginaActual - 1, paginaActual, paginaActual + 1];
+  const cerrarModal = () => {
+    setModalIsOpen(false);
+  };
+
+  const agregarProducto = async (producto) => {
+    try {
+      const resProducto = await crearProducto(producto);
+      if (resProducto.ok) {
+        const nuevoProducto = {
+          id: resProducto.data.ID_Producto,
+          ...producto,
+        };
+        setProductos([...productos, nuevoProducto]);
+        setModalIsOpen(false);
+        notificarExito("Se guardó con éxito el producto")
+      } else {
+        notificarError(resProducto)
+      }
+    } catch (error) {
+      notificarError(error)
+    }
+  };
+
+  const editarProducto = async (productoEditado) => {
+    try {
+      const { id, ...producto } = productoEditado;
+      console.log(producto);
+      const resProducto = await actualizarProducto(producto, productoEditado.id);
+      if (resProducto.ok) {
+        const updatedProductos = productos.map((producto) =>
+          producto.id === productoEditado.id ? productoEditado : producto
+        );
+        setProductos(updatedProductos);
+        setModalIsOpen(false);
+        notificarExito("Se guardó con éxito el producto")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const eliminarProducto = async (id) => {
+    const resultado = await Swal.fire({
+        title: '¿Estás seguro?',
+        text: "No podrás revertir esta acción!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar!',
+        cancelButtonText: 'Cancelar'
+    });
+
+    if (resultado.isConfirmed) {
+        try {
+            await borrarProducto(id);
+            toast.success('Se eliminó el producto', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            const updatedProductos = productos.filter((producto) => producto.id !== id);
+            setProductos(updatedProductos);
+        } catch (error) {
+            toast.error(`Error al eliminar el producto: ${error.message}`, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            console.error('Error al eliminar el producto:', error);
         }
-    };
+    }
+};
 
-    const paginasVisibles = obtenerPaginasVisibles();
+  const manejarOrden = (evento) => {
+    const valor = evento.target.value;
+    let nuevoOrden;
+    switch (valor) {
+      case 'nombre_asc':
+        nuevoOrden = { campo: 'nombre', direccion: 'asc', label: 'Nombre (A-Z)' };
+        break;
+      case 'nombre_desc':
+        nuevoOrden = { campo: 'nombre', direccion: 'desc', label: 'Nombre (Z-A)' };
+        break;
+      case 'cantidad_asc':
+        nuevoOrden = { campo: 'cantidad', direccion: 'asc', label: 'Menor Cantidad' };
+        break;
+      case 'cantidad_desc':
+        nuevoOrden = { campo: 'cantidad', direccion: 'desc', label: 'Mayor Cantidad' };
+        break;
+      default:
+        nuevoOrden = { campo: 'nombre', direccion: 'asc', label: 'Nombre (A-Z)' };
+    }
+    setOrden(nuevoOrden);
+  };
+
+  const reducirCantidad = async (id) => {
+    const producto = productos.find(p => p.id === id);
+    if (producto && producto.cantidad > 0) {
+      const productoEditado = { ...producto, cantidad: producto.cantidad - 1 };
+      await editarProducto(productoEditado);
+    }
+  };
+
+  // Paginación
+  const indiceUltimoProducto = paginaActual * productosPorPagina;
+  const indicePrimerProducto = indiceUltimoProducto - productosPorPagina;
+  const productosActuales = productosFiltrados.slice(indicePrimerProducto, indiceUltimoProducto);
+
+  const numerosDePagina = [];
+  for (let i = 1; i <= Math.ceil(productosFiltrados.length / productosPorPagina); i++) {
+    numerosDePagina.push(i);
+  }
+
+  const paginar = (numeroDePagina) => setPaginaActual(numeroDePagina);
+  const manejarAnterior = () => setPaginaActual((prev) => Math.max(prev - 1, 1));
+  const manejarSiguiente = () => setPaginaActual((prev) => Math.min(prev + 1, numerosDePagina.length));
+
+  const obtenerPaginasVisibles = () => {
+    if (numerosDePagina.length <= 3) {
+      return numerosDePagina;
+    } else if (paginaActual <= 2) {
+      return [1, 2, 3];
+    } else if (paginaActual >= numerosDePagina.length - 1) {
+      return [numerosDePagina.length - 2, numerosDePagina.length - 1, numerosDePagina.length];
+    } else {
+      return [paginaActual - 1, paginaActual, paginaActual + 1];
+    }
+  };
+
+  const paginasVisibles = obtenerPaginasVisibles();
 
   return (
     <>
@@ -242,43 +248,48 @@ const ListaProductos = () => {
               </div>
             </div>
 
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full bg-white border border-gray-300">
-                                <thead>
-                                    <tr className="bg-gray-100 border-b border-gray-300">
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marca</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {productosActuales.map((producto) => (
-                                        <tr key={producto.id} className="border-b border-gray-300">
-                                            <td className="px-6 py-4 whitespace-nowrap">{producto.nombre}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{producto.marca}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{producto.cantidad}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{producto.descripcion}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <button
-                                                    className="px-3 py-1 bg-blue-600 text-white rounded-md mr-2 hover:bg-blue-700 focus:outline-none"
-                                                    onClick={() => abrirModal('editar', producto)}
-                                                >
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </button>
-                                                <button
-                                                    className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none"
-                                                    onClick={() => eliminarProducto(producto.id)}
-                                                >
-                                                    <FontAwesomeIcon icon={faTrashCan} />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white border border-gray-300">
+                <thead>
+                  <tr className="bg-lime-600 border-b text-lg">
+                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Nombre</th>
+                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Marca</th>
+                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Cantidad</th>
+                    <th className="px-6 py-3 text-left text-base font-medium text-black uppercase tracking-wider">Descripción</th>
+                    <th className="px-6 py-3 text-center text-base font-medium text-black uppercase tracking-wider">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {productosActuales.map((producto, index) => (
+                    <tr key={producto.id} className={`border-b border-gray-300 ${index % 2 === 0 ? 'bg-gray-100' : ''}`}>
+                      <td className="px-6 py-4 whitespace-nowrap flex items-center">
+                        <button
+                          className="px-3 py-1 bg-red-600 text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
+                          onClick={() => reducirCantidad(producto.id)}>
+                          -
+                        </button>
+                        {producto.nombre}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">{producto.marca}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{producto.cantidad}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{producto.descripcion}</td>
+                      <td className="px-6 py-4 whitespace-nowrap flex justify-center items-center space-x-2">
+                        <button
+                          className="px-3 py-1 bg-blue-600 w-24 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+                          onClick={() => abrirModal('editar', producto)}>
+                          <FontAwesomeIcon icon={faPenToSquare} />
+                        </button>
+                        <button
+                          className="px-3 py-1 bg-red-600 w-24 text-white rounded-md hover:bg-red-700 focus:outline-none"
+                          onClick={() => eliminarProducto(producto.id)}>
+                          <FontAwesomeIcon icon={faTrashCan} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             {/* Paginación */}
             <div className="flex justify-center mt-4">
