@@ -34,6 +34,16 @@ export const borrarCliente = async (id) => {
     }
 }
 
+export const actualizarClienteConMascota = async (cliente, id) => {
+    try {
+        const response = await api.put(`/clienteConMascota/${id}`, cliente);
+        return response.data;
+    } catch (error) {
+        console.log(error.response)
+        return error.response.data;
+    }
+}
+
 export const actualizarCliente = async (cliente, id) => {
     try {
         const response = await api.put(`/clientes/${id}`, cliente);

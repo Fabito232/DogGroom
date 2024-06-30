@@ -1,24 +1,21 @@
 export default {
   content: [
     "./src/components/login.jsx",
-    "./src/components/ListaProductos.jsx",
-    "./src/components/AgregarProducto.jsx",
-    "./src/components/ListaClientes.jsx",
-    "./src/components/AgregarCliente.jsx",
-    "./src/components/Finanzas.jsx",
+    "./src/components/inventario/ListaProductos.jsx",
+    "./src/components/inventario/AgregarProducto.jsx",
+    "./src/components/cliente/ListaClientes.jsx",
+    "./src/components/cliente/AgregarCliente.jsx",
+    "./src/components/finanzas/Finanzas.jsx",
     "./src/components/Header.jsx",
-    "./src/components/AgregarGasto.jsx",
-    "./src/components/ListaGastos.jsx",
-    "./src/components/ModalConfirmacion.jsx",
-    "./src/components/ListaServicios.jsx",
-    "./src/components/AgregarServicio.jsx",
-    "./src/components/AgendarCita.jsx",
-    "./src/components/resumenCita.jsx",
-    "./src/components/MostrarMascota.jsx",
-    "./src/components/AgregarMascota.jsx",
-    "./src/components/ListaCitas.jsx",
-    
-  
+    "./src/components/finanzas/AgregarGasto.jsx",
+    "./src/components/finanzas/ListaGastos.jsx",
+    "./src/components/cita/ListaServicios.jsx",
+    "./src/components/cita/AgregarServicio.jsx",
+    "./src/components/cita/AgendarCita.jsx",
+    "./src/components/cita/ResumenCita.jsx",
+    "./src/components/cliente/MostrarMascota.jsx",
+    "./src/components/cliente/AgregarMascota.jsx",
+    "./src/components/cita/ListaCitas.jsx",
   ],
   theme: {
     container: {

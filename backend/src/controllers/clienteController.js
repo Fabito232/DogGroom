@@ -254,46 +254,45 @@ export const deleteCliente = async (req, res) => {
     }
 }
 
-// export const updateCliente = async (req, res) => {
-    
-//     try {
-//         const id = req.params.id
-//         const [filasActualizadas]  = await Cliente.update(
-//             {
-//                 Cedula: req.body.cedula,
-//                 Nombre: req.body.nombre,
-//                 Telefono: req.body.telefono
-//             },
-//             {
-//                 where:{
-//                     Cedula: id
-//                 }
-//             })
-//             if (filasActualizadas > 0) {
-//                 return res.json({
-//                     ok: true,
-//                     status: 200,
-//                     message: "Se obtuvo el cliente correctamente",
-//                     data: filasActualizadas
-//                 });
-//             } else {
-//                 return res.status(404).json({
-//                     ok: false,
-//                     status: 404,
-//                     message: "No se encontró el cliente con el ID proporcionado",
-//                 });
-//             }
-//     } catch (error) {
-//         return res.json({
-//             ok: false,
-//             status: 500,
-//             message: "No se actualizo el cliente",
-//             error: error.message
-//         })
-//     }
-// }
-
 export const updateCliente = async (req, res) => {
+    try {
+        const id = req.params.id
+        const [filasActualizadas]  = await Cliente.update(
+            {
+                Cedula: req.body.cedula,
+                Nombre: req.body.nombre,
+                Telefono: req.body.telefono
+            },
+            {
+                where:{
+                    Cedula: id
+                }
+            })
+            if (filasActualizadas > 0) {
+                return res.json({
+                    ok: true,
+                    status: 200,
+                    message: "Se obtuvo el cliente correctamente",
+                    data: filasActualizadas
+                });
+            } else {
+                return res.status(404).json({
+                    ok: false,
+                    status: 404,
+                    message: "No se encontró el cliente con el ID proporcionado",
+                });
+            }
+    } catch (error) {
+        return res.json({
+            ok: false,
+            status: 500,
+            message: "No se actualizo el cliente",
+            error: error.message
+        })
+    }
+}
+
+export const updateClienteConMascota = async (req, res) => {
   console.log(req.body)
     const { cedula, nombre, telefono, mascotas } = req.body;
     const files = req.files;

@@ -36,13 +36,13 @@ const Header = () => {
           <div className={`${isOpen ? 'block' : 'hidden'  } lg:flex md:items-center md:space-x-4`}>
             <ul className="lg:flex md:space-x-4">
               <li>
-                <a href="/citas" className="block px-3 py-2 hover:text-gray-400">
+                <a href="/calendario" className="block px-3 py-2 hover:text-gray-400">
                 <FontAwesomeIcon icon={faCalendarAlt} />  Calendario
                 </a>
               </li>
               <li>
-                <a href="/agendarCita" className="block px-3 py-2 hover:text-gray-400">
-                <FontAwesomeIcon icon={faCalendarCheck} />  Agendar
+                <a href="/citas" className="block px-3 py-2 hover:text-gray-400">
+                <FontAwesomeIcon icon={faCalendarCheck} />  Citas
                 
                 </a>
               </li>
@@ -63,7 +63,7 @@ const Header = () => {
                 </a>
               </li>
               <li>
-                <a href="/f" className="block px-3 py-2  hover:text-gray-400">
+                <a href="/finanzas" className="block px-3 py-2  hover:text-gray-400">
                 <FontAwesomeIcon icon={faMoneyBillTrendUp} />  Finanzas
                 
                 </a>

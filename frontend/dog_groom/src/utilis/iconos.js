@@ -1,4 +1,4 @@
-import { faMoneyBillTrendUp, faDog, faBoxes , faUsers,faCalendarAlt, faCalendarCheck, faPenToSquare,faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faMoneyBillTrendUp, faDog, faBoxes , faUsers,faCalendarAlt, faCalendarCheck, faPenToSquare,faTrashCan, faEye, faAddressCard } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export { 
@@ -10,5 +10,7 @@ export {
      faCalendarAlt, 
      faCalendarCheck,
      faPenToSquare,
-     faTrashCan
+     faTrashCan,
+     faEye,
+     faAddressCard
     }

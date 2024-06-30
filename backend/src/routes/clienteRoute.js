@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createCliente, getCliente, getListCliente, deleteCliente, updateCliente } from "../controllers/clienteController.js";
+import { createCliente, getCliente, getListCliente, deleteCliente, updateClienteConMascota, updateCliente } from "../controllers/clienteController.js";
 import { validarDatosCliente } from "../middleware/validators.js";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -20,6 +20,7 @@ router.get('/clientes', getListCliente);
 router.get('/clientes/:id', getCliente);
 router.post('/clientes', upload,validarDatosCliente, createCliente);
 router.delete('/clientes/:id',deleteCliente)
-router.put('/clientes/:id', upload,validarDatosCliente, updateCliente);
+router.put('/clientes/:id', updateCliente);
+router.put('/clienteConMascota/:id', upload,validarDatosCliente, updateClienteConMascota);
 
 export default router
