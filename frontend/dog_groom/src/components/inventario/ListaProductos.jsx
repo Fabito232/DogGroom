@@ -235,7 +235,7 @@ const ListaProductos = () => {
               <div className="ml-0 md:ml-auto">
                 <button
                   onClick={() => abrirModal('agregar')}
-                  className="mb-2 md:mb-0 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"> Agregar Producto
+                  className="mb-2 md:mb-0 px-4 py-2 font-bold bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"> Agregar Producto
                 </button>
                 <AgregarProducto
                   isOpen={modalIsOpen}

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { actualizarCita, borrarCita } from '../../services/citaServices';
 import { notificarError, notificarExito } from '../../utilis/notificaciones';
 import { toast } from 'react-toastify';
@@ -8,15 +7,16 @@ import dayjs from 'dayjs';
 import { URL_Hosting } from '../../services/api';
 import PropTypes from 'prop-types'
 import Modal from 'react-modal'
+import FloatingLabelInput from '../formulario/FloatingLabelInput';
+import { faXmark, FontAwesomeIcon, faTrashCan, faPenToSquare } from '../../utilis/iconos';
+import ImgMascota from '../../assets/img_perro.jpg';
 
 function formatFechaHora(fechaHora) {
   const fecha = dayjs(fechaHora).format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
   return fecha;
 }
 
-function ResumenCita({isOpen, cerrar, cita, agregarCita}) {
-  const location = useLocation();
-  const navigate = useNavigate();
+function ResumenCita({isOpen, cerrar, cita}) {
 
   const [editando, setEditando] = useState(false);
   const [citaEditada, setCitaEditada] = useState({});
@@ -25,8 +25,7 @@ function ResumenCita({isOpen, cerrar, cita, agregarCita}) {
   const [montoAdicionalInicial, setMontoAdicionalInicial] = useState(0);
   const [fecha, setFecha] = useState('');
   const [hora, setHora] = useState('');
-
-  const { citas } = location.state || {};
+  const [descripcion, setDescripcion] = useState('');
 
   useEffect(() => {
     if (cita && isOpen) {
@@ -49,6 +48,7 @@ function ResumenCita({isOpen, cerrar, cita, agregarCita}) {
       setMontoAdicionalInicial(parseFloat(montoAdicional) || 0);
       setFecha(dayjs(start).format('YYYY-MM-DD'));
       setHora(dayjs(start).format('HH:mm'));
+      setDescripcion(cita.descripcion);
     }
   }, [cita, isOpen]);
 
@@ -56,7 +56,8 @@ function ResumenCita({isOpen, cerrar, cita, agregarCita}) {
     return ;
   }
 
-  const { id, cliente, servicio, mascotas } = cita;
+  const { id, cliente, servicio } = cita;
+  console.log(cita)
 
   const manejarCambioFecha = (e) => {
     const nuevaFecha = e.target.value;
@@ -148,11 +149,6 @@ function ResumenCita({isOpen, cerrar, cita, agregarCita}) {
     }
   };
 
-  const agenda = () => {
-    cerrar()
-    agregarCita()
-  };
-
   const manejarCambioMontoAdicional = (e) => {
     const nuevoMontoAdicional = parseFloat(e.target.value) || 0;
     const diferencia = nuevoMontoAdicional - montoAdicionalInicial;
@@ -160,6 +156,10 @@ function ResumenCita({isOpen, cerrar, cita, agregarCita}) {
     setCitaEditada({ ...citaEditada, montoAdicional: nuevoMontoAdicional });
     setMontoTotal(nuevoMontoTotal);
     setMontoAdicional(nuevoMontoAdicional);
+  };
+  const manejarCambioDescripcion = (e) => {
+    const nuevaDescripccion = e.target.value || "";
+    setCitaEditada({ ...citaEditada, descripcion: nuevaDescripccion });
   };
 
   return (
@@ -172,218 +172,261 @@ function ResumenCita({isOpen, cerrar, cita, agregarCita}) {
     >
     {cita && (
     <div className="relative w-full max-w-6xl rounded-3xl p-4 md:p-8 bg-slate-200 overflow-hidden max-h-full overflow-y-auto shadow-xl">
-      <div className="bg-lime-800 object-center rounded-3xl p-8 space-y-14 w-full ">
+      <button onClick={cerrar} className="absolute top-2 right-4  text-gray-500 hover:bg-red-700 text-2xl p-1 rounded"><FontAwesomeIcon icon={faXmark} /></button>
+
+      <div className=" object-center rounded-3xl p-8 space-y-14 w-full ">
         <div className="flex flex-col md:flex-row md:space-x-8 justify-center">
-          <div className="flex-1 space-y-8">
-            <div>
-              <label className="block text-gray-900 text-sm font-bold mb-2">Fecha:</label>
-              {editando ? (
-                <input
-                  type="date"
-                  className="p-3 border border-gray-300 rounded w-full md:w-80"
-                  value={fecha}
-                  onChange={manejarCambioFecha}
-                />
-              ) : (
-                <input
-                  type="text"
-                  readOnly
-                  className="p-3 border border-gray-300 rounded w-full md:w-80"
-                  value={dayjs(cita.start).format('DD/MM/YYYY')}
-                />
-              )}
-            </div>
-            <div>
-              <label className="block text-gray-900 text-sm font-bold mb-2">Hora:</label>
-              {editando ? (
-                <select
-                  className="p-3 border border-gray-300 rounded w-full md:w-80"
-                  value={hora}
-                  onChange={manejarCambioHora}
-                >
-                  {limitanteTiempo().map((time) => (
-                    <option key={time} value={time}>{time}</option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  type="text"
-                  readOnly
-                  className="p-3 border border-gray-300 rounded w-full md:w-80"
-                  value={dayjs(cita.start).format('H:mm a')}
-                />
-              )}
-            </div>
-            {cita.mascotas.fotoURL && (
-              <div>
-                <img
-                  src={URL_Hosting + cita.mascotas.fotoURL}
-                  alt="Mascota"
-                  className="w-48 h-48 object-cover rounded-md"
-                />
+          <div className="flex-1 space-y-6">
+            <h1 className='text-center text-black font-bold mb-4'>Datos del Cliente</h1>
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <FloatingLabelInput
+                    type="text"
+                    readOnly
+                    disabled={true}
+                    name={'Cliente'}
+                    label={'Cliente'}
+                    value={cliente.nombre}
+                  />
+                </div>
+                <div>
+                  <FloatingLabelInput
+                    type="text"
+                    readOnly
+                    disabled={true}
+                    name={'Cedula'}
+                    label={'Cédula'}
+                    value={cliente.cedula}
+                  />
+                </div>
+                <div>
+                  <FloatingLabelInput
+                    type="text"
+                    readOnly
+                    disabled={true}
+                    name={'Telefono'}
+                    label={'Teléfono'}
+                    value={cliente.telefono}
+                  />
+                </div>
               </div>
-            )}
-            <div className="flex space-x-4 mt-4">
-              <button
-                className="bg-red-700 hover:bg-red-900 text-white font-bold w-20 h-12 rounded-md"
-                onClick={cerrar}
-              >
-                Salir
-              </button>
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <FloatingLabelInput
+                    type="text"
+                    readOnly
+                    disabled={true}
+                    name={'Mascota'}
+                    label={'Mascota'}
+                    value={cita.mascotas.nombre}
+                  />
+                </div>
+                <div>
+                  <FloatingLabelInput
+                    type="text"
+                    readOnly
+                    disabled={true}
+                    name={'Raza'}
+                    label={'Raza'}
+                    value={cita.mascotas.raza}
+                  />
+                </div>
+                <div>
+                  <FloatingLabelInput
+                    type="text"
+                    readOnly
+                    disabled={true}
+                    name={'Tamano'}
+                    label={'Tamaño'}
+                    value={cita.mascotas.tipoMascota}
+                  />
+                </div>
+              </div>
 
-              <button
-                className="bg-green-700 hover:bg-green-900 text-white font-bold w-40 h-12 rounded-md"
-                onClick={agenda}
-              >
-                Agendar Cita
-              </button>
-            </div>
-          </div>
-
-          <div className="flex-1 space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label className="block text-gray-900 text-sm font-bold mb-2">Cliente:</label>
-                <input
-                  type="text"
-                  readOnly
-                  className="p-3 border border-gray-300 rounded w-full"
-                  value={cliente.nombre}
-                />
-              </div>
-              <div>
-                <label className="block text-gray-900 text-sm font-bold mb-2">Cédula:</label>
-                <input
-                  type="text"
-                  readOnly
-                  className="p-3 border border-gray-300 rounded w-full"
-                  value={cliente.cedula}
-                />
-              </div>
-              <div>
-                <label className="block text-gray-900 text-sm font-bold mb-2">Teléfono:</label>
-                <input
-                  type="text"
-                  readOnly
-                  className="p-3 border border-gray-300 rounded w-full"
-                  value={cliente.telefono}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label className="block text-gray-900 text-sm font-bold mb-2">Mascota:</label>
-                <input
-                  type="text"
-                  readOnly
-                  className="p-3 border border-gray-300 rounded w-full"
-                  value={cita.mascotas.nombre}
-                />
-              </div>
-              <div>
-                <label className="block text-gray-900 text-sm font-bold mb-2">Raza:</label>
-                <input
-                  type="text"
-                  readOnly
-                  className="p-3 border border-gray-300 rounded w-full"
-                  value={cita.mascotas.raza}
-                />
-              </div>
-              <div>
-                <label className="block text-gray-900 text-sm font-bold mb-2">Tamaño:</label>
-                <input
-                  type="text"
-                  readOnly
-                  className="p-3 border border-gray-300 rounded w-full"
-                  value={cita.mascotas.tipoMascota}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col space-y-4">
-              <table className="min-w-40 divide-y divide-gray-200 border-collapse mt-4">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase border border-gray-200">Servicio</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase border border-gray-200">Precio</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  <tr className="bg-white border border-gray-200">
-                    <td className="px-4 py-2 whitespace-nowrap border border-gray-200">{servicio.descripcion}</td>
-                    <td className="px-4 py-2 whitespace-nowrap border border-gray-200">{servicio.precio.toFixed(2)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="grid grid-cols-1 gap-6 justify-end">
-              <div className="text-right">
-                <label className="block text-gray-900 text-sm font-bold mb-2">Estado:</label>
-                <select
-                  className="p-3 border border-gray-300 rounded w-full md:w-64"
-                  readOnly={!editando}
-                  disabled={!editando}
-                  value={editando ? (citaEditada.estado ? "True" : "False") : (cita.estado ? "True" : "False")}
-                  onChange={(e) => setCitaEditada({ ...citaEditada, estado: e.target.value === "True" })}
-                >
-                  <option value="" disabled>Seleccionar</option>
-                  <option value="True">En proceso</option>
-                  <option value="False">Finalizado</option>
-                </select>
-                <label className="block text-gray-900 text-sm font-bold mb-2">Monto Adicional:</label>
-                <input
-                  type="text"
-                  readOnly={!editando}
-                  className="p-3 border border-gray-300 rounded w-full md:w-64"
-                  value={editando ? citaEditada.montoAdicional : cita.montoAdicional || 0}
-                  onChange={manejarCambioMontoAdicional}
-                />
-              </div>
-              <div className="text-right">
-                <label className="block text-gray-900 text-sm font-bold mb-2">Total:</label>
-                <input
-                  type="text"
-                  readOnly
-                  className="p-3 border border-gray-300 rounded w-full md:w-64"
-                  value={montoTotal.toFixed(2)}
-                />
-              </div>
-            </div>
-            <div className="flex justify-end space-x-4 mt-4">
-              {!editando ? (
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-40 h-12 rounded-md"
-                  onClick={manejarEditar}
-                >
-                  Editar
-                </button>
+              {cita.mascotas.fotoURL ? (
+                <div className='flex justify-center m-5'>
+                  <img
+                    src={URL_Hosting + cita.mascotas.fotoURL}
+                    alt="Mascota"
+                    className="w-60 h-60 object-cover rounded-md"
+                  />
+                </div>
               ) : (
-                <>
-                  <button
-                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md"
-                    onClick={manejarGuardar}
-                  >
-                    Guardar
-                  </button>
-                  <button
-                    className="bg-red-700 hover:bg-red-900 text-white font-bold w-40 h-12 rounded-md"
-                    onClick={manejarCancelar}
-                  >
-                    Cancelar
-                  </button>
-                </>
+                <div className='flex justify-center m-5'>
+                  <img
+                    src={ImgMascota}
+                    alt="Mascota"
+                    className="w-60 h-60 object-cover rounded-md"
+                  />
+                </div>
               )}
-              <button
-                className="bg-red-700 hover:bg-gray-400 text-black font-bold w-40 h-12 rounded-md"
-                onClick={manejarEliminar}
-              >
-                Eliminar
-              </button>
+            </div>
+          <div className="flex-1 space-y-6">
+            <h1 className='text-center text-black font-bold mb-4 '>Datos de la Cita</h1>
+            <div>
+                {editando ? (
+                  <FloatingLabelInput
+                    type="date"
+                    value={fecha}
+                    name={'Fecha'}
+                    label={'Fecha'}
+                    onChange={manejarCambioFecha}
+                  />
+                ) : (
+                  <FloatingLabelInput
+                    type="text"
+                    readOnly
+                    disabled={true}
+                    name={'Fecha'}
+                    label={'Fecha'}
+                    value={dayjs(cita.start).format('DD/MM/YYYY')}
+
+                  />
+                )}
+              </div>
+              <div >
+                {editando ? (
+                  <>
+                  <label className="block text-gray-900 text-sm font-bold mb-2">Hora:</label>
+                  <select
+                    className="p-3 text-lg border h-12 border-gray-500  bg-slate-200 rounded-md w-full text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600"
+                    value={hora}
+                    onChange={manejarCambioHora}
+                  >
+                    {limitanteTiempo().map((time) => (
+                      <option key={time} value={time}>{time}</option>
+                    ))}
+                  </select>
+                  </>
+                ) : (
+                  <FloatingLabelInput
+                    type="text"
+                    readOnly
+                    disabled={true}
+                    name={'Hora'}
+                    label={'Hora'}
+                    value={dayjs(cita.start).format('H:mm a')}
+                  />
+                )}
+              </div>
+              <div className="flex flex-col space-y-2">
+                <table className="min-w-40 divide-y divide-gray-200 border-collapse mt-4 rounded-lg overflow-hidden">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-2 text-left text-xs text-black font-bold uppercase border border-gray-200">Servicio</th>
+                      <th className="px-4 py-2 text-left text-xs text-black font-bold uppercase border border-gray-200">Precio</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    <tr className="bg-white border border-gray-200">
+                      <td className="px-4 py-2 whitespace-nowrap border border-gray-200">{servicio.descripcion}</td>
+                      <td className="px-4 py-2 whitespace-nowrap border border-gray-200">{servicio.precio.toFixed(2)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6 justify-end">
+              <div className="text-right">
+                  <FloatingLabelInput
+                      type="text"
+                      name={'descripcion'}
+                      label={'Descripcion'}
+                      readOnly={!editando}
+                      value={editando ? citaEditada.descripcion : cita.descripcion || ""}
+                      onChange={manejarCambioDescripcion}
+                    />
+                  </div>
+
+                <div className="text-right">
+                  <FloatingLabelInput
+                      type="text"
+                      name={'montoAdicional'}
+                      label={'Monto Adicional'}
+                      readOnly={!editando}
+                      value={editando ? citaEditada.montoAdicional : cita.montoAdicional || 0}
+                      onChange={manejarCambioMontoAdicional}
+                    />
+                  </div>
+                <div className="text-right">
+                  <FloatingLabelInput
+                    type="text"
+                    name={'total'}
+                    label={'Total'}
+                    readOnly
+                    value={montoTotal.toFixed(2)}
+                  />
+                </div>
+                <div className="text-center my-4">
+                  <div className="border border-gray-500 rounded-lg p-4">
+                    <label className="block text-gray-900 text-sm font-bold mb-2 text-center">Estado</label>
+                    <div className="flex items-center justify-center space-x-4">
+                      <label className="flex items-center">
+                        <input
+                          type="checkbox"
+                          className="form-checkbox h-6 w-6 text-blue-600 checked:bg-green-500"
+                          checked={editando ? citaEditada.estado : cita.estado}
+                          onChange={(e) => setCitaEditada({ ...citaEditada, estado: e.target.checked })}
+                          disabled={!editando}
+                          readOnly={!editando}
+                        />
+                        <span className="ml-2 text-lg text-gray-900 dark:text-white">En proceso</span>
+                      </label>
+                      <label className="flex items-center">
+                        <input
+                          type="checkbox"
+                          className="form-checkbox h-6 w-6 text-blue-600 checked:bg-red-500"
+                          checked={editando ? !citaEditada.estado : !cita.estado}
+                          onChange={(e) => setCitaEditada({ ...citaEditada, estado: !e.target.checked })}
+                          disabled={!editando}
+                          readOnly={!editando}
+                        />
+                        <span className="ml-2 text-lg text-gray-900 dark:text-white">Finalizado</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div className="flex justify-center space-x-4 mt-4">
+                {!editando ? (
+                  <>
+                  <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-40 h-12 rounded-md"
+                    onClick={manejarEditar}
+                  >
+                   <FontAwesomeIcon icon={faPenToSquare} />
+                  </button>
+                   <button
+                   className="bg-red-700 hover:bg-gray-400 text-white font-bold w-40 h-12 rounded-md"
+                   onClick={manejarEliminar}
+                 >
+                   <FontAwesomeIcon icon={faTrashCan} />
+                 </button>
+                 </>
+                ) : (
+                  <>
+                    <button
+                      className="bg-green-500 hover:bg-green-700 text-white font-bold w-40 h-12  rounded-md"
+                      onClick={manejarGuardar}
+                    >
+                      Guardar
+                    </button>
+                    <button
+                      className="bg-red-700 hover:bg-red-900 text-white font-bold w-40 h-12 rounded-md"
+                      onClick={manejarCancelar}
+                    >
+                      Cancelar
+                    </button>
+                  </>
+                )}
+               
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    )}
+      )}
     </Modal>
   );
 }

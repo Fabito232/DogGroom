@@ -62,7 +62,7 @@ const ListaCitas = () => {
           servicio: { 
             id_servicio: cita.Servicio ? cita.Servicio.ID_Servicio : 1,
             descripcion: cita.Servicio ? cita.Servicio.Descripcion : "No existe",
-            precio: parseFloat(cita.Servicio) ? parseFloat(cita.Servicio.Precio) : 0
+            precio: cita.Servicio ? parseFloat(cita.Servicio.Precio) : 0
           }
         }));
         const ordenarPorfechas = ListaCitas.sort((a, b) => new Date(b.fechaYHora) - new Date(a.fechaYHora));
@@ -77,6 +77,7 @@ const ListaCitas = () => {
   };
 
   const abrirModalResumen = (cita) => {
+    console.log(cita)
     setCitaActual(cita)
     setModalIsOpenSummary(true)
   };
@@ -175,7 +176,7 @@ const ListaCitas = () => {
         <div>
           <button
             onClick={agregarCita}
-            className="mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            className="mb-4 px-4 py-2 font-bold bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
           >
             Agregar Cita
           </button>

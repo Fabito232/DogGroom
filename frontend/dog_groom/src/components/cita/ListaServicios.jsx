@@ -210,7 +210,7 @@ const ListaServicios = () => {
           <div>
             <button
               onClick={() => abrirModal('agregar')}
-              className="mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              className="mb-4 px-4 py-2 font-bold bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
             >
               Agregar Servicio
             </button>

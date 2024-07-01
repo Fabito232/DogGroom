@@ -231,7 +231,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                   name="nombreCliente"
                   label="Nombre del Cliente"
                   value={nombreCliente}
-                  disabled={false}
+                  disabled={true}
                   readOnly
                 />
                 <FloatingLabelInput
@@ -240,7 +240,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                   name="cedula"
                   label="Cédula"
                   value={cedulaCliente}
-                  disabled={false}
+                  disabled={true}
                   readOnly
                 />
                 <FloatingLabelInput
@@ -249,7 +249,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                   name="telefono"
                   label="Teléfono"
                   value={telefonoCliente}
-                  disabled={false}
+                  disabled={true}
                   readOnly
                 />
                 <select

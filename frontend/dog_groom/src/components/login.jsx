@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../services/empleadoService';
-import { toast } from 'react-toastify';
 import { notificarError, notificarExito } from '../utilis/notificaciones';
 
 const Login = () => {
