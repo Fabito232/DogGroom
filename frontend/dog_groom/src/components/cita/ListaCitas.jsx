@@ -237,7 +237,9 @@ const ListaCitas = () => {
           </tbody>
         </table>
       </div>
-      {/* Paginación */}
+      {citasActuales.length === 0 ? (
+            <h1 className="text-3xl font-bold m-5 text-center">Aún no se han agregado citas</h1>
+      ) : (
       <div className="flex justify-center mt-4">
         <nav>
           <ul className="flex items-center">
@@ -280,9 +282,10 @@ const ListaCitas = () => {
           </ul>
         </nav>
       </div>
+       )}
+      </div>
     </div>
-    </div>
-    </>
+  </>
   );
 };
 

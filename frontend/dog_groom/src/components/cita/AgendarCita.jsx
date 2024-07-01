@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import { obtenerClientes } from '../../services/clienteService';
 import { crearCita} from '../../services/citaServices'; // Asegúrate de importar obtenerCitas
-import { notificarExito, notificarError} from '../../utilis/notificaciones';
+import { notificarExito, notificarError, notificarInfo} from '../../utilis/notificaciones';
 import { obtenerServicios } from '../../services/paqueteServices';
 import imgPerro from '../../assets/img_perro.jpg';
 import { URL_Hosting } from '../../services/api';
 import Modal from 'react-modal';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
+import FloatingLabelInput from '../formulario/FloatingLabelInput'
+import { faChevronRight,FontAwesomeIcon,faSearch } from '../../utilis/iconos.js'
 
 function AgendarCita({isOpen, cerrar, fechaInicial}) {
   const [clientes, setClientes] = useState([]);
@@ -25,6 +27,36 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
   const [estado, setEstado] = useState('');
   const [montoAdicional, setMontoAdicional] = useState('');
   const [montoTotal, setMontoTotal] = useState('');
+  const [filtroCliente, setFiltroCliente] = useState('');
+
+  const handleFiltroClienteChange = (e) => {
+    setFiltroCliente(e.target.value);
+  };
+
+  const clientesFiltrados = clientes.filter((cliente) =>
+    cliente.nombre.toLowerCase().includes(filtroCliente.toLowerCase())
+  );
+
+  const resetForm = () => {
+    setMascotasCliente([]);
+    setMascotaSeleccionada(null);
+    setNombreCliente('');
+    setCedulaCliente('');
+    setTelefonoCliente('');
+    setFecha('');
+    setHora('');
+    setIDServicio('');
+    setPrecio('');
+    setDescripcion('');
+    setEstado('');
+    setMontoAdicional('');
+    setMontoTotal('');
+    setFiltroCliente('');
+  };
+
+  useEffect(() => {
+    resetForm();
+  }, [cerrar]);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -63,10 +95,16 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
     setNombreCliente(cliente.nombre);
     setCedulaCliente(cliente.cedula);
     setTelefonoCliente(cliente.telefono);
-    setMascotasCliente(cliente.mascotas);
+    console.log(cliente.mascotas)
+    
+    if(cliente.mascotas.length !== 0){
+      setMascotasCliente(cliente.mascotas);
+    }else{
+      notificarError("Este cliente no tiene registrado ninguna mascota")
+    }
 
     if (cliente.mascotas.length > 0) {
-      setMascotaSeleccionada(cliente.mascotas[0]);
+      setMascotaSeleccionada();
     } else {
       setMascotaSeleccionada(null);
     }
@@ -102,6 +140,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
 
   const handleAgendaCita = async (e) => {
     e.preventDefault();
+    if(cedulaCliente && mascotaSeleccionada){
     const fechaYHoraCita = `${fecha}T${hora}`;
     const cita = {
       fechaYHora: fechaYHoraCita,
@@ -113,23 +152,26 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
       ID_Servicio: id_servicio,
       ID_Mascota: mascotaSeleccionada.id
     };
-
-    
-    try {
-      const resCita = await crearCita(cita);
-      if (resCita.ok) {
-        notificarExito("Se agendó la cita con éxito", {
-          autoClose: 1500,
-          theme: "colored",
-        });
-        cerrar()
-      } else {
-        notificarError(resCita.message);
+      try {
+        const resCita = await crearCita(cita);
+        if (resCita.ok) {
+          notificarExito("Se agendó la cita con éxito", {
+            autoClose: 1500,
+            theme: "colored",
+          });
+          cerrar()
+        } else {
+          notificarError(resCita.message);
+        }
+      
+      } catch (error) {
+        notificarError(error.message);
       }
-    } catch (error) {
-      notificarError(error.message);
+    }else{
+      notificarInfo("Debe selecionar un cliente y su mascota")
     }
-  };
+  }
+ 
   return (
     <Modal
       isOpen={isOpen}
@@ -140,60 +182,78 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
     >
       <div className="relative w-full max-w-6xl rounded-3xl p-4 md:p-8 bg-slate-200 overflow-hidden max-h-full overflow-y-auto shadow-xl">
         <div className="flex flex-col md:flex-row w-full">
-          <div className="w-full md:w-1/3 bg-amber-800 bg-opacity-90 rounded-3xl p-4 md:p-8 m-2 md:m-4 overflow-y-auto">
-            <ul className="list-none p-0">
-              {clientes.map((cliente) => (
-                <li
-                  key={cliente.id}
-                  className="bg-black my-2 p-2 rounded-md text-white cursor-pointer"
-                  onClick={() => handleSelectCliente(cliente)}
-                >
-                  <span>
-                    {cliente.nombre} - {cliente.cedula}
-                  </span>
-                </li>
-              ))}
-            </ul>
+        <div className="w-full md:w-1/3 bg-amber-800 bg-opacity-90 rounded-3xl p-4 md:p-8 m-2 md:m-4 overflow-y-auto">
+          <h3 className="text-white text-center font-bold mb-4">Clientes</h3>
+          <div className="mb-4">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Buscar cliente..."
+                className="py-2 px-4 w-full text-white bg-gray-800 rounded-md focus:outline-none"
+                value={filtroCliente}
+                onChange={handleFiltroClienteChange}
+              />
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <FontAwesomeIcon icon={faSearch} className="text-gray-400" />
+              </div>
+            </div>
           </div>
+          <div className="overflow-y-auto max-h-96">
+            {clientesFiltrados.length === 0 ? (
+              <p className="text-white">No hay clientes disponibles.</p>
+            ) : (
+              <ul className="divide-y divide-gray-600">
+                {clientesFiltrados.map((cliente) => (
+                  <li
+                    key={cliente.id}
+                    className="py-2 px-4 cursor-pointer flex items-center justify-between hover:bg-gray-700"
+                    onClick={() => handleSelectCliente(cliente)}
+                  >
+                    <div>
+                      <p className="text-white">{cliente.nombre}</p>
+                      <p className="text-gray-400 text-sm">{cliente.cedula}</p>
+                    </div>
+                    <FontAwesomeIcon icon={faChevronRight} className="text-white" />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
 
-          <div className="w-full md:w-2/3 bg-sky-900 rounded-3xl p-4 md:p-8 m-2 md:m-4">
+          <div className="w-full md:w-2/3 rounded-3xl p-4 md:p-4 m-2 ">
             <form onSubmit={handleAgendaCita} className="space-y-4 w-full">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <input
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
+            {nombreCliente && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FloatingLabelInput
                   type="text"
                   id="nombreCliente"
                   name="nombreCliente"
-                  placeholder="Nombre del Cliente"
+                  label="Nombre del Cliente"
                   value={nombreCliente}
+                  disabled={false}
                   readOnly
-                  required
                 />
-                <input
-                  className="p-3 border border-gray-300 rounded mb-2"
+                <FloatingLabelInput
                   type="text"
                   id="cedula"
                   name="cedula"
-                  placeholder="Cédula"
+                  label="Cédula"
                   value={cedulaCliente}
+                  disabled={false}
                   readOnly
-                  required
                 />
-                <input
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                <FloatingLabelInput
                   type="text"
                   id="telefono"
                   name="telefono"
-                  placeholder="Teléfono"
+                  label="Teléfono"
                   value={telefonoCliente}
+                  disabled={false}
                   readOnly
-                  required
                 />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <select
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                  className="p-3 text-lg border h-12 border-gray-500  bg-slate-200 rounded-md w-full text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600"
                   value={mascotaSeleccionada?.id || ''}
                   onChange={(e) => {
                     const mascota = mascotasCliente.find(m => m.id === parseInt(e.target.value));
@@ -207,47 +267,55 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                   ))}
                 </select>
               </div>
-
+                  )}
               {mascotaSeleccionada && (
                 <>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <input
-                      className="p-3 border border-gray-300 rounded w-full mb-2"
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className='grid grid-cols-1'>  
+                    <FloatingLabelInput
                       type="text"
-                      placeholder="Nombre del Perro"
-                      value={mascotaSeleccionada.nombre}
+                      label="Nombre del Perro"
+                      value={telefonoCliente}
                       readOnly
+                      disabled={false}
                     />
-                    <input
-                      className="p-3 border border-gray-300 rounded w-full mb-2"
+                    <FloatingLabelInput
                       type="text"
-                      placeholder="Raza"
+                      label="Raza"
                       value={mascotaSeleccionada.raza}
                       readOnly
+                      disabled={false}
                     />
-                    <input
-                      className="p-3 border border-gray-300 rounded w-full mb-2"
+                    <FloatingLabelInput
                       type="text"
-                      placeholder="Tamaño"
+                      label="Tamaño"
                       value={mascotaSeleccionada.tamano}
                       readOnly
+                      disabled={false}
                     />
-                  </div>
-                  <div className="mb-8 md:mr-8 md:mb-0">
-                    {mascotaSeleccionada.fotoURL && (
+                    </div>
+                    <div className='flex justify-center'>
+                    {mascotaSeleccionada.fotoURL ? (
                       <img
                         src={URL_Hosting + mascotaSeleccionada.fotoURL || imgPerro}
                         alt="Mascota"
-                        className="w-48 h-48 object-cover rounded-md mt-4"
+                        className="w-40 h-40 object-cover rounded-2xl items-center justify-center"
+                      />
+                    ) : (
+                      <img
+                        src={ imgPerro}
+                        alt="Mascota"
+                        className="w-40 h-40 object-cover rounded-2xl  items-center justify-center"
                       />
                     )}
+                    </div>
                   </div>
+           
                 </>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <input
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <FloatingLabelInput
                   type="date"
                   id="fecha"
                   name="fecha"
@@ -256,7 +324,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                   required
                 />
                 <select
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                  className="p-3 text-lg border h-12 border-gray-500  bg-slate-200 rounded-md w-full text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600"
                   id="hora"
                   name="hora"
                   value={hora}
@@ -273,7 +341,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                   ))}
                 </select>
                 <select
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                  className="p-3 text-lg border h-12 border-gray-500  bg-slate-200 rounded-md w-full text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600"
                   id="servicio"
                   name="servicio"
                   value={id_servicio}
@@ -285,18 +353,17 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                     <option key={servicio.ID_Servicio} value={servicio.ID_Servicio}>{servicio.Descripcion}</option>
                   ))}
                 </select>
-                <input
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                <FloatingLabelInput
                   type="text"
                   id="descripcion"
                   name="descripcion"
-                  placeholder="Descripción"
+                  label="Descripción"
                   value={descripcion}
                   onChange={(e) => setDescripcion(e.target.value)}
                   required
                 />
                 <select
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                  className="p-3 text-lg border h-12 border-gray-500  bg-slate-200 rounded-md w-full text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600"
                   id="estado"
                   name="estado"
                   value={estado}
@@ -309,31 +376,28 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                   <option value="true">En proceso</option>
                   <option value="false">Finalizar</option>
                 </select>
-                <input
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                <FloatingLabelInput
                   type="text"
                   id="precio"
                   name="precio"
-                  placeholder="Precio"
+                  label="Precio"
                   value={precio}
                   readOnly
                   required
                 />
-                <input
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                <FloatingLabelInput
                   type="text"
                   id="montoAdicional"
                   name="montoAdicional"
-                  placeholder="Monto Adicional"
+                  label="Monto Adicional"
                   value={montoAdicional}
                   onChange={handleMontoAdicionalChange}
                 />
-                <input
-                  className="p-3 border border-gray-300 rounded w-full mb-2"
+                <FloatingLabelInput
                   type="text"
                   id="montoTotal"
                   name="montoTotal"
-                  placeholder="Monto Total"
+                  label="Monto Total"
                   value={montoTotal}
                   readOnly
                   required

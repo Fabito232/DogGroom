@@ -1,5 +1,5 @@
 
-const FloatingLabelInput = ({ name, label, value, onChange, type = "text", required}) => {
+const FloatingLabelInput = ({ name, label, value, onChange, type = "text", required, disabled, readOnly}) => {
   return (
     <div className="relative mb-4">
       <input
@@ -9,6 +9,8 @@ const FloatingLabelInput = ({ name, label, value, onChange, type = "text", requi
         value={value}
         onChange={onChange}
         required = {required}
+        disabled={disabled}
+        readOnly={readOnly}
         className="block w-full h-12 p-5 border bg-slate-200 border-gray-500 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600 peer"
         placeholder=" "
       />
