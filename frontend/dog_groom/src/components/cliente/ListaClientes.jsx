@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import imgCliente from '../../assets/img_perro.jpg';
+import imgCliente from '../../assets/user.512x512.png';
 import Header from "../Header";
 import { obtenerClientes, actualizarCliente, borrarCliente } from '../../services/clienteService';
 import { crearMascota, actualizarMascota, borrarMascota } from '../../services/mascotaService';
@@ -250,14 +250,13 @@ const ListaClientes = () => {
     const totalPaginas = Math.ceil(clientesFiltrados.length / clientesPorPagina);
 
     return (
-        <div className="relative min-h-screen flex flex-col bg-fondo2 bg-cover">
+        <div className="relative min-h-screen flex flex-col bg-slate-400 bg-cover ">
             <Header />
-            <div className="flex-grow flex items-start justify-start p-4 md:p-12">
+            <div className="md:container md:mx-auto p-5">
                 <div className="shadow-lg w-full md:w-200 md:h-auto">
-                    <div className="shadow-md p-4 md:p-16 mb-8 overflow-auto max-h-[790px]" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
                         <div className="flex flex-col md:flex-row items-center justify-between mb-4">
-                            <h1 className="bg-gray-300 rounded-lg text-3xl md:text-6xl font-bold flex-1 text-center mb-4 md:mb-0">Lista de Clientes</h1>
-                            <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 md:py-4 px-6 md:px-12 rounded ml-8" onClick={abrirModal}>Agregar</button>
+                            <h1 className="bg-white rounded-lg text-3xl md:text-3xl text-black font-bold flex-1 text-center mb-4 md:mb-0 p-2 shadow-xl">Lista de Clientes</h1>
+                            <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 md:py-4 px-6 md:px-12 rounded-lg ml-8" onClick={abrirModal}>Agregar</button>
                             <AgregarCliente
                                 isOpen={modalIsOpen}
                                 cerrar={cerrarModal}
@@ -268,9 +267,9 @@ const ListaClientes = () => {
                             placeholder="Buscar por Nombre de Cliente o Cédula"
                             value={terminoBusqueda}
                             onChange={manejarCambioBusqueda}
-                            className="mb-4 p-2 border border-gray-300 rounded w-full"
+                            className="mb-4 p-2 border border-gray-300 rounded-xl w-full"
                         />
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
                             {clientesActuales.map(cliente => (
                                 <div key={cliente.id} className="flex flex-col bg-amber-700 bg-opacity-90 border border-black w-full">
                                     <div className="relative p-4 w-full flex justify-center">
@@ -355,6 +354,9 @@ const ListaClientes = () => {
                                 </div>
                             ))}
                         </div>
+                        {clientesActuales.length === 0 ? (
+                        <h1 className="text-3xl font-bold m-5 text-center">Aún no se han agregado clientes</h1> 
+                        ) : (
                         <div className="flex justify-center mt-4">
                             <button
                                 onClick={() => setPaginaActual(paginaActual - 1)}
@@ -371,7 +373,8 @@ const ListaClientes = () => {
                                 Siguiente
                             </button>
                         </div>
-                    </div>
+                          )}
+                    
                 </div>
             </div>
         </div>

@@ -4,7 +4,7 @@ import { crearCliente } from "../../services/clienteService";
 import { obtenerTipoMascotas } from "../../services/tipoAnimal";
 import Modal from 'react-modal';
 import PropTypes from 'prop-types';
-import FloatingLabelInput from '../fomulario/FloatingLabelInput';
+import FloatingLabelInput from '../formulario/FloatingLabelInput';
 
 function AgregarCliente({ isOpen, cerrar }) {
     const [cedulaCliente, setCedulaCliente] = useState('');

@@ -55,8 +55,8 @@ const Finanzas = () => {
     return (
         <>
             <Header />
-            <div className="bg-slate-400 min-h-screen flex justify-center bg-primary bg-opacity-80 bg-cover">
-                <div className="md:max-w-screen-lg mx-auto p-5 w-full">
+            <div className="bg-slate-400 min-h-screen bg-primary bg-opacity-80 bg-cover">
+                <div className="md:container md:mx-auto p-5">
                     <div className="container bg-opacity-90 bg-white rounded-lg shadow-xl">
                         <h1 className="text-black text-3xl p-3 m-5 text-center font-bold">Resumen de finanzas por rango de fechas </h1>
                     </div>

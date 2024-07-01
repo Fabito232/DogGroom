@@ -259,7 +259,7 @@ const ListaProductos = () => {
                     <th className="px-6 py-3 text-center text-base font-medium text-black uppercase tracking-wider">Acciones</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody>                 
                   {productosActuales.map((producto, index) => (
                     <tr key={producto.id} className={`border-b border-gray-300 ${index % 2 === 0 ? 'bg-gray-100' : ''}`}>
                       <td className="px-6 py-4 text-center whitespace-nowrap items-start">
@@ -290,8 +290,9 @@ const ListaProductos = () => {
                 </tbody>
               </table>
             </div>
-
-            {/* Paginación */}
+            {productosActuales.length === 0 ? (
+            <h1 className="text-3xl font-bold m-5 text-center">Aún no se han agregado productos</h1>
+          ) : (
             <div className="flex justify-center mt-4">
               <nav>
                 <ul className="flex items-center">
@@ -326,6 +327,7 @@ const ListaProductos = () => {
                 </ul>
               </nav>
             </div>
+            )}
           </div>
         </div>
       </div>

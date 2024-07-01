@@ -52,9 +52,9 @@ function Citas() {
               fotoURL: cita.Mascotum.FotoURL
           },
           servicio: { // Detalles del servicio de la 
-            id_servicio: cita.Servicio.ID_Servicio,
-            descripcion: cita.Servicio.Descripcion,
-            precio: parseFloat(cita.Servicio.Precio)
+            id_servicio: cita.Servicio ? cita.Servicio.ID_Servicio : 1,
+            descripcion: cita.Servicio ? cita.Servicio.Descripcion : "No existe",
+            precio: cita.Servicio ? parseFloat(cita.Servicio.Precio) : 0
           }
         }));
         console.log(citasTransformadas);

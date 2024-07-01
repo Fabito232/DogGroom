@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { URL_Hosting } from '../../services/api';
+import FloatingLabelInput from '../formulario/FloatingLabelInput'
+
 
 import PropTypes from 'prop-types';
 
@@ -84,40 +86,37 @@ const AgregarMascota = ({ isOpen, cerrar, guardarMascota, mascota, modo, tiposMa
         >
             <div className="bg-slate-200 rounded-lg p-6 w-full max-w-lg mx-4">
                 <button onClick={cerrar} className="absolute top-2 right-2 text-gray-500 hover:text-white hover:bg-red-500 text-2xl p-1 rounded">X</button>
-                <h2 className="text-xl font-bold mb-4">{modo === 'agregar' ? 'Agregar Mascota' : 'Editar Mascota'}</h2>
+                <h2 className="text-2xl text-center font-bold mb-4">{modo === 'agregar' ? 'Agregar Mascota' : 'Editar Mascota'}</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <input
+                        <FloatingLabelInput
                             type="text"
                             name="nombre"
-                            placeholder="Nombre de la Mascota"
+                            label="Nombre de la Mascota"
                             value={nuevaMascota.nombre}
                             onChange={handleChange}
-                            className="w-full p-2 border border-gray-500 rounded mt-1"
                             required
                         />
                     </div>
                     <div className="mb-4">
-                        <input
+                        <FloatingLabelInput
                             type="text"
                             name="raza"
-                            placeholder="Raza de la Mascota"
+                            label="Raza de la Mascota"
                             value={nuevaMascota.raza}
                             onChange={handleChange}
-                            className="w-full p-2 border border-gray-500 rounded mt-1"
                             required
                         />
                     </div>
                     <div className="mb-4">
-                        <label className="block text-gray-700">Tipo de Mascota</label>
                         <select
-                            className="w-full p-2 border border-gray-500 rounded mt-1"
-                            value={nuevaMascota.tipoMascota.ID_TipoMascota || ''}
+                        className="p-3 text-lg border h-12 border-gray-500  bg-slate-200 rounded-md w-full text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600"
+                        value={nuevaMascota.tipoMascota.ID_TipoMascota || ''}
                             onChange={handleChangeSelect}
                             name="tipoMascota"
                             required
                         >
-                            <option value="">Selecciona un tipo de mascota</option>
+                            <option value="">Seleccionar Tamaño</option>
                             {tiposMascota.map((tipo) => (
                                 <option key={tipo.ID_TipoMascota} value={tipo.ID_TipoMascota}>
                                     {tipo.Descripcion}
@@ -133,11 +132,11 @@ const AgregarMascota = ({ isOpen, cerrar, guardarMascota, mascota, modo, tiposMa
                                 name='fotoURL'
                                 onChange={handleImageChange}
                             />
-                            <label htmlFor="imagenMascota" className="cursor-pointer p-4 bg-gray-100 rounded-lg shadow-md text-center">
+                            <label htmlFor="imagenMascota" className="cursor-pointer p-4 bg-gray-100 rounded-lg shadow-md text-center ">
                                 <span className="text-lg text-gray-700">Seleccionar Imagen de la Mascota</span>
                             </label>
                                 {modo==='editar' && (
-                                <img src={mostrarFoto ? `${URL_Hosting}${mascota.FotoURL}` : fotoUrl} alt="Imagen de la mascota" className="h-40 w-40 object-cover mt-4 ml-4 rounded-lg" />
+                                <img src={mostrarFoto ? `${URL_Hosting}${mascota.FotoURL}` : fotoUrl} alt="Imagen de la mascota" className="h-40 w-40 object-cover mt-4 ml-4 rounded-3xl" />
                                 )}
                                 {(modo==='agregar' && mostrarFoto) && (
                                 <img src={fotoUrl} alt="Imagen de la mascota" className="h-40 w-40 object-cover mt-4 ml-4 rounded-lg" />

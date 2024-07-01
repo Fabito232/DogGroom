@@ -31,8 +31,9 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
       try {
         const resClientes = await obtenerClientes();
         const resServicios = await obtenerServicios();
-        setServicios(resServicios.data);
-
+        if(resServicios.ok){
+          setServicios(resServicios.data);
+        }
         const listaClientes = resClientes.data.map(cliente => ({
           id: cliente.Cedula,
           cedula: cliente.Cedula,
@@ -50,6 +51,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
         setClientes(listaClientes);
         setFecha(dayjs(fechaInicial).format('YYYY-MM-DD'))
       } catch (error) {
+        console.log("Hola")
         console.error("Error al cargar datos:", error);
       }
     };

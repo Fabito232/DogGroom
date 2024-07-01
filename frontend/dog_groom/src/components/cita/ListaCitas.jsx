@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { obtenerCitas, borrarCita, } from '../../services/citaServices.js'
-import { notificarError, notificarExito } from '../../utilis/notificaciones.js';
+import { notificarExito } from '../../utilis/notificaciones.js';
 import Header from '../Header.jsx';
 import { FontAwesomeIcon, faTrashCan, faAddressCard} from '../../utilis/iconos.js'
 import dayjs from 'dayjs';
 import AgendarCita from './AgendarCita.jsx';
 import Resumen from './ResumenCita.jsx'
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 const ListaCitas = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -15,9 +16,8 @@ const ListaCitas = () => {
   const [buscarPalabra, setBuscarPalabra] = useState('');
   const [citasFiltrados, setCitasFiltrados] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
-  const [citaPorPagina] = useState(5); // Cantidad de citas por página
+  const [citaPorPagina] = useState(10); // Cantidad de citas por página
   const [citaActual, setCitaActual] = useState();
-  const navigate = useNavigate();
 
   useEffect(() => {
     setCitasFiltrados(
@@ -60,13 +60,14 @@ const ListaCitas = () => {
               fotoURL: cita.Mascotum.FotoURL
           },
           servicio: { 
-            id_servicio: cita.Servicio.ID_Servicio,
-            descripcion: cita.Servicio.Descripcion,
-            precio: parseFloat(cita.Servicio.Precio)
+            id_servicio: cita.Servicio ? cita.Servicio.ID_Servicio : 1,
+            descripcion: cita.Servicio ? cita.Servicio.Descripcion : "No existe",
+            precio: parseFloat(cita.Servicio) ? parseFloat(cita.Servicio.Precio) : 0
           }
         }));
-  
-        setCitas(ListaCitas);
+        const ordenarPorfechas = ListaCitas.sort((a, b) => new Date(b.fechaYHora) - new Date(a.fechaYHora));
+        console.log(ordenarPorfechas)
+        setCitas(ordenarPorfechas);
       } else {
         console.log(resCita);
       }
@@ -93,17 +94,38 @@ const ListaCitas = () => {
   };
 
   const eliminarCita = async (id) => {
-      try {
-        const resGasto = await borrarCita(id);
-        if (resGasto.ok) {
-          const updatedGastos = citas.filter((cita) => cita.id !== id);
-          setCitas(updatedGastos);
-          notificarExito("Se borro existosamente el cita")
+        const resultado = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No podrás revertir esta acción!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar!',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (resultado.isConfirmed) {
+            try {
+                const resCita = await borrarCita(id);
+                if (resCita.ok) {
+                  const updatedGastos = citas.filter((cita) => cita.id !== id);
+                  setCitas(updatedGastos);
+                  notificarExito("Se borro existosamente la cita")
+                }
+            } catch (error) {
+                toast.error(`Error al eliminar la mascota: ${error.message}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                console.error('Error al eliminar la mascota:', error);
+            }
         }
-      } catch (error) {
-        console.log(error);
-      }
-      console.log('Elemento eliminado');
   };
 
   // Paginación
@@ -139,7 +161,7 @@ const ListaCitas = () => {
     <Header></Header>
     <div className='md:container md:mx-auto p-5'>
     <div className="p-6 bg-amber-700 container bg-opacity-95 rounded-lg">
-      <h1 className="text-3xl font-bold mb-4">Citas de La Bandada </h1>
+      <h1 className="text-3xl font-bold mb-4 text-center">Citas de La Bandada </h1>
       <div className='flex justify-between mb-4'>
         <div>
           <input

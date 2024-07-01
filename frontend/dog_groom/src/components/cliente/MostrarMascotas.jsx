@@ -18,10 +18,12 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascot
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modo, setModo] = useState('agregar');
     const [tiposMascota, setTiposMascota] = useState([]);
-    const [paginaActual, setPaginaActual] = useState(0);
-    const MASCOTAS_POR_PAGINA = 2;
+    const [paginaActual, setPaginaActual] = useState(1);
+    const [mascotasPorPagina] = useState(2); // Cantidad de mascotass por página
+
 
     const manejarEliminar = async (id) => {
+        console.log(mascotasActuales)
         const resultado = await Swal.fire({
             title: '¿Estás seguro?',
             text: "No podrás revertir esta acción!",
@@ -35,6 +37,7 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascot
 
         if (resultado.isConfirmed) {
             try {
+                manejarAnterior()
                 await eliminarCliente(id);
                 toast.success('Se eliminó la mascota', {
                     position: "top-right",
@@ -100,22 +103,33 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascot
             actualizarMascota(nuevaMascota, mascota.ID_Mascota);
         }
     };
+      // Paginación
+  const indiceUltimoMascotas = paginaActual * mascotasPorPagina;
+  const indicePrimerMascotas = indiceUltimoMascotas - mascotasPorPagina;
+  const mascotasActuales = mascotas.slice(indicePrimerMascotas, indiceUltimoMascotas);
 
-    const mascotasPaginadas = mascotas && mascotas.length > 0
-        ? mascotas.slice(paginaActual * MASCOTAS_POR_PAGINA, (paginaActual + 1) * MASCOTAS_POR_PAGINA)
-        : [];
+  const numerosDePagina = [];
+  for (let i = 1; i <= Math.ceil(mascotas.length / mascotasPorPagina); i++) {
+    numerosDePagina.push(i);
+  }
 
-    const paginaAnterior = () => {
-        if (paginaActual > 0) {
-            setPaginaActual(paginaActual - 1);
-        }
-    };
+  const paginar = (numeroDePagina) => setPaginaActual(numeroDePagina);
+  const manejarAnterior = () => setPaginaActual((prev) => Math.max(prev - 1, 1));
+  const manejarSiguiente = () => setPaginaActual((prev) => Math.min(prev + 1, numerosDePagina.length));
 
-    const paginaSiguiente = () => {
-        if ((paginaActual + 1) * MASCOTAS_POR_PAGINA < mascotas.length) {
-            setPaginaActual(paginaActual + 1);
-        }
-    };
+  const obtenerPaginasVisibles = () => {
+    if (numerosDePagina.length <= 3) {
+      return numerosDePagina;
+    } else if (paginaActual <= 2) {
+      return [1, 2, 3];
+    } else if (paginaActual >= numerosDePagina.length - 1) {
+      return [numerosDePagina.length - 2, numerosDePagina.length - 1, numerosDePagina.length];
+    } else {
+      return [paginaActual - 1, paginaActual, paginaActual + 1];
+    }
+  };
+
+  const paginasVisibles = obtenerPaginasVisibles();
 
     return (
         <Modal
@@ -125,7 +139,7 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascot
             className="fixed inset-0 flex items-center justify-center p-4 bg-gray-800 bg-opacity-25"
             overlayClassName="fixed inset-0"
         >
-            <div className="bg-gray-300 p-4 rounded-lg max-w-6xl w-full relative">
+            <div className="bg-gray-300 p-4 rounded-lg max-w-full sm:max-w-md md:max-w-lg lg:max-w-4xl w-full relative">
                 <button onClick={cerrar} className="absolute top-2 right-2 bg-red-600 text-white hover:bg-red-700 text-2xl p-1 rounded">X</button>
                 <h2 className="text-xl font-bold mb-4">Mascotas de: {nombreCliente}</h2>
                 <button
@@ -142,8 +156,8 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascot
                     modo={modo}
                     tiposMascota={tiposMascota}
                 />
-                <div className="grid grid-cols-2 gap-4">
-                    {mascotasPaginadas.map((mascota) => (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {mascotasActuales.map((mascota) => (
                         <div key={mascota.ID_Mascota} className="flex items-center w-full h-full bg-amber-700 bg-opacity-90 border border-black p-4 rounded-md">
                             <div className="w-full h-full">
                                 <img
@@ -173,13 +187,13 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascot
                                 <div className="flex justify-end space-x-2 mt-2">
                                     <div className="flex w-full space-x-2 mt-4">
                                         <button
-                                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md flex-1"
+                                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-md flex-1"
                                             onClick={() => abrirModal('editar', mascota)} 
                                         >
                                             <FontAwesomeIcon icon={faPenToSquare} />
                                         </button>
                                         <button
-                                            className="bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded-md flex-1"
+                                            className="bg-red-700 hover:bg-red-900 text-white font-bold py-1 px-4 rounded-md flex-1"
                                             onClick={() => manejarEliminar(mascota.ID_Mascota)}
                                         >
                                             <FontAwesomeIcon icon={faTrashCan} />
@@ -190,36 +204,53 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascot
                         </div>
                     ))}
                 </div>
-                <div className="flex justify-between items-center mt-4 w-full">
+                <div className="flex justify-center mt-4">
+              <nav>
+                <ul className="flex items-center">
+                  <li className="mr-6">
                     <button
-                        onClick={paginaAnterior}
-                        disabled={paginaActual === 0}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+                      onClick={manejarAnterior}
+                      className={`px-4 py-1 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''}`}
+                      disabled={paginaActual === 1}
                     >
-                        Anterior
+                      &laquo;
                     </button>
+                  </li>
+                  {paginasVisibles.map((numero) => (
+                    <li key={numero} className="cursor-pointer mx-1">
+                      <button
+                        onClick={() => paginar(numero)}
+                        className={`px-4 py-1 text-xl ${paginaActual === numero ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'} rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
+                      >
+                        {numero}
+                      </button>
+                    </li>
+                  ))}
+                  <li className="ml-6">
                     <button
-                        onClick={paginaSiguiente}
-                        disabled={(paginaActual + 1) * MASCOTAS_POR_PAGINA >= mascotas.length}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+                      onClick={manejarSiguiente}
+                      className={`px-4 py-1 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''}`}
+                      disabled={paginaActual === numerosDePagina.length}
                     >
-                        Siguiente
+                      &raquo;
                     </button>
-                </div>
+                  </li>
+                </ul>
+              </nav>
+            </div>
             </div>
         </Modal>
     );
-    
 };
 
 MostrarMascota.propTypes = {
     isOpen: PropTypes.bool.isRequired,
-    mascotas: PropTypes.array,
+    mascotas: PropTypes.array.isRequired,
+    nombreCliente: PropTypes.string.isRequired,
+    cedula: PropTypes.string.isRequired,
     agregarMascota: PropTypes.func.isRequired,
     actualizarMascota: PropTypes.func.isRequired,
     eliminarCliente: PropTypes.func.isRequired,
-    nombreCliente: PropTypes.string.isRequired,
-    cedula: PropTypes.string.isRequired,
     cerrar: PropTypes.func.isRequired,
 };
 

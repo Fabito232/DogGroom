@@ -235,46 +235,44 @@ const ListaGastos = ({ actualizarFinanzasAnuales }) => {
                     </tbody>
                 </table>
             </div>
-            {/* Paginación */}
+            {gastosActuales.length === 0 ? (
+            <h1 className="text-3xl font-bold m-5 text-center">Aún no se han agregado gastos</h1>
+            ) : (
             <div className="flex justify-center mt-4">
-                <nav>
-                    <ul className="flex items-center">
-                        <li>
-                            <button
-                                onClick={manejarAnterior}
-                                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
-                                    }`}
-                                disabled={paginaActual === 1}
-                            >
-                                &laquo;
-                            </button>
-                        </li>
-                        {paginasVisibles.map((numero) => (
-                            <li key={numero} className="cursor-pointer mx-1">
-                                <button
-                                    onClick={() => paginar(numero)}
-                                    className={`px-3 py-1 ${paginaActual === numero
-                                        ? 'bg-blue-600 text-white'
-                                        : 'bg-white text-blue-600'
-                                        } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
-                                >
-                                    {numero}
-                                </button>
-                            </li>
-                        ))}
-                        <li>
-                            <button
-                                onClick={manejarSiguiente}
-                                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
-                                    }`}
-                                disabled={paginaActual === numerosDePagina.length}
-                            >
-                                &raquo;
-                            </button>
-                        </li>
-                    </ul>
-                </nav>
+              <nav>
+                <ul className="flex items-center">
+                  <li className="mr-6">
+                    <button
+                      onClick={manejarAnterior}
+                      className={`px-8 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''}`}
+                      disabled={paginaActual === 1}
+                    >
+                      &laquo;
+                    </button>
+                  </li>
+                  {paginasVisibles.map((numero) => (
+                    <li key={numero} className="cursor-pointer mx-1">
+                      <button
+                        onClick={() => paginar(numero)}
+                        className={`px-4 py-2 text-xl ${paginaActual === numero ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'} rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
+                      >
+                        {numero}
+                      </button>
+                    </li>
+                  ))}
+                  <li className="ml-6">
+                    <button
+                      onClick={manejarSiguiente}
+                      className={`px-8 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''}`}
+                      disabled={paginaActual === numerosDePagina.length}
+                    >
+                      &raquo;
+                    </button>
+                  </li>
+                </ul>
+              </nav>
             </div>
+            )}
         </div>
     );
 };

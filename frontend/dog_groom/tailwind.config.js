@@ -13,9 +13,10 @@ export default {
     "./src/components/cita/AgregarServicio.jsx",
     "./src/components/cita/AgendarCita.jsx",
     "./src/components/cita/ResumenCita.jsx",
-    "./src/components/cliente/MostrarMascota.jsx",
+    "./src/components/cliente/MostrarMascotas.jsx",
     "./src/components/cliente/AgregarMascota.jsx",
     "./src/components/cita/ListaCitas.jsx",
+    "./src/components/formulario/FloatingLabelInput.jsx",
   ],
   theme: {
     container: {
