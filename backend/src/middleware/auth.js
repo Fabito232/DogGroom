@@ -2,13 +2,13 @@ import jwt from 'jsonwebtoken';
 import { SECRET } from '../config.js';
 
 export const generarToken = (datos) => {
-    return jwt.sign(datos, SECRET, { expiresIn: '1h' });
+    return jwt.sign(datos, SECRET, { expiresIn: '1m' });
 }
 
 export const renovarToken = (req, res) => {
   try {
     const decoded = jwt.verify(req.body.token, SECRET);
-    const nuevoToken = jwt.sign({ id: decoded.id }, SECRET, { expiresIn: '1d' }); // Renueva por 1 día
+    const nuevoToken = jwt.sign({ id: decoded.id }, SECRET, { expiresIn: '1m' }); // Renueva por 1 día
 
     return res.json({ nuevoToken: nuevoToken });
   } catch (error) {
@@ -18,11 +18,12 @@ export const renovarToken = (req, res) => {
 }
 
 export const verificarToken = (req, res, next) => {
-  const token = req.headers.authorization;
+  const authHeader = req.headers.authorization;
 
-  if (!token) {
+  if (!authHeader) {
     return res.status(403).json({ message: 'Token no proporcionado' });
   }
+  const token = authHeader.split(' ')[1]; 
 
   jwt.verify(token, SECRET, (err, decoded) => {
     if (err) {
@@ -31,7 +32,7 @@ export const verificarToken = (req, res, next) => {
     }
     req.empleado = decoded;
 
-    console.log(decoded)
+    //console.log(decoded)
     next();
   });
 };
