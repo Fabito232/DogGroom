@@ -12,7 +12,7 @@ import { verificarToken } from "../middleware/auth.js";
 const router = Router();
 
 router.use('/api/', empleadoRoutes);
-//router.use(verificarToken)
+router.use(verificarToken);
 router.use('/api/', clienteRoutes);
 router.use('/api/', mascotaRoutes);
 router.use('/api/', citasRoutes);

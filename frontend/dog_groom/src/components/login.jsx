@@ -1,21 +1,22 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services/empleadoService';
-import { toast } from 'react-toastify';
-import { notificarError, notificarExito} from '../utilis/notificaciones';
+import { login } from '../services/empleadoService'; // Asegúrate de importar tu función de login
+import { useAuth } from './authContext'; // Importa el contexto de autenticación
+import { notificarError, notificarExito } from '../utilis/notificaciones';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const { login: authLogin } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await login({ correo: username, contrasena: password });
-      
+
       if (response.ok) {
-        localStorage.setItem('token', response.token);
+        authLogin(response.token); 
         notificarExito('Inicio de sesión exitoso!');
         navigate('/citas');
       } else {
@@ -27,7 +28,7 @@ const Login = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-primary bg-opacity-80 bg-fondo bg-cover"> 
+    <div className="relative min-h-screen flex items-center justify-center bg-primary bg-opacity-80 bg-fondo bg-cover">
       <div className="relative z-10 bg-amber-800 bg-opacity-90 rounded-3xl p-8 shadow-lg w-auto md:w-96">
         <div className="flex justify-center mb-4">
           <div className="w-40 h-40 bg-cover rounded-full bg-logo"></div>
