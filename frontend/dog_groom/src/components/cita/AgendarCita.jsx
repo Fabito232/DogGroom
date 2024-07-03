@@ -4,7 +4,7 @@ import { crearCita} from '../../services/citaServices'; // Asegúrate de importa
 import { notificarExito, notificarError, notificarInfo} from '../../utilis/notificaciones';
 import { obtenerServicios } from '../../services/paqueteServices';
 import imgPerro from '../../assets/img_perro.jpg';
-import { URL_Hosting } from '../../services/api';
+import { API_URL } from '../../services/api';
 import Modal from 'react-modal';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
@@ -30,11 +30,14 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
   const [filtroCliente, setFiltroCliente] = useState('');
 
   const handleFiltroClienteChange = (e) => {
+    console.log(e.target.value)
     setFiltroCliente(e.target.value);
   };
 
   const clientesFiltrados = clientes.filter((cliente) =>
-    cliente.nombre.toLowerCase().includes(filtroCliente.toLowerCase())
+    cliente.nombre.toLowerCase().includes(filtroCliente.toLowerCase()) ||
+    cliente.cedula.toLowerCase().includes(filtroCliente.toLowerCase())
+
   );
   
   const resetForm = () => {
@@ -306,7 +309,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                     <div className='flex justify-center'>
                     {mascotaSeleccionada.fotoURL ? (
                       <img
-                        src={URL_Hosting + mascotaSeleccionada.fotoURL || imgPerro}
+                        src={API_URL + mascotaSeleccionada.fotoURL || imgPerro}
                         alt="Mascota"
                         className="w-40 h-40 object-cover rounded-2xl items-center justify-center"
                       />

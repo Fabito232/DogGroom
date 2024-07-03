@@ -1,14 +1,10 @@
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 
-const API_URL = "http://localhost:4000/api";
-//export const URL_Hosting = "https://doggroom.onrender.com";
-export const URL_Hosting = "http://localhost:4000";
-//const API_URL = "https://doggroom.onrender.com/api";
-
+export const API_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_URL + '/api',
   headers: {
     'Content-Type': 'application/json'
   }

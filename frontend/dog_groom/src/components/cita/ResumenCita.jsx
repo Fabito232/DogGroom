@@ -4,7 +4,7 @@ import { notificarError, notificarExito } from '../../utilis/notificaciones';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
-import { URL_Hosting } from '../../services/api';
+import { API_URL } from '../../services/api';
 import PropTypes from 'prop-types'
 import Modal from 'react-modal'
 import FloatingLabelInput from '../formulario/FloatingLabelInput';
@@ -245,7 +245,7 @@ function ResumenCita({isOpen, cerrar, cita}) {
               {cita.mascotas.fotoURL ? (
                 <div className='flex justify-center m-5'>
                   <img
-                    src={URL_Hosting + cita.mascotas.fotoURL}
+                    src={API_URL + cita.mascotas.fotoURL}
                     alt="Mascota"
                     className="w-60 h-60 object-cover rounded-md"
                   />

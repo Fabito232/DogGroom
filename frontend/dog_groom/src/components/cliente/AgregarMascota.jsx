@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Cliente from '../../assets/img_perro.jpg';
 import Modal from 'react-modal';
-import { URL_Hosting } from '../../services/api';
+import { API_URL } from '../../services/api';
 import FloatingLabelInput from '../formulario/FloatingLabelInput'
 import { notificarError } from '../../utilis/notificaciones';
 
@@ -142,7 +142,7 @@ const AgregarMascota = ({ isOpen, cerrar, guardarMascota, mascota, modo, tiposMa
                                 <span className="text-lg text-gray-700">Seleccionar Imagen de la Mascota</span>
                             </label>
                                 {modo==='editar' && (
-                                <img src={mostrarFoto ? `${URL_Hosting}${mascota.FotoURL}` : fotoUrl} alt="Imagen de la mascota" onError={(event) => event.target.src = Cliente}  className="h-40 w-40 object-cover mt-4 ml-4 rounded-3xl" />
+                                <img src={mostrarFoto ? `${API_URL}${mascota.FotoURL}` : fotoUrl} alt="Imagen de la mascota" onError={(event) => event.target.src = Cliente}  className="h-40 w-40 object-cover mt-4 ml-4 rounded-3xl" />
                                 )}
                                 {(modo==='agregar' && mostrarFoto) && (
                                 <img src={mostrarFoto ? Cliente : fotoUrl} alt="Imagen de la mascota" onError={(event) => event.target.src = Cliente} className="h-40 w-40 object-cover mt-4 ml-4 rounded-lg" />
