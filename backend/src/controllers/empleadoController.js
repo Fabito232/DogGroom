@@ -13,7 +13,6 @@ export const createEmpleado = async (req, res) => {
                 
             }
         );
-        console.log(existencia)
         if(existencia.length > 0) {
             return res.json({
                 ok: false,

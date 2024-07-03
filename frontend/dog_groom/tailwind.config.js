@@ -1,14 +1,15 @@
 export default {
   content: [
-    "./src/components/Login.jsx",
+    "./src/components/usuario/Login.jsx",
+    "./src/components/usuario/AgregarUsuario.jsx",
     "./src/components/inventario/ListaProductos.jsx",
     "./src/components/inventario/AgregarProducto.jsx",
     "./src/components/cliente/ListaClientes.jsx",
     "./src/components/cliente/AgregarCliente.jsx",
     "./src/components/finanzas/Finanzas.jsx",
-    "./src/components/Header.jsx",
     "./src/components/finanzas/AgregarGasto.jsx",
     "./src/components/finanzas/ListaGastos.jsx",
+    "./src/components/Header.jsx",
     "./src/components/cita/ListaServicios.jsx",
     "./src/components/cita/AgregarServicio.jsx",
     "./src/components/cita/AgendarCita.jsx",
@@ -17,6 +18,7 @@ export default {
     "./src/components/cliente/AgregarMascota.jsx",
     "./src/components/cita/ListaCitas.jsx",
     "./src/components/formulario/FloatingLabelInput.jsx",
+    
   ],
   theme: {
     container: {
