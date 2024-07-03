@@ -30,7 +30,7 @@ export const borrarProducto = async (id) => {
     }
 }
 
-export const actualizarProducto = async (producto,id) => {
+export const actualizarProducto = async (producto, id) => {
     try {
         const response = await api.put(`/productos/${id}`, producto);
         return response.data;

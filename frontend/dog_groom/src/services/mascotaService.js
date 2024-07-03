@@ -13,7 +13,7 @@ export const crearMascota = async (mascota) => {
     }
 }
 
-export const obtenerMarcotas = async () => {
+export const obtenerMascotas = async () => {
     try {
         const response = await api.get('/mascotas');
         return response.data;
@@ -33,12 +33,13 @@ export const borrarMascota = async (id) => {
     }
 }
 
-export const actualizarMascota = async (mascota,id,) => {
+export const actualizarMascota = async (mascota, id,) => {
     try {
         const response = await api.put(`/mascotas/${id}`, mascota, {
             headers: {
                 'Content-Type': 'multipart/form-data'
-            }});
+            }
+        });
         return response.data;
     } catch (error) {
         console.log(error.response)

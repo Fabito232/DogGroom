@@ -5,6 +5,22 @@ import { generarToken } from '../middleware/auth.js';
 
 export const createEmpleado = async (req, res) => {
     try {
+        const existencia = await Empleado.findAll(
+            {
+                where: {
+                    Correo: req.body.correo
+                }
+                
+            }
+        );
+        if(existencia.length > 0) {
+            return res.json({
+                ok: false,
+                status: 400,
+                message: "Existe un usuario con ese correo"
+              });
+        }
+
         const salt = await bcrypt.genSalt(10);
         const contraHash = await bcrypt.hash(req.body.contrasena, salt);
         const empleado = await Empleado.create({
@@ -30,6 +46,7 @@ export const createEmpleado = async (req, res) => {
 
 export const loginEmpleado = async (req, res) => {
     try {
+
         const empleado = await Empleado.findOne({
             where: {
                 Correo: req.body.correo
@@ -51,6 +68,8 @@ export const loginEmpleado = async (req, res) => {
                 message: "Contraseña incorrecta"
             });
         }
+        
+        
         const token =  generarToken({ id: empleado.ID_Empleado, correo: empleado.Correo });
 
         return res.json({

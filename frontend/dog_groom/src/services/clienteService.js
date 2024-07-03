@@ -2,7 +2,11 @@ import api from "./api";
 
 export const crearCliente = async (cliente) => {
     try {
-        const response = await api.post('/clientes', cliente);
+        const response = await api.post('/clientes', cliente,{
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return response.data;
     } catch (error) {
         console.log(error.response)
@@ -30,7 +34,17 @@ export const borrarCliente = async (id) => {
     }
 }
 
-export const actualizarCliente = async (cliente,id) => {
+export const actualizarClienteConMascota = async (cliente, id) => {
+    try {
+        const response = await api.put(`/clienteConMascota/${id}`, cliente);
+        return response.data;
+    } catch (error) {
+        console.log(error.response)
+        return error.response.data;
+    }
+}
+
+export const actualizarCliente = async (cliente, id) => {
     try {
         const response = await api.put(`/clientes/${id}`, cliente);
         return response.data;

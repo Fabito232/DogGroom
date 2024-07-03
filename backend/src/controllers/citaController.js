@@ -1,4 +1,3 @@
-import CitaDetalle from '../models/citaDetalleModel.js';
 import Cita from '../models/citaModel.js'
 import Cliente from '../models/clienteModel.js';
 import Mascota from '../models/mascotaModel.js';
@@ -6,14 +5,18 @@ import Servicio from '../models/servicioModel.js';
 import TipoMascota from '../models/tipoMascota.js';
 
 export const createCita = async (req, res) => {
+    const {fechaYHora, descripcion, estado, montoTotal, cedula, ID_Servicio, montoAdicional, ID_Mascota } = req.body;
 
     try {
         const cita = await Cita.create({
-            FechaYHora: req.body.fechaYHora,
-            Descripcion: req.body.descripcion,
-            Estado: req.body.estado,
-            MontoTotal: req.body.montoTotal,
-            ID_Cliente: req.body.cedula
+            FechaYHora: fechaYHora,
+            Descripcion: descripcion,
+            Estado: estado,
+            MontoAdicional: montoAdicional,
+            MontoTotal: montoTotal,
+            ID_Cliente: cedula,
+            ID_Servicio: ID_Servicio,
+            ID_Mascota: ID_Mascota
         });
         return res.json({
             ok: true,
@@ -31,78 +34,84 @@ export const createCita = async (req, res) => {
     }
 }
 
-export const getCita = async (req, res) => {
+export const getCita = async (id) => {
     try {
-        const id = req.params.id
-        const cita = await Cita.findAll(
-            {
-                where: {
-                    ID_Cita: id
-                },
-                include: [
+        
+        const cita = await Cita.findByPk(id, {
+            include: [
                 {
-                    model: Cliente,
-                    include: [{
-                        model: Mascota,
-                        include:[{
-                            model: TipoMascota
-                        }]
-                    }]
-                },
+                    model: Cliente, 
                     
+                },
                 {
-                    model: CitaDetalle,
+                    model: Servicio
+                },
+                {
+                    model: Mascota,
                     include: [{
-                        model: Servicio
+                        model: TipoMascota, 
                     }]
-                }]
-            }
-        )
+                }
+            ]
+        });
 
-        if (cita !== null) {
-            return res.json({
-                ok: true,
-                status: 200,
-                message: "Se obtuvo la Cita correctamente",
-                data: cita
-            });
-        } else {
-            return res.status(404).json({
+        if (!cita) {
+            return {
                 ok: false,
-                status: 404,
                 message: "No se encontró la Cita con el ID proporcionado",
-            });
+            };
         }
+
+        return {
+            ok: true,
+            message: "Se obtuvo la Cita correctamente",
+            data: cita,
+        };
     } catch (error) {
-        return res.status(500).json({
+        console.error("Error al obtener la Cita:", error);
+        return {
             ok: false,
-            status: 500,
             message: "Error al obtener la Cita",
             error: error.message
-        });
+        };
     }
 };
 
 
 export const getListCita = async (req, res) => {
-    
     try {
-        const cita = await Cita.findAll({
-        })
+        const citas = await Cita.findAll({
+            include: [
+                {
+                    model: Cliente,
+                   
+                },
+                {
+                    model: Servicio
+                },
+                {
+                    model: Mascota,
+                    include: [{
+                        model: TipoMascota, 
+                    }]
+                }
+            ]
+        });
         return res.json({
             ok: true,
             status: 200,
-            message: "Se obtuvo todos las Cita correctamente",
-            data: cita
-        })
+            message: "Se obtuvieron todas las citas correctamente",
+            data: citas
+        });
     } catch (error) {
-        return res.json({
+        return res.status(500).json({
             ok: false,
             status: 500,
-            message: "No se encontro ninguna Cita",
-        })
+            message: "Error al obtener las citas",
+            error: error.message
+        });
     }
-}
+};
 
 export const deleteCita = async (req, res) => {
     
@@ -132,13 +141,17 @@ export const updateCita = async (req, res) => {
     
     try {
         const id = req.params.id
+        const { fechaYHora, descripcion, estado, montoTotal, cedula, ID_Servicio, montoAdicional, ID_Mascota } = req.body;
         const [filasActualizadas]  = await Cita.update(
             {
-                FechaYHora: req.body.fechaYHora,
-                Descripcion: req.body.descripcion,
-                Estado: req.body.estado,
-                MontoTotal: req.body.montoTotal,
-                ID_Cliente: req.body.cedula
+                FechaYHora: fechaYHora,
+                Descripcion: descripcion,
+                Estado: estado,
+                MontoAdicional: montoAdicional,
+                MontoTotal: montoTotal,
+                ID_Cliente: cedula,
+                ID_Servicio: ID_Servicio,
+                ID_Mascota: ID_Mascota
             },
             {
                 where:{
@@ -159,6 +172,7 @@ export const updateCita = async (req, res) => {
                 });
             }
     } catch (error) {
+        console.log(error)
         return res.json({
             ok: false,
             status: 500,
@@ -168,29 +182,40 @@ export const updateCita = async (req, res) => {
     }
 }
 
+export const obtenerTodasCitas = async(req, res) => {
 
-// const allCita = await Cita.findAll(
-//     {
-//         where: {
-//             ID_Cita: id
-//         },
-//         include: [
-//         {
-//             model: Cliente,
-//             include: [{
-//                 model: Mascota,
-//                 include:[{
-//                     model: TipoMascota
-//                 }]
-//             }]
-//         },
-            
-//         {
-//             model: CitaDetalle,
-//             include: [{
-//                 model: Servicio
-//             }]
-//         }]
-//     }
-// )
-// console.log(allCita)
+    try{
+        const {fechaYHora, descripcion, estado, montoTotal, cedula, ID_Servicio, montoAdicional } = req.body;
+        const allCita = await Cita.findAll(
+            {
+                include: [
+                {
+                    model: Cliente,
+                    include: [{
+                        model: Mascota,
+                        include:[{
+                           model: TipoMascota,
+                            as: 'TipoMascota'   
+                        }]
+                    }]
+                }],
+           }
+                   
+           
+        )
+        console.log(allCita)
+        return res.json({
+            ok: true,
+            status: 200,
+            message: "Se obtuvo todos las citas",
+            data: cita
+        })
+    } catch (error) {
+        return res.json({
+            ok: false,
+            status: 500,
+            message: "No se encontro ninguna Cita",
+        })
+    }
+    
+}

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services/empleadoService';
-import { toast } from 'react-toastify';
+import { login } from '../../services/empleadoService'; // Asegúrate de importar tu función de login
+import { notificarError, notificarExito } from '../../utilis/notificaciones';
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -12,31 +12,21 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await login({ correo: username, contrasena: password });
-      
+
       if (response.ok) {
-        localStorage.setItem('token', response.token);
-        toast.success('Inicio de sesión exitoso!', { autoClose: 1500, theme: "colored"});
+        onLogin(response.token); 
+        notificarExito('Inicio de sesión exitoso!');
         navigate('/citas');
       } else {
-        showErrorToast(response.message);
+        notificarError("Error en inicio de sesión:\n" + response.message);
       }
     } catch (error) {
-      showErrorToast(error.message);
+      notificarError(error.message);
     }
   };
 
-  const showErrorToast = (message) => {
-    toast.error('Error en inicio de sesión:\n' + message, {
-      autoClose: 2000,
-      style: {
-        whiteSpace: 'pre-line',
-      },
-      theme: "colored"
-    });
-  };
-
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-primary bg-opacity-80 bg-fondo bg-cover"> 
+    <div className="relative min-h-screen flex items-center justify-center bg-primary bg-opacity-80 bg-fondo bg-cover">
       <div className="relative z-10 bg-amber-800 bg-opacity-90 rounded-3xl p-8 shadow-lg w-auto md:w-96">
         <div className="flex justify-center mb-4">
           <div className="w-40 h-40 bg-cover rounded-full bg-logo"></div>
@@ -44,9 +34,9 @@ const Login = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <input
-              type="text"
+              type="email"
               className="w-full p-2 border border-gray-300 rounded"
-              placeholder="Usuario"
+              placeholder="Correo electrónico"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required

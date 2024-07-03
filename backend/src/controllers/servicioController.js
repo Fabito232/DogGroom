@@ -1,4 +1,5 @@
 import Servicio from '../models/servicioModel.js'
+import TipoMascota from '../models/tipoMascota.js';
 
 export const createServicio = async (req, res) => {
 
@@ -55,7 +56,17 @@ export const getServicio = async (req, res) => {
 
 export const getListServicio = async (req, res) => {
     try {
-        const servicios = await Servicio.findAll()
+        const servicios = await Servicio.findAll(
+            {
+                include:[
+                    {
+                        model: TipoMascota,
+                        as: 'TipoMascota'
+                    }
+                ]
+            }
+        )
+      
         if (servicios.length !== 0) {
             return res.json({
                 ok: true,
@@ -98,7 +109,7 @@ export const deleteServicio = async (req, res) => {
         return res.json({
             ok: false,
             status: 500,
-            message: "No se borro la Servicio",
+            message: "No se borro la Servicio", error
         })
     }
 }

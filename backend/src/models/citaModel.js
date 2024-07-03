@@ -1,6 +1,8 @@
 import sequelize from "../database/database.js";
 import { DataTypes, Model } from "sequelize";
 import Cliente from "./clienteModel.js";
+import Servicio from "./servicioModel.js";
+import Mascota from "./mascotaModel.js";
 
 class Cita extends Model {}
 
@@ -17,24 +19,50 @@ Cita.init({
     },
     Descripcion: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: false
     },
     Estado: {
         type: DataTypes.BOOLEAN,
         allowNull: false
     },
+    MontoAdicional: {
+        type: DataTypes.DECIMAL,
+        allowNull: true
+    },
+    MontoAdicional: {
+        type: DataTypes.DECIMAL,
+        allowNull: true
+    },
     MontoTotal: {
         type: DataTypes.DECIMAL,
-        allowNull: false
+        allowNull: true
     },
     ID_Cliente: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
         references: {
             model: Cliente,
             key: 'Cedula'
         }
-    }
+    },
+    ID_Servicio: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: Servicio,
+            key: 'ID_Servicio'
+        },
+        onDelete: 'SET NULL',
+    },
+    ID_Mascota: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Mascota,
+            key: 'ID_Mascota'
+        }
+    },
+    
 }, {
     sequelize,
     freezeTableName: true,
@@ -42,7 +70,12 @@ Cita.init({
     updatedAt: false
 });
 
-Cliente.hasMany(Cita, {foreignKey: 'ID_Cliente'});
+Cliente.hasMany(Cita, {foreignKey: 'ID_Cliente', as: 'cliente'});
 Cita.belongsTo(Cliente,{foreignKey: 'ID_Cliente'});
+Mascota.hasMany(Cita, {foreignKey: 'ID_Mascota'});
+Cita.belongsTo(Mascota,{foreignKey: 'ID_Mascota'});
+
+Servicio.hasMany(Cita, {foreignKey: 'ID_Servicio'});
+Cita.belongsTo(Servicio,{foreignKey: 'ID_Servicio',onDelete: 'SET NULL'});
 
 export default Cita;
