@@ -190,8 +190,8 @@ const ListaServicios = () => {
     <div className='md:container md:mx-auto p-5'>
       <div className="p-6 bg-amber-700 container bg-opacity-95 rounded-lg">
         <h1 className="text-3xl text-center text-white font-bold mb-4">Servicios de La Bandada </h1>
-        <div className='flex justify-between mb-4'>
-          <div>
+        <div className='flex flex-col md:flex-row justify-between mb-4 items-center'>
+              <div className="flex items-center mb-2 md:mb-0">
             <input
               type="text"
               placeholder="Buscar servicio..."
@@ -260,10 +260,10 @@ const ListaServicios = () => {
             <div className="flex justify-center mt-4">
               <nav>
                 <ul className="flex items-center">
-                  <li className="mr-6">
+                  <li className="mr-2">
                     <button
                       onClick={manejarAnterior}
-                      className={`px-8 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''}`}
+                      className={`px-5 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''}`}
                       disabled={paginaActual === 1}
                     >
                       &laquo;
@@ -279,10 +279,10 @@ const ListaServicios = () => {
                       </button>
                     </li>
                   ))}
-                  <li className="ml-6">
+                  <li className="ml-2">
                     <button
                       onClick={manejarSiguiente}
-                      className={`px-8 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''}`}
+                      className={`px-5 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''}`}
                       disabled={paginaActual === numerosDePagina.length}
                     >
                       &raquo;

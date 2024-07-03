@@ -76,7 +76,7 @@ const AgregarServicio = ({ isOpen, cerrar, agregarServicio, editarServicio, serv
                     </div>
                     <div className="mb-4">
                         <select
-                        className="p-3 text-lg border h-12 border-gray-500  bg-slate-200 rounded-md w-full text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600"
+                        className="p-3 text-lg border h-12 border-gray-500  bg-slate-200 rounded-md w-full text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-600"
                         id="custom-select"
                             value={servicioInfo.tipoMascota.ID_TipoMascota || ''}
                             onChange={handleChangeSelect}

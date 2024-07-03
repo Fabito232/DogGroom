@@ -294,10 +294,10 @@ const ListaProductos = () => {
             <div className="flex justify-center mt-4">
               <nav>
                 <ul className="flex items-center">
-                  <li className="mr-6">
+                  <li className="mr-2">
                     <button
                       onClick={manejarAnterior}
-                      className={`px-8 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''}`}
+                      className={`px-4 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''}`}
                       disabled={paginaActual === 1}
                     >
                       &laquo;
@@ -313,10 +313,10 @@ const ListaProductos = () => {
                       </button>
                     </li>
                   ))}
-                  <li className="ml-6">
+                  <li className="ml-2">
                     <button
                       onClick={manejarSiguiente}
-                      className={`px-8 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''}`}
+                      className={`px-4 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''}`}
                       disabled={paginaActual === numerosDePagina.length}
                     >
                       &raquo;
