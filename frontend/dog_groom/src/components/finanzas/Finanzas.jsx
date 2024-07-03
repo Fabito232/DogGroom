@@ -29,15 +29,11 @@ const Finanzas = () => {
                 fechaInicio: fechaInicial,
                 fechaFin: fechaFinal
             };
-            console.log("fecha inicio:",fechaInicial)
-            console.log("fecha final:",fechaFinal)
 
             if (!fechas.fechaInicio || !fechas.fechaFin) {
                 notificarError('Debe seleccionar el rango de fechas, tanto Fecha inicial y final');
             } else {
                 const response = await resumenFinanzas(fechas);
-                console.log(response.data)
-                console.log(response)
                 notificarExito('Resumen de finanzas exitoso');
                 setFinanzas(response.data);
             }
