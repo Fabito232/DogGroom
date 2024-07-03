@@ -15,7 +15,7 @@ const ListaProductos = () => {
   const [modo, setModo] = useState('agregar');
   const [productoActual, setProductoActual] = useState(null);
   const [paginaActual, setPaginaActual] = useState(1);
-  const [productosPorPagina] = useState(5); // Cantidad de productos por página
+  const [productosPorPagina] = useState(10); // Cantidad de productos por página
   const [orden, setOrden] = useState({ campo: 'nombre', direccion: 'asc', label: 'Nombre (A-Z)' });
 
 
@@ -207,7 +207,7 @@ const ListaProductos = () => {
       <div className="bg-slate-400 bg-cover min-h-screen">
         <div className='md:container md:mx-auto p-5'>
           <div className="p-6 bg-amber-700 container bg-opacity-95 rounded-lg">
-            <h1 className="text-3xl font-bold mb-4 text-center">Lista de Productos</h1>
+            <h1 className="text-3xl font-bold mb-4 text-center text-white">Lista de Productos</h1>
             <div className='flex flex-col md:flex-row justify-between mb-4 items-center'>
               <div className="flex items-center mb-2 md:mb-0">
                 <input
@@ -250,6 +250,7 @@ const ListaProductos = () => {
               <table className="min-w-full bg-white border border-gray-300">
                 <thead>
                   <tr className="bg-lime-600 border-b text-lg">
+                    <th className="px-6 py-3 text-center text-base font-medium text-black uppercase tracking-wider">-</th>
                     <th className="px-6 py-3 text-center text-base font-medium text-black uppercase tracking-wider">Nombre</th>
                     <th className="px-6 py-3 text-center text-base font-medium text-black uppercase tracking-wider">Marca</th>
                     <th className="px-6 py-3 text-center text-base font-medium text-black uppercase tracking-wider">Cantidad</th>
@@ -260,14 +261,13 @@ const ListaProductos = () => {
                 <tbody>                 
                   {productosActuales.map((producto, index) => (
                     <tr key={producto.id} className={`border-b border-gray-300 ${index % 2 === 0 ? 'bg-gray-100' : ''}`}>
-                      <td className="px-6 py-4 text-center whitespace-nowrap items-start">
-                        <button
+                      <td className="px-6 py-4 text-center whitespace-nowrap items-start">                       
+                         <button
                           className="px-3 py-1 bg-red-600 text-left text-white rounded-md mr-2 hover:bg-red-700 focus:outline-none"
                           onClick={() => reducirCantidad(producto.id)}>
                           -
-                        </button>
-                        {producto.nombre}
-                      </td>
+                        </button></td>
+                      <td className="px-6 py-4 text-center whitespace-nowrap items-start">{producto.nombre}</td>
                       <td className="px-6 py-4 text-center whitespace-nowrap">{producto.marca}</td>
                       <td className="px-6 py-4 text-center whitespace-nowrap">{producto.cantidad}</td>
                       <td className="px-6 py-4 text-center whitespace-nowrap">{producto.descripcion}</td>

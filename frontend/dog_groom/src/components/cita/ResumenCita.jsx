@@ -93,6 +93,7 @@ function ResumenCita({isOpen, cerrar, cita}) {
       const fechaHoraISO = dayjs(citaEditada.fechaYHora).toISOString();
       const estadoString = citaEditada.estado ? "True" : "False";
       const montoTotalActualizado = parseFloat(cita.montoTotal) + (parseFloat(citaEditada.montoAdicional) - montoAdicionalInicial);
+      console.log({ ...citaEditada, estado: estadoString, fechaYHora: fechaHoraISO, montoTotal: montoTotalActualizado })
       await actualizarCita({ ...citaEditada, estado: estadoString, fechaYHora: fechaHoraISO, montoTotal: montoTotalActualizado }, id);
       setEditando(false);
       notificarExito('Se editó la cita');
@@ -247,6 +248,7 @@ function ResumenCita({isOpen, cerrar, cita}) {
                   <img
                     src={API_URL + cita.mascotas.fotoURL}
                     alt="Mascota"
+                    onError={(event) => event.target.src = ImgMascota}
                     className="w-60 h-60 object-cover rounded-md"
                   />
                 </div>

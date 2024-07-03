@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import FloatingLabelInput from '../formulario/FloatingLabelInput'
 import { faChevronRight,FontAwesomeIcon,faSearch,faXmark } from '../../utilis/iconos.js'
+import imgCliente from '../../assets/img_perro.jpg';
 
 function AgendarCita({isOpen, cerrar, fechaInicial}) {
   const [clientes, setClientes] = useState([]);
@@ -311,6 +312,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                       <img
                         src={API_URL + mascotaSeleccionada.fotoURL || imgPerro}
                         alt="Mascota"
+                        onError={(event) => event.target.src = imgCliente}
                         className="w-40 h-40 object-cover rounded-2xl items-center justify-center"
                       />
                     ) : (
@@ -329,8 +331,8 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <FloatingLabelInput
                   type="date"
-                  id="fecha"
                   name="fecha"
+                  label="Fecha"
                   value={fecha}
                   onChange={(e) => setFecha(e.target.value)}
                   required

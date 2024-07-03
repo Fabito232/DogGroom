@@ -51,7 +51,6 @@ function AgregarCliente({ isOpen, cerrar }) {
         
         if(validarDatos()){
             
-        
         if(nombreMascota && razaMascota && tamanoMascota.ID_TipoMascota !== 0){
             await agregarMascota();
         }
@@ -134,10 +133,6 @@ function AgregarCliente({ isOpen, cerrar }) {
         }
         if(!validarTelefono(telefonoCliente)){
             notificarError("Numero de telefono invalido")
-            return false;
-        }
-        if(!validarString(nombreMascota) || !validarString(razaMascota)){
-            notificarError("Los datos de la mascota deber tener como minimo 3 caracteres")
             return false;
         }
         
