@@ -1,13 +1,43 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import logo from '../assets/Logo.png';
-import { FontAwesomeIcon,faBoxes,faCalendarAlt,faCalendarCheck,faDog,faMoneyBillTrendUp,faUsers } from '../utilis/iconos.js';
-
-
+import { FontAwesomeIcon,faBoxes,faCalendarAlt,faCalendarCheck,faDog,faMoneyBillTrendUp,faUsers,faSignOut,faUserCog } from '../utilis/iconos.js';
+import Swal from 'sweetalert2';
+import AgregarUsuario from '../components/usuario/AgregarUsuario.jsx';
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const abrirModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const cerrarModal = () => {
+    setModalIsOpen(false);
+  };
+
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = async () => {
+    const resultado = await Swal.fire({
+      title: '¿Seguro que quieres cerrar la sesión?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Cerrar sesión',
+      
+  });
+
+    if (resultado.isConfirmed) {
+          localStorage.removeItem('token');
+          navigate('/')
+    }
   };
 
   return (
@@ -36,12 +66,12 @@ const Header = () => {
           <div className={`${isOpen ? 'block' : 'hidden'  } lg:flex md:items-center md:space-x-4`}>
             <ul className="lg:flex md:space-x-4">
               <li>
-                <a href="/calendario" className="block px-3 py-2 hover:text-gray-400">
+                <a href="/calendario" className="block px-3 py-2 text-center hover:text-gray-400">
                 <FontAwesomeIcon icon={faCalendarAlt} />  Calendario
                 </a>
               </li>
               <li>
-                <a href="/citas" className="block px-3 py-2 hover:text-gray-400">
+                <a href="/citas" className="block px-3 py-2 text-center hover:text-gray-400">
                 <FontAwesomeIcon icon={faCalendarCheck} />  Citas
                 
                 </a>
@@ -49,7 +79,7 @@ const Header = () => {
               <li>
                 <a
                   href="/clientes"
-                  className="block px-3 py-2 hover:text-gray-400"
+                  className="block px-3 py-2 text-center hover:text-gray-400"
                 >
                   <FontAwesomeIcon icon={faUsers} />  Clientes
                 </a>
@@ -57,23 +87,35 @@ const Header = () => {
               <li>
                 <a
                   href="/productos"
-                  className="block px-3 py-2 hover:text-gray-400"
+                  className="block px-3 py-2 text-center hover:text-gray-400"
                 >
                   <FontAwesomeIcon icon={faBoxes } />  Inventario
                 </a>
               </li>
               <li>
-                <a href="/finanzas" className="block px-3 py-2  hover:text-gray-400">
+                <a href="/finanzas" className="block px-3 py-2 text-center hover:text-gray-400">
                 <FontAwesomeIcon icon={faMoneyBillTrendUp} />  Finanzas
                 
                 </a>
                   
               </li>
               <li>
-                <a href="/servicios" className="block px-3 py-2 hover:text-gray-400">
+                <a href="/servicios" className="block px-3 py-2 text-center hover:text-gray-400">
                   <FontAwesomeIcon icon={faDog} /> Servicios
                 </a>
               </li>
+              <li>
+                <a onClick={abrirModal} className="block  py-2 text-center text-xl hover:text-gray-400">
+                  <FontAwesomeIcon icon={faUserCog} /> 
+                </a>
+                <AgregarUsuario isOpen= {modalIsOpen} cerrar={cerrarModal}/>
+              </li>
+              <li>
+                <a onClick={handleLogout} className="block  py-2 text-center text-xl hover:text-gray-400">
+                  <FontAwesomeIcon icon={faSignOut} /> 
+                </a>
+              </li>
+              
             </ul>
           </div>
         </nav>

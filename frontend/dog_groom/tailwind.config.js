@@ -1,6 +1,6 @@
 export default {
   content: [
-    "./src/components/login.jsx",
+    "./src/components/Login.jsx",
     "./src/components/inventario/ListaProductos.jsx",
     "./src/components/inventario/AgregarProducto.jsx",
     "./src/components/cliente/ListaClientes.jsx",
@@ -24,12 +24,8 @@ export default {
     },
     extend: {
       backgroundImage: {
-        'fondo': "url('./src/assets/Fondo.jpg')",
-        'fondo1': "url('./src/assets/Fondo1.jpg')",
-        'fondo2': "url('./src/assets/Fondo2.png')",
-        'logo': "url('./src/assets/Logo.png')",
-        'perroFacturando': "url('./src/assets/perro-facturando-dinero.png')",
-        'agregarCliente' : "url('./src/assets/fondoAgregarCliente.jpeg')"
+        'fondo': "url('@/assets/Fondo.jpg')",
+        'logo': "url('@/assets/Logo.png')",
       },
       colors: {
         transparent: 'transparent',

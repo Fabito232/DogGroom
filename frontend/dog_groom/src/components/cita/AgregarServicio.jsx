@@ -3,7 +3,6 @@ import Modal from 'react-modal';
 import PropTypes from 'prop-types';
 import FloatingLabelInput from '../formulario/FloatingLabelInput';
 
-
 Modal.setAppElement('#root'); // Esto es necesario para la accesibilidad
 
 const AgregarServicio = ({ isOpen, cerrar, agregarServicio, editarServicio, servicio, modo, tiposMascota }) => {

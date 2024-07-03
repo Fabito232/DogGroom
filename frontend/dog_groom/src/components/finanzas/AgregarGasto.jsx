@@ -12,7 +12,6 @@ const AgregarGasto = ({ isOpen, cerrar, agregarGasto, editarGasto, gasto, modo }
     if (modo === 'editar' && gasto) {
       setGastoInfo(gasto);
     } else {
-      console.log("Hola M")
       setGastoInfo({ descripcion: '', fecha: '', monto: '' });
     }
   }, [modo, gasto, cerrar]);

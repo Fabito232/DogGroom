@@ -9,7 +9,7 @@ import Modal from 'react-modal';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import FloatingLabelInput from '../formulario/FloatingLabelInput'
-import { faChevronRight,FontAwesomeIcon,faSearch } from '../../utilis/iconos.js'
+import { faChevronRight,FontAwesomeIcon,faSearch,faXmark } from '../../utilis/iconos.js'
 
 function AgendarCita({isOpen, cerrar, fechaInicial}) {
   const [clientes, setClientes] = useState([]);
@@ -36,7 +36,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
   const clientesFiltrados = clientes.filter((cliente) =>
     cliente.nombre.toLowerCase().includes(filtroCliente.toLowerCase())
   );
-
+  
   const resetForm = () => {
     setMascotasCliente([]);
     setMascotaSeleccionada(null);
@@ -83,8 +83,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
         setClientes(listaClientes);
         setFecha(dayjs(fechaInicial).format('YYYY-MM-DD'))
       } catch (error) {
-        console.log("Hola")
-        console.error("Error al cargar datos:", error);
+        notificarError("Error al cargar los clientes");
       }
     };
 
@@ -95,7 +94,6 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
     setNombreCliente(cliente.nombre);
     setCedulaCliente(cliente.cedula);
     setTelefonoCliente(cliente.telefono);
-    console.log(cliente.mascotas)
     
     if(cliente.mascotas.length !== 0){
       setMascotasCliente(cliente.mascotas);
@@ -109,6 +107,18 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
       setMascotaSeleccionada(null);
     }
   };
+
+  const handleMascotaSeleccionada = (e) =>{
+    const mascota = mascotasCliente.find(m => m.id === parseInt(e.target.value));
+    setMascotaSeleccionada(mascota);
+    const paquetesFiltrados = servicios.filter((servicio) =>
+      servicio.ID_TipoMascota === mascota.ID_TipoMascota)
+    setServicios(paquetesFiltrados)
+
+    if(paquetesFiltrados.length === 0){
+      notificarError("No hay servicios para ese tamano de mascota")
+    }
+  }
 
   const handleServicioChange = (e) => {
     const idServicio = e.target.value;
@@ -182,6 +192,8 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
     >
       <div className="relative w-full max-w-6xl rounded-3xl p-4 md:p-8 bg-slate-200 overflow-hidden max-h-full overflow-y-auto shadow-xl">
         <div className="flex flex-col md:flex-row w-full">
+        <button onClick={cerrar} className="absolute top-2 right-4  text-gray-500 hover:bg-red-700 text-2xl p-1 rounded"><FontAwesomeIcon icon={faXmark} /></button>
+
         <div className="w-full md:w-1/3 bg-amber-800 bg-opacity-90 rounded-3xl p-4 md:p-8 m-2 md:m-4 overflow-y-auto">
           <h3 className="text-white text-center font-bold mb-4">Clientes</h3>
           <div className="mb-4">
@@ -255,10 +267,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                 <select
                   className="p-3 text-lg border h-12 border-gray-500  bg-slate-200 rounded-md w-full text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600"
                   value={mascotaSeleccionada?.id || ''}
-                  onChange={(e) => {
-                    const mascota = mascotasCliente.find(m => m.id === parseInt(e.target.value));
-                    setMascotaSeleccionada(mascota);
-                  }}
+                  onChange={handleMascotaSeleccionada}
                   required
                 >
                   <option value="" disabled>Seleccione una mascota</option>
@@ -277,21 +286,21 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                       label="Nombre del Perro"
                       value={telefonoCliente}
                       readOnly
-                      disabled={false}
+                      disabled={true}
                     />
                     <FloatingLabelInput
                       type="text"
                       label="Raza"
                       value={mascotaSeleccionada.raza}
                       readOnly
-                      disabled={false}
+                      disabled={true}
                     />
                     <FloatingLabelInput
                       type="text"
                       label="Tamaño"
                       value={mascotaSeleccionada.tamano}
                       readOnly
-                      disabled={false}
+                      disabled={true}
                     />
                     </div>
                     <div className='flex justify-center'>
@@ -348,7 +357,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                   onChange={handleServicioChange}
                   required
                 >
-                  <option value="" disabled>Seleccione un servicio</option>
+                  <option value="" >Seleccione un servicio</option>
                   {servicios.map(servicio => (
                     <option key={servicio.ID_Servicio} value={servicio.ID_Servicio}>{servicio.Descripcion}</option>
                   ))}
@@ -377,16 +386,17 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                   <option value="false">Finalizar</option>
                 </select>
                 <FloatingLabelInput
-                  type="text"
+                  type="number"
                   id="precio"
                   name="precio"
                   label="Precio"
                   value={precio}
+                  disabled={true}
                   readOnly
                   required
                 />
                 <FloatingLabelInput
-                  type="text"
+                  type="number"
                   id="montoAdicional"
                   name="montoAdicional"
                   label="Monto Adicional"
@@ -404,7 +414,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                 />
               </div>
 
-              <div className="flex space-x-4 mt-4">
+              <div className="flex space-x-4 mt-4 justify-center">
                 <button
                   className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded"
                   type="submit"

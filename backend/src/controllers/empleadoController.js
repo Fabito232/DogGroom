@@ -5,6 +5,23 @@ import { generarToken } from '../middleware/auth.js';
 
 export const createEmpleado = async (req, res) => {
     try {
+        const existencia = await Empleado.findAll(
+            {
+                where: {
+                    Correo: req.body.correo
+                }
+                
+            }
+        );
+        console.log(existencia)
+        if(existencia.length > 0) {
+            return res.json({
+                ok: false,
+                status: 400,
+                message: "Existe un usuario con ese correo"
+              });
+        }
+
         const salt = await bcrypt.genSalt(10);
         const contraHash = await bcrypt.hash(req.body.contrasena, salt);
         const empleado = await Empleado.create({

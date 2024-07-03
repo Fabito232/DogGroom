@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import Cliente from '../../assets/img_perro.jpg';
 import Modal from 'react-modal';
 import { URL_Hosting } from '../../services/api';
 import FloatingLabelInput from '../formulario/FloatingLabelInput'
-
+import { notificarError } from '../../utilis/notificaciones';
 
 import PropTypes from 'prop-types';
 
@@ -25,11 +26,12 @@ const AgregarMascota = ({ isOpen, cerrar, guardarMascota, mascota, modo, tiposMa
                 fotoURL: mascota.FotoURL,
                 TipoMascota: mascota.TipoMascotum
             }
-            console.log(mascota)
             setMostrarFoto(true)
             setNuevaMascota(mascotaActualizar);
         } else {
             setNuevaMascota({ nombre: '', raza: '', tipoMascota: {}, fotoURL: {} });
+            setFotoUrl(null)
+            setMostrarFoto(true)
         }
     }, [modo, mascota, cerrar]);
 
@@ -53,26 +55,30 @@ const AgregarMascota = ({ isOpen, cerrar, guardarMascota, mascota, modo, tiposMa
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         const { name } = e.target
-        console.log(name, file)
-        if (file) {
+        const fileTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+
+        if (file && fileTypes.includes(file.type)) {
             setNuevaMascota(prevState => ({
                 ...prevState,
                 [name]: file
             }));
             setMostrarFoto(false)
             setFotoUrl(URL.createObjectURL(file));
+            
+        }else{
+            notificarError('Solo se permiten archivos de imagen!');
+            e.target.value = null;
         }
         if(modo ==='agregar'){
             setMostrarFoto(true)
         }
-        console.log(nuevaMascota)
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(nuevaMascota)
         guardarMascota(nuevaMascota);
         setNuevaMascota({ nombre: '', raza: '', tipoMascota: {}, fotoURL: {} });
+        setFotoUrl(null)
         cerrar();
     };
 
@@ -136,10 +142,10 @@ const AgregarMascota = ({ isOpen, cerrar, guardarMascota, mascota, modo, tiposMa
                                 <span className="text-lg text-gray-700">Seleccionar Imagen de la Mascota</span>
                             </label>
                                 {modo==='editar' && (
-                                <img src={mostrarFoto ? `${URL_Hosting}${mascota.FotoURL}` : fotoUrl} alt="Imagen de la mascota" className="h-40 w-40 object-cover mt-4 ml-4 rounded-3xl" />
+                                <img src={mostrarFoto ? `${URL_Hosting}${mascota.FotoURL}` : fotoUrl} alt="Imagen de la mascota" onError={(event) => event.target.src = Cliente}  className="h-40 w-40 object-cover mt-4 ml-4 rounded-3xl" />
                                 )}
                                 {(modo==='agregar' && mostrarFoto) && (
-                                <img src={fotoUrl} alt="Imagen de la mascota" className="h-40 w-40 object-cover mt-4 ml-4 rounded-lg" />
+                                <img src={mostrarFoto ? Cliente : fotoUrl} alt="Imagen de la mascota" onError={(event) => event.target.src = Cliente} className="h-40 w-40 object-cover mt-4 ml-4 rounded-lg" />
                                 )}
                         </div>
 

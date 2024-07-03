@@ -14,10 +14,12 @@ const Finanzas = () => {
     const resumenCAnual = async () => {
         try {
             const response = await resumenControlAnual();
+            if(response.ok){
             setFinanzasAnual(response.data);
             setActualizarFinanzas(false);
+            }
         } catch (error) {
-            console.log(error);
+            notificarError("Error al cargar resumen anual")
         }
     };
 
@@ -36,7 +38,7 @@ const Finanzas = () => {
                 setFinanzas(response.data);
             }
         } catch (error) {
-            notificarError(error);
+            notificarError("Error al cargar el resumen");
         }
     };
 

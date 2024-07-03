@@ -23,7 +23,6 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascot
 
 
     const manejarEliminar = async (id) => {
-        console.log(mascotasActuales)
         const resultado = await Swal.fire({
             title: '¿Estás seguro?',
             text: "No podrás revertir esta acción!",

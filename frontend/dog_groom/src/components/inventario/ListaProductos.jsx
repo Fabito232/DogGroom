@@ -53,7 +53,7 @@ const ListaProductos = () => {
         setProductos(listaProducto);
       }
     } catch (error) {
-      console.log(error.message);
+      notificarError("Error al cargar los productos")
     }
   };
 
@@ -89,7 +89,6 @@ const ListaProductos = () => {
   const editarProducto = async (productoEditado) => {
     try {
       const { id, ...producto } = productoEditado;
-      console.log(producto);
       const resProducto = await actualizarProducto(producto, productoEditado.id);
       if (resProducto.ok) {
         const updatedProductos = productos.map((producto) =>
@@ -100,7 +99,7 @@ const ListaProductos = () => {
         notificarExito("Se guardó con éxito el producto")
       }
     } catch (error) {
-      console.log(error);
+      notificarError("Error al editar el producto")
     }
   };
 
@@ -140,7 +139,6 @@ const ListaProductos = () => {
                 draggable: true,
                 progress: undefined,
             });
-            console.error('Error al eliminar el producto:', error);
         }
     }
 };

@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services/empleadoService'; // Asegúrate de importar tu función de login
-import { useAuth } from './authContext'; // Importa el contexto de autenticación
-import { notificarError, notificarExito } from '../utilis/notificaciones';
+import { login } from '../../services/empleadoService'; // Asegúrate de importar tu función de login
+import { notificarError, notificarExito } from '../../utilis/notificaciones';
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { login: authLogin } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +14,7 @@ const Login = () => {
       const response = await login({ correo: username, contrasena: password });
 
       if (response.ok) {
-        authLogin(response.token); 
+        onLogin(response.token); 
         notificarExito('Inicio de sesión exitoso!');
         navigate('/citas');
       } else {
@@ -36,9 +34,9 @@ const Login = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <input
-              type="text"
+              type="email"
               className="w-full p-2 border border-gray-300 rounded"
-              placeholder="Usuario"
+              placeholder="Correo electrónico"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required

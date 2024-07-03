@@ -1,67 +1,95 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AuthProvider, useAuth } from './authContext'; // Ajusta la ruta según tu estructura de proyecto
-import Login from './login';
-import Citas from './citas';
-import AgendarCita from './AgendarCita';
-import ListaProductos from './ListaProductos';
-import AgregarProducto from './AgregarProducto';
-import ListaClientes from './ListaClientes';
-import AgregarCliente from './AgregarCliente';
-import Finanzas from './Finanzas';
-import ResumenCita from './resumenCita';
-import { ConfirmProvider } from './ModalConfirmacion';
-import ListaServicios from './ListaServicios';
-
-//import { ConfirmProvider } from './ModalConfirmacion';
-
+import Login from '../components/usuario/Login';
+import Citas from '../components/cita/Citas';
+import AgendarCita from '../components/cita/AgendarCita';
+import ListaProductos from '../components/inventario/ListaProductos';
+import AgregarProducto from '../components/inventario/AgregarProducto';
+import ListaClientes from '../components/cliente/ListaClientes';
+import AgregarCliente from '../components/cliente/AgregarCliente';
+import Finanzas from '../components/finanzas/Finanzas';
+import ResumenCita from '../components/cita/ResumenCita';
+import ListaServicios from '../components/cita/ListaServicios';
+import ListaCitas from '../components/cita/ListaCitas';
 
 const App = () => {
-  const { token } = useAuth();
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [token, setToken] = useState(localStorage.getItem('token'));
 
-  const openModal = () => setModalOpen(true);
-  const closeModal = () => setModalOpen(false);
-
-  const agregarProducto = (producto) => {
-    console.log('Producto agregado:', producto);
+  const handleLogin = (newToken) => {
+    setToken(newToken);
+    localStorage.setItem('token', newToken);
   };
 
-  const editarProducto = (producto) => {
-    console.log('Producto editado:', producto);
+  const renderProtectedRoute = (Component) => {
+    return token ? <Component /> : <Navigate to="/" />;
   };
+
+  const NotFound = () => (
+    <div className="h-screen flex items-center justify-center bg-red-300 text-center">
+      <div>
+        <h1 className="text-4xl font-bold mb-4">404 - Página no encontrada</h1>
+        <p className="text-lg">Lo sentimos, la página que buscas no existe.</p>
+      </div>
+    </div>
+  );
+
 
   return (
-    <ConfirmProvider>
+    <div>
       <ToastContainer />
       <Router>
         <Routes>
-          <Route path="/" element={!token ? <Login /> : <Navigate to="/citas" />} />
-          <Route path="/citas" element={token ? <Citas /> : <Navigate to="/" />} />
-          <Route path="/agendarCita" element={token ? <AgendarCita /> : <Navigate to="/" />} />
-          <Route path="/productos" element={token ? <ListaProductos /> : <Navigate to="/" />} />
-          <Route path="/resumen" element={token ? <ResumenCita /> : <Navigate to="/" />} />
-          <Route path="/agregarProducto" element={
-            token ? 
-              <AgregarProducto 
-                isOpen={isModalOpen}
-                cerrar={closeModal}
-                agregarProducto={agregarProducto}
-                editarProducto={editarProducto}
-                modo="agregar"
-              /> 
-            : 
-              <Navigate to="/" />
-          } />
-          <Route path="/clientes" element={token ? <ListaClientes /> : <Navigate to="/" />} />
-          <Route path="/agregarCliente" element={token ? <AgregarCliente /> : <Navigate to="/" />} />
-          <Route path="/f" element={token ? <Finanzas /> : <Navigate to="/" />} />
-          <Route path="/servicios" element={token ? <ListaServicios /> : <Navigate to="/" />} />
+          <Route path="/" element={<Login onLogin={handleLogin} />} />
+          <Route
+            path="/calendario"
+            element={renderProtectedRoute(() => <Citas />)}
+          />
+          <Route
+            path="/agendarCita"
+            element={renderProtectedRoute(() => <AgendarCita />)}
+          />
+          <Route
+            path="/productos"
+            element={renderProtectedRoute(() => <ListaProductos />)}
+          />
+          <Route
+            path="/resumen"
+            element={renderProtectedRoute(() => <ResumenCita />)}
+          />
+          <Route
+            path="/agregarProducto"
+            element={renderProtectedRoute(() => (
+              <AgregarProducto /> ))}
+          />
+          <Route
+            path="/clientes"
+            element={renderProtectedRoute(() => <ListaClientes />)}
+          />
+          <Route
+            path="/agregarCliente"
+            element={renderProtectedRoute(() => <AgregarCliente />)}
+          />
+          <Route
+            path="/finanzas"
+            element={renderProtectedRoute(() => <Finanzas />)}
+          />
+          <Route
+            path="/servicios"
+            element={renderProtectedRoute(() => <ListaServicios />)}
+          />
+          <Route
+            path="/citas"
+            element={renderProtectedRoute(() => <ListaCitas />)}
+          />
+          <Route
+          path='*'
+          element={<NotFound/>}
+        />
         </Routes>
       </Router>
-    </ConfirmProvider>
+    </div>
   );
 };
 

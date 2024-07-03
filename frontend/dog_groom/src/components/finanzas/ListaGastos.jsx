@@ -43,11 +43,9 @@ const ListaGastos = ({ actualizarFinanzasAnuales }) => {
                 }));
 
                 setGastos(listaGastos);
-            } else {
-                console.log(resGasto);
             }
         } catch (error) {
-            console.log(error);
+            notificarError("Error al cargar los gastos")
         }
     };
 
@@ -72,8 +70,6 @@ const ListaGastos = ({ actualizarFinanzasAnuales }) => {
                 setGastos([...gastos, nuevoGasto]);
                 setModalIsOpen(false);
                 notificarExito(resGasto.message)
-            } else {
-                notificarError(resGasto)
             }
         } catch (error) {
             notificarError(error)
@@ -83,7 +79,6 @@ const ListaGastos = ({ actualizarFinanzasAnuales }) => {
 
     const editarGasto = async (gastoEditado) => {
         try {
-            console.log(gastoEditado);
             const resGasto = await actualizarGasto(gastoEditado, gastoEditado.id);
             if (resGasto.ok) {
                 const updatedGastos = gastos.map((gasto) =>
@@ -91,10 +86,10 @@ const ListaGastos = ({ actualizarFinanzasAnuales }) => {
                 );
                 setGastos(updatedGastos);
                 setModalIsOpen(false);
-                notificarExito(resGasto.message)
+                notificarExito("Se editó correctamente el gasto")
             }
         } catch (error) {
-            console.log(error);
+            notificarError("Error al editar el gasto")
         }
         actualizarFinanzasAnuales();
     };
@@ -135,7 +130,6 @@ const ListaGastos = ({ actualizarFinanzasAnuales }) => {
                     draggable: true,
                     progress: undefined,
                 });
-                console.error('Error al eliminar el gasto:', error);
             }
             actualizarFinanzasAnuales();
         }

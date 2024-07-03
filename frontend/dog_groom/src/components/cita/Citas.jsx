@@ -57,10 +57,7 @@ function Citas() {
             precio: cita.Servicio ? parseFloat(cita.Servicio.Precio) : 0
           }
         }));
-        console.log(citasTransformadas);
         setEvents(citasTransformadas);
-      } else {
-        console.error("La respuesta de obtenerCitas no contiene datos.");
       }
     } catch (error) {
       console.error("Error al obtener citas:", error);
@@ -108,7 +105,6 @@ function Citas() {
   };
 
   const handleSelectSlot = ({ start }) => {
-    console.log(start)
     setFechaInicial(start)
     setModalIsOpen(true);
   };
@@ -130,10 +126,6 @@ function Citas() {
     };
   };
 
-  
-  
-  
-  
 
   return (
     <div className="img-backendC">

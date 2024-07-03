@@ -5,6 +5,7 @@ import { obtenerTipoMascotas } from "../../services/tipoAnimal";
 import Modal from 'react-modal';
 import PropTypes from 'prop-types';
 import FloatingLabelInput from '../formulario/FloatingLabelInput';
+import { validarCedula,validarTelefono,validarString } from "../../utilis/validaciones";
 
 function AgregarCliente({ isOpen, cerrar }) {
     const [cedulaCliente, setCedulaCliente] = useState('');
@@ -47,15 +48,19 @@ function AgregarCliente({ isOpen, cerrar }) {
 
     const handleAgregarCliente = async (e) => {
         e.preventDefault();
-        console.log("fotourl: ",mascotas)
-        await agregarMascota();
+        
+        if(validarDatos()){
+            
+        
+        if(nombreMascota && razaMascota && tamanoMascota.ID_TipoMascota !== 0){
+            await agregarMascota();
+        }
         const listaMascotas = mascotas.map((mascota) => ({
             nombre: mascota.nombre,
             raza: mascota.raza,
             cedula: cedulaCliente,
             ID_TipoMascota: mascota.tipoMascota.ID_TipoMascota,
         }));
-        console.log("Listamascotas:",listaMascotas)
         const formData = new FormData();
         if (!listaMascotas.length) {
             const mascota = [{
@@ -86,19 +91,23 @@ function AgregarCliente({ isOpen, cerrar }) {
         } catch (error) {
             notificarError(error.message);
         }
+    }
     };
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        if (file) {
+        const fileTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+
+        if (file && fileTypes.includes(file.type)) {
             setFotoActual(file);
             setFotoUrl(URL.createObjectURL(file));
+        } else {
+            notificarError('Solo se permiten archivos de imagen!');
+            e.target.value = null;
         }
-        e.target.value = null;
     };
 
     const agregarMascota = async () => {
-        console.log(mascotas.length === 0 ? false : true)
         if(nombreMascota && razaMascota && tamanoMascota.ID_TipoMascota !== 0){
         const mascota = {
             nombre: nombreMascota,
@@ -113,10 +122,27 @@ function AgregarCliente({ isOpen, cerrar }) {
         setTamanoMascota({ ID_TipoMascota: 0, Descripcion: '' });
         setFotoActual({});
         setFotoUrl('');
-        }else{
+        } else {
             notificarError("Los campos de la mascota no pueden estar vacios")
         }
     };
+
+    const validarDatos = () =>{
+        if(!validarCedula(cedulaCliente)){
+            notificarError("La cedula es invalida")
+            return false;
+        }
+        if(!validarTelefono(telefonoCliente)){
+            notificarError("Numero de telefono invalido")
+            return false;
+        }
+        if(!validarString(nombreMascota) || !validarString(razaMascota)){
+            notificarError("Los datos de la mascota deber tener como minimo 3 caracteres")
+            return false;
+        }
+        
+        return true
+    }
 
     const handleChangeSelect = (e) => {
         const { value } = e.target;

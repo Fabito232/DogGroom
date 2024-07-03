@@ -5,7 +5,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../assets/Fondo1.jpg');
+  background-color: #94a3b8;
   background-size: cover;
   background-position: center;
 }
@@ -24,6 +24,7 @@ display: flex;
 -webkit-box-align: stretch;
     -ms-flex-align: stretch;
         align-items: stretch;
+     margin-bottom: 1%;   
 }
 .contenedor{
   position: absolute;

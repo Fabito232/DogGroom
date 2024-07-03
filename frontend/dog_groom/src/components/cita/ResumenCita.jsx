@@ -57,7 +57,6 @@ function ResumenCita({isOpen, cerrar, cita}) {
   }
 
   const { id, cliente, servicio } = cita;
-  console.log(cita)
 
   const manejarCambioFecha = (e) => {
     const nuevaFecha = e.target.value;

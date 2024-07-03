@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import imgCliente from '../../assets/user.512x512.png';
+import imgCliente from '../../assets/img_user.png';
 import Header from "../Header";
 import { obtenerClientes, actualizarCliente, borrarCliente } from '../../services/clienteService';
 import { crearMascota, actualizarMascota, borrarMascota } from '../../services/mascotaService';
@@ -9,6 +9,8 @@ import AgregarCliente from './AgregarCliente';
 import MostrarMascotas from './MostrarMascotas';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
+import { notificarError, notificarExito } from '../../utilis/notificaciones';
+import { validarCedula, validarTelefono, validarString } from '../../utilis/validaciones';
 
 const ListaClientes = () => {
     const [clientes, setClientes] = useState([]);
@@ -33,7 +35,6 @@ const ListaClientes = () => {
     const abrirModalMascotas = (cliente) => {
         setClienteSeleccionado({ cedula: cliente.cedula, nombre: cliente.nombre });
         setMascotasSelecionadas(cliente.mascotas)
-        console.log("amoldal: ", cliente,)
         setModalIsOpenMascotas(true);
     };
 
@@ -52,19 +53,18 @@ const ListaClientes = () => {
                 telefono: cliente.Telefono,
                 mascotas: cliente.Mascota,
             }));
+            listaClientes.reverse()
             setClientes(listaClientes);
-            console.log(listaClientes)
         } catch (error) {
-            console.log(error);
+            notificarError("Error al cargar los clientes")
         }
     };
 
     useEffect(() => {
         cargarClientes();
-    }, [modalIsOpen]);
+    }, [modalIsOpen,isGuardarDisabled]);
 
     const editarMascota = async (mascota, ID_Mascota) => {
-        console.log("foto", mascota.Foto);
         const formData = new FormData();
         formData.append('nombre', mascota.Nombre);
         formData.append('raza', mascota.Raza);
@@ -74,9 +74,7 @@ const ListaClientes = () => {
 
         try {
             const resMascota = await actualizarMascota(formData, ID_Mascota);
-
             if (resMascota) {
-                console.log(resMascota.data);
                 const mascotaEditada = resMascota.data;
                 mascotaEditada.TipoMascotum = mascota.TipoMascotum;
 
@@ -91,16 +89,14 @@ const ListaClientes = () => {
                     return cliente;
                 });
                 setClientes(nuevaListaM);
-            } else {
-                console.log(resMascota);
+                notificarExito("Se editó correctamente la mascota")
             }
         } catch (error) {
-            console.log(error);
+            notificarError("Error al editar la mascota")
         }
     };
 
     const agregarMascota = async (mascota) => {
-        console.log("foto", mascota.Foto)
         const formData = new FormData();
         formData.append('nombre', mascota.Nombre);
         formData.append('raza', mascota.Raza);
@@ -112,7 +108,6 @@ const ListaClientes = () => {
             const resMascota = await crearMascota(formData);
 
             if (resMascota) {
-                console.log(resMascota.data)
                 const nuevaMascota = resMascota.data;
                 nuevaMascota.TipoMascotum = mascota.TipoMascotum
                 const nuevaListaM = clientes.map(cliente => {
@@ -123,35 +118,48 @@ const ListaClientes = () => {
                     }
                     return cliente;
                 });
-                console.log(nuevaListaM)
                 setClientes(nuevaListaM)
-
-            } else {
-                console.log(resMascota)
+                notificarExito("Se agregó correctamente la mascota")
             }
         } catch (error) {
-            console.log(error)
+            notificarError("Error al crear la mascota")
         }
     }
 
     const eliminarMascota = async (ID_Mascota) => {
-
         try {
             const resMascota = await borrarMascota(ID_Mascota);
-            console.log(resMascota);
-            const nuevasMascotas = mascotasSelecionadas.filter(mascota => mascota.ID_Mascota !== ID_Mascota)
-            const nuevaListaM = clientes.map(cliente => {
-                if (cliente.cedula === clienteSeleccionado.cedula) {
-                    return { ...cliente, mascotas: nuevasMascotas };
-                }
-                return cliente;
-            });
-            console.log(nuevasMascotas)
-            setMascotasSelecionadas(nuevasMascotas);
-            setClientes(nuevaListaM);
+            if(resMascota.ok){
+                const nuevasMascotas = mascotasSelecionadas.filter(mascota => mascota.ID_Mascota !== ID_Mascota)
+                const nuevaListaM = clientes.map(cliente => {
+                    if (cliente.cedula === clienteSeleccionado.cedula) {
+                        return { ...cliente, mascotas: nuevasMascotas };
+                    }
+                    return cliente;
+                });
+                setMascotasSelecionadas(nuevasMascotas);
+                setClientes(nuevaListaM);
+            } 
         } catch (error) {
-            console.log(error)
+            notificarError("Error al eliminar el cliente")
         }
+    }
+    const validarDatos = (cliente) =>{
+        if(!validarCedula(cliente.cedula)){
+            notificarError("La cedula es invalida")
+            return false;
+        }
+        if(!validarTelefono(cliente.telefono)){
+            notificarError("Numero de telefono invalido")
+            return false;
+        }
+
+        if(!validarString(cliente.nombre)){
+            notificarError("El nombre del cliente debe tener minimo 3 caracteres")
+            return false;
+        }
+        
+        return true
     }
 
 
@@ -165,15 +173,22 @@ const ListaClientes = () => {
             nombre: clienteEditando.nombre,
             telefono: clienteEditando.telefono
         };
-
-        const resCliente = await actualizarCliente(cliente, clienteEditando.id);
-        if (resCliente.ok) {
-            // Actualiza la mascota si es necesario
+        if(validarDatos(cliente)){
+            
+            try {
+                const resCliente = await actualizarCliente(cliente, clienteEditando.id);
+                if (resCliente.ok) {
+                    notificarExito("Cliente actualizadó correctamente")
+                }
+        
+                if (isGuardarDisabled) return;
+                setClientes(clientes.map(c => c.id === clienteEditando.id ? clienteEditando : c));
+                setClienteEditando(null);
+                
+            } catch (error) {
+                notificarError("Error al actualizar el cliente")
+            }
         }
-
-        if (isGuardarDisabled) return;
-        setClientes(clientes.map(c => c.id === clienteEditando.id ? clienteEditando : c));
-        setClienteEditando(null);
     };
 
     const manejarCancelar = () => {

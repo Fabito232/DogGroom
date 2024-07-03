@@ -10,6 +10,4 @@ router.post('/citas',validarDatosCita, createCita);
 router.delete('/citas/:id',deleteCita);
 router.put('/citas/:id',validarDatosCita, updateCita );
 
-
-
 export default router

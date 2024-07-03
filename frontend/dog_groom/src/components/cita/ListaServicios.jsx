@@ -46,16 +46,13 @@ const ListaServicios = () => {
         }));
 
         setServicios(ListaServicios);
-        console.log(resServicio);
-      } else {
-        console.log(resServicio);
-      }
+      } 
 
       if(resTipoAnimal.ok){  
         setTiposMascota(resTipoAnimal.data)
       }
     } catch (error) {
-      console.log(error);
+        notificarError("Error al cargar los servicios")
     }
   };
 
@@ -71,23 +68,18 @@ const ListaServicios = () => {
 
   const agregarServicio = async (servicio) => {
     try {
-
-        console.log("antes",servicio)
         const nuevoServicio = {
             descripcion: servicio.descripcion,
             precio: servicio.precio,
             ID_TipoMascota: servicio.tipoMascota.ID_TipoMascota
         }
-        console.log("despues",nuevoServicio)
       const resServicio = await crearServicio(nuevoServicio);
 
       if (resServicio.ok) {
-        console.log(resServicio);
         const nuevoServicio = {
           id: resServicio.data.ID_Servicio,
           ...servicio,
         };
-        console.log("sss",nuevoServicio)
         setServicios([...servicios, nuevoServicio]);
         setModalIsOpen(false);
         notificarExito(resServicio.message);
@@ -101,7 +93,6 @@ const ListaServicios = () => {
 
   const editarServicio = async (servicioEditado) => {
     try {
-      console.log(servicioEditado);
       const servicioActualizado = {
         descripcion: servicioEditado.descripcion,
         precio: servicioEditado.precio,
@@ -115,9 +106,11 @@ const ListaServicios = () => {
         setServicios(servicioActualizado);
         setModalIsOpen(false);
         notificarExito("Se actualizó el servicio correctamente");
+      }else{
+        notificarError("Error al actualizar el servicio")
       }
     } catch (error) {
-      console.log(error);
+      notificarError("Error al actualizar el servicio")
     }
   };
 

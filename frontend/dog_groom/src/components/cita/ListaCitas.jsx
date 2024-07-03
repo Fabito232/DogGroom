@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { obtenerCitas, borrarCita, } from '../../services/citaServices.js'
-import { notificarExito } from '../../utilis/notificaciones.js';
+import { notificarError, notificarExito } from '../../utilis/notificaciones.js';
 import Header from '../Header.jsx';
 import { FontAwesomeIcon, faTrashCan, faAddressCard} from '../../utilis/iconos.js'
 import dayjs from 'dayjs';
@@ -35,9 +35,7 @@ const ListaCitas = () => {
   const cargarCitas = async () => {
     try {
       const resCita = await obtenerCitas();
-      console.log(resCita)
       if (resCita.ok) {
-
         const ListaCitas = resCita.data.map(cita => ({
           id: cita.ID_Cita,
           start: dayjs(cita.FechaYHora).toDate(), 
@@ -66,18 +64,14 @@ const ListaCitas = () => {
           }
         }));
         const ordenarPorfechas = ListaCitas.sort((a, b) => new Date(b.fechaYHora) - new Date(a.fechaYHora));
-        console.log(ordenarPorfechas)
         setCitas(ordenarPorfechas);
-      } else {
-        console.log(resCita);
       }
     } catch (error) {
-      console.log(error);
+      notificarError("Error al cargar las citas")
     }
   };
 
   const abrirModalResumen = (cita) => {
-    console.log(cita)
     setCitaActual(cita)
     setModalIsOpenSummary(true)
   };
@@ -160,7 +154,8 @@ const ListaCitas = () => {
   return (
     <>
     <Header></Header>
-    <div className='md:container md:mx-auto p-5'>
+    <div className="relative min-h-screen flex flex-col bg-slate-400 bg-cover ">
+    <div className='md:container md:mx-auto p-5 '>
     <div className="p-6 bg-amber-700 container bg-opacity-95 rounded-lg">
       <h1 className="text-3xl font-bold mb-4 text-center">Citas de La Bandada </h1>
       <div className='flex justify-between mb-4'>
@@ -241,15 +236,13 @@ const ListaCitas = () => {
       {citasActuales.length === 0 ? (
             <h1 className="text-3xl font-bold m-5 text-center">Aún no se han agregado citas</h1>
       ) : (
-      <div className="flex justify-center mt-4">
+        <div className="flex justify-center mt-4">
         <nav>
           <ul className="flex items-center">
-            <li>
+            <li className="mr-6">
               <button
                 onClick={manejarAnterior}
-                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
-                  paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''
-                }`}
+                className={`px-8 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === 1 ? 'cursor-not-allowed opacity-50' : ''}`}
                 disabled={paginaActual === 1}
               >
                 &laquo;
@@ -259,22 +252,16 @@ const ListaCitas = () => {
               <li key={numero} className="cursor-pointer mx-1">
                 <button
                   onClick={() => paginar(numero)}
-                  className={`px-3 py-1 ${
-                    paginaActual === numero
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-blue-600'
-                  } rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
+                  className={`px-4 py-2 text-xl ${paginaActual === numero ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'} rounded-md hover:bg-blue-600 hover:text-white focus:outline-none`}
                 >
                   {numero}
                 </button>
               </li>
             ))}
-            <li>
+            <li className="ml-6">
               <button
                 onClick={manejarSiguiente}
-                className={`px-3 py-1 bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${
-                  paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''
-                }`}
+                className={`px-8 py-2 text-xl bg-white text-blue-600 rounded-md hover:bg-blue-600 hover:text-white focus:outline-none ${paginaActual === numerosDePagina.length ? 'cursor-not-allowed opacity-50' : ''}`}
                 disabled={paginaActual === numerosDePagina.length}
               >
                 &raquo;
@@ -285,6 +272,7 @@ const ListaCitas = () => {
       </div>
        )}
       </div>
+    </div>
     </div>
   </>
   );
