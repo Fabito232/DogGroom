@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { URL_Hosting } from '../../services/api.js';
+import { API_URL } from '../../services/api.js';
 import Cliente from '../../assets/img_perro.jpg';
 import { notificarError } from '../../utilis/notificaciones';
 import AgregarMascota from './AgregarMascota';
@@ -160,7 +160,7 @@ const MostrarMascota = ({ isOpen, mascotas, nombreCliente, cedula, agregarMascot
                         <div key={mascota.ID_Mascota} className="flex items-center w-full h-full bg-amber-700 bg-opacity-90 border border-black p-4 rounded-md">
                             <div className="w-full h-full">
                                 <img
-                                    src={mascota.FotoURL ? `${URL_Hosting}${mascota.FotoURL}` : Cliente}
+                                    src={mascota.FotoURL ? `${API_URL}${mascota.FotoURL}` : Cliente}
                                     alt={mascota.Nombre}
                                     onError={(event) => event.target.src = Cliente}
                                     className="object-cover w-full h-full rounded-lg"

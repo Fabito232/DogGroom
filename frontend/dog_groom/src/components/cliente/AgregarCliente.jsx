@@ -206,7 +206,7 @@ function AgregarCliente({ isOpen, cerrar }) {
                             required={mascotas.length === 0}
                         />
                         <select
-                        className="p-3 text-lg border h-12 border-gray-500  bg-slate-200 rounded-md w-full text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600"
+                        className="p-3 text-lg border h-12 border-gray-500  bg-slate-200 rounded-md w-full text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-600"
                         id="tamanno"
                         value={tamanoMascota.ID_TipoMascota}
                         onChange={handleChangeSelect}

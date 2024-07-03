@@ -4,7 +4,7 @@ import { notificarError, notificarExito } from '../../utilis/notificaciones';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
-import { URL_Hosting } from '../../services/api';
+import { API_URL } from '../../services/api';
 import PropTypes from 'prop-types'
 import Modal from 'react-modal'
 import FloatingLabelInput from '../formulario/FloatingLabelInput';
@@ -245,7 +245,7 @@ function ResumenCita({isOpen, cerrar, cita}) {
               {cita.mascotas.fotoURL ? (
                 <div className='flex justify-center m-5'>
                   <img
-                    src={URL_Hosting + cita.mascotas.fotoURL}
+                    src={API_URL + cita.mascotas.fotoURL}
                     alt="Mascota"
                     className="w-60 h-60 object-cover rounded-md"
                   />
@@ -288,7 +288,7 @@ function ResumenCita({isOpen, cerrar, cita}) {
                   <>
                   <label className="block text-gray-900 text-sm font-bold mb-2">Hora:</label>
                   <select
-                    className="p-3 text-lg border h-12 border-gray-500  bg-slate-200 rounded-md w-full text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600"
+                    className="p-3 text-lg border h-12 border-gray-500  bg-slate-200 rounded-md w-full text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-600"
                     value={hora}
                     onChange={manejarCambioHora}
                   >
@@ -369,7 +369,7 @@ function ResumenCita({isOpen, cerrar, cita}) {
                           disabled={!editando}
                           readOnly={!editando}
                         />
-                        <span className="ml-2 text-lg text-gray-900 dark:text-white">En proceso</span>
+                        <span className="ml-2 text-lg text-gray-900">En proceso</span>
                       </label>
                       <label className="flex items-center">
                         <input
@@ -380,7 +380,7 @@ function ResumenCita({isOpen, cerrar, cita}) {
                           disabled={!editando}
                           readOnly={!editando}
                         />
-                        <span className="ml-2 text-lg text-gray-900 dark:text-white">Finalizado</span>
+                        <span className="ml-2 text-lg text-gray-900">Finalizado</span>
                       </label>
                     </div>
                   </div>
