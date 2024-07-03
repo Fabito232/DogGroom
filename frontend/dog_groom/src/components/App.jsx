@@ -1,36 +1,68 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Login from './Login';
-import Citas from './cita/Citas';
-import AgendarCita from './cita/AgendarCita';
-import ListaProductos from './inventario/ListaProductos';
-import ListaClientes from './cliente/ListaClientes';
-import AgregarCliente from './cliente/AgregarCliente';
-import Finanzas from './finanzas/Finanzas';
-import ResumenCita from './cita/ResumenCita';
-import ListaServicios from './cita/ListaServicios';
-import ListaCitas from './cita/ListaCitas';
+import { AuthProvider, useAuth } from './authContext'; // Ajusta la ruta según tu estructura de proyecto
+import Login from './login';
+import Citas from './citas';
+import AgendarCita from './AgendarCita';
+import ListaProductos from './ListaProductos';
+import AgregarProducto from './AgregarProducto';
+import ListaClientes from './ListaClientes';
+import AgregarCliente from './AgregarCliente';
+import Finanzas from './Finanzas';
+import ResumenCita from './resumenCita';
+import { ConfirmProvider } from './ModalConfirmacion';
+import ListaServicios from './ListaServicios';
+
+//import { ConfirmProvider } from './ModalConfirmacion';
+
+
 const App = () => {
+  const { token } = useAuth();
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
+
+  const agregarProducto = (producto) => {
+    console.log('Producto agregado:', producto);
+  };
+
+  const editarProducto = (producto) => {
+    console.log('Producto editado:', producto);
+  };
 
   return (
-    <>
-      <ToastContainer/>
+    <ConfirmProvider>
+      <ToastContainer />
       <Router>
         <Routes>
-          <Route path="/" element={<Login/>}/>
-          <Route path="/calendario" element={<Citas />}/>
-          <Route path="/agendarCita" element={<AgendarCita />}/>
-          <Route path='/productos' element={<ListaProductos/>}/>
-          <Route path='/resumen'element={<ResumenCita/>}/>
-          <Route path='/clientes' element={<ListaClientes/>}/>
-          <Route path='/agregarCliente' element={<AgregarCliente/>}/>
-          <Route path='/finanzas' element={<Finanzas/>}/>
-          <Route path='/servicios' element={<ListaServicios/>}/>
-          <Route path='/citas' element={<ListaCitas/>}/>
+          <Route path="/" element={!token ? <Login /> : <Navigate to="/citas" />} />
+          <Route path="/citas" element={token ? <Citas /> : <Navigate to="/" />} />
+          <Route path="/agendarCita" element={token ? <AgendarCita /> : <Navigate to="/" />} />
+          <Route path="/productos" element={token ? <ListaProductos /> : <Navigate to="/" />} />
+          <Route path="/resumen" element={token ? <ResumenCita /> : <Navigate to="/" />} />
+          <Route path="/agregarProducto" element={
+            token ? 
+              <AgregarProducto 
+                isOpen={isModalOpen}
+                cerrar={closeModal}
+                agregarProducto={agregarProducto}
+                editarProducto={editarProducto}
+                modo="agregar"
+              /> 
+            : 
+              <Navigate to="/" />
+          } />
+          <Route path="/clientes" element={token ? <ListaClientes /> : <Navigate to="/" />} />
+          <Route path="/agregarCliente" element={token ? <AgregarCliente /> : <Navigate to="/" />} />
+          <Route path="/f" element={token ? <Finanzas /> : <Navigate to="/" />} />
+          <Route path="/servicios" element={token ? <ListaServicios /> : <Navigate to="/" />} />
         </Routes>
       </Router>
-    </>
-  )
-}
-export default App
+    </ConfirmProvider>
+  );
+};
+
+export default App;

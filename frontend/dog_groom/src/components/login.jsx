@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services/empleadoService';
+import { login } from '../services/empleadoService'; // Asegúrate de importar tu función de login
+import { useAuth } from './authContext'; // Importa el contexto de autenticación
 import { notificarError, notificarExito } from '../utilis/notificaciones';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const { login: authLogin } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,7 +16,7 @@ const Login = () => {
       const response = await login({ correo: username, contrasena: password });
 
       if (response.ok) {
-        localStorage.setItem('token', response.token);
+        authLogin(response.token); 
         notificarExito('Inicio de sesión exitoso!');
         navigate('/citas');
       } else {
