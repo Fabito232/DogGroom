@@ -161,9 +161,7 @@ export const resumenFinanzas = async (req, res) => {
       },
     });
 
-    console.log(fechaInicio, fechaFin);
     totalGanancias = parseFloat(result[0].dataValues.TotalGanancias) || 0;
-    console.log(totalGanancias);
     
     const distribucion = [
       { nombre: 'Vivian', porcentaje: "45%", monto: (totalGanancias * 0.45).toFixed(2) },
