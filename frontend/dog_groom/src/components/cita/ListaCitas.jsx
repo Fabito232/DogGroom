@@ -157,7 +157,7 @@ const ListaCitas = () => {
     <div className="relative min-h-screen flex flex-col bg-slate-400 bg-cover ">
     <div className='md:container md:mx-auto p-5 '>
     <div className="p-6 bg-amber-700 container bg-opacity-95 rounded-lg">
-      <h1 className="text-3xl font-bold mb-4 text-center">Citas de La Bandada </h1>
+      <h1 className="text-3xl font-bold mb-4 text-center text-white">Citas de La Bandada </h1>
       <div className='flex flex-col md:flex-row justify-between mb-4 items-center'>
               <div className="flex items-center mb-2 md:mb-0">
           <input

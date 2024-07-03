@@ -145,45 +145,49 @@ export const updateGasto = async (req, res) => {
 }
 
 export const resumenFinanzas = async (req, res) => {
-    const {fechaInicio , fechaFin} = req.body
-    let totalGanancias = 0
-    try {
-        const result = await Cita.findAll({
-          attributes: [
-            [sequelize.fn('SUM', sequelize.literal('"MontoTotal" -2000')), 'TotalGanancias']
-          ],
-          where:{
-            FechaYHora:{
-              [Op.between]: [fechaInicio,fechaFin] 
-            },
-            Estado: false
-          },
-        })
+  const { fechaInicio, fechaFin } = req.body;
+  let totalGanancias = 0;
+  
+  try {
+    const result = await Cita.findAll({
+      attributes: [
+        [sequelize.fn('SUM', sequelize.literal('"MontoTotal" - 2000')), 'TotalGanancias']
+      ],
+      where: {
+        FechaYHora: {
+          [Op.between]: [fechaInicio, fechaFin]
+        },
+        Estado: false
+      },
+    });
 
-        totalGanancias = result[0].dataValues.TotalGanancias
-        if(!totalGanancias) totalGanancias = 0
-        
-        const distribucion = [
-          {nombre: 'Vivian', porcentaje: "45%", monto: totalGanancias * 0.45 },
-          {nombre: 'Kathy', porcentaje: "35%", monto: totalGanancias * 0.35},
-          {nombre: 'La Bandada', porcentaje: "20%", monto: totalGanancias * 0.20},
-          {nombre: '', porcentaje: "Total", monto: totalGanancias},
-        ]
-        return res.json({
-          ok: true,
-          status: 200,
-          message: "Resumen de finanzas obtenido correctamente",
-          data: distribucion
-        })
-      } catch (error) {
-        return res.json({
-          ok: false,
-          status: 404,
-          message: "Error al obtener el resumen de finanzas",
-          data: {distribucion: distribucion, totalGanancias: totalGanancias}
-        })
-      }
+    console.log(fechaInicio, fechaFin);
+    totalGanancias = parseFloat(result[0].dataValues.TotalGanancias) || 0;
+    console.log(totalGanancias);
+    
+    const distribucion = [
+      { nombre: 'Vivian', porcentaje: "45%", monto: (totalGanancias * 0.45).toFixed(2) },
+      { nombre: 'Kathy', porcentaje: "35%", monto: (totalGanancias * 0.35).toFixed(2) },
+      { nombre: 'La Bandada', porcentaje: "20%", monto: (totalGanancias * 0.20).toFixed(2) },
+      { nombre: '', porcentaje: "Total", monto: totalGanancias.toFixed(2) },
+    ];
+
+    return res.json({
+      ok: true,
+      status: 200,
+      message: "Resumen de finanzas obtenido correctamente",
+      data: distribucion
+    });
+  } catch (error) {
+    return res.json({
+      ok: false,
+      status: 404,
+      message: "Error al obtener el resumen de finanzas",
+      data: { distribucion: distribucion, totalGanancias: totalGanancias.toFixed(2) }
+    });
+  }
 };
+
 
 export const resumenControlAnual = async (req, res) => {
   try {
@@ -198,7 +202,8 @@ export const resumenControlAnual = async (req, res) => {
             new Date(new Date().getFullYear(),0,1),
             new Date(new Date().getFullYear(),11,31)
           ]
-        }
+        },
+        Estado: false
       },
     })
 
