@@ -28,6 +28,7 @@ function Citas() {
   const fetchCitas = async () => {
     try {
       const resCitas = await obtenerCitas();
+      console.log("Citas: ", resCitas)
       if (resCitas && resCitas.data) {
         const citasTransformadas = resCitas.data.map(cita => ({
           id: cita.ID_Cita,

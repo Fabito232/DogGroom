@@ -149,6 +149,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
       times.push(`${String(h).padStart(2, '0')}:00`);
       times.push(`${String(h).padStart(2, '0')}:30`);
     }
+    console.log(times)
     return times;
   };
 
@@ -156,6 +157,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
     e.preventDefault();
     if(cedulaCliente && mascotaSeleccionada){
     const fechaYHoraCita = `${fecha}T${hora}`;
+    console.log("Fecha guardada", fechaYHoraCita)
     const cita = {
       fechaYHora: fechaYHoraCita,
       estado: estado,
@@ -288,7 +290,7 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
                     <FloatingLabelInput
                       type="text"
                       label="Nombre del Perro"
-                      value={telefonoCliente}
+                      value={mascotaSeleccionada.nombre}
                       readOnly
                       disabled={true}
                     />
