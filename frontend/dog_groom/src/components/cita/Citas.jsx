@@ -14,6 +14,7 @@ import AgendarCita from "./AgendarCita";
 const localizer = dayjsLocalizer(dayjs);
 dayjs.locale('es');
 
+
 function Citas() {
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ function Citas() {
             precio: cita.Servicio ? parseFloat(cita.Servicio.Precio) : 0
           }
         }));
+        console.log(citasTransformadas)
         setEvents(citasTransformadas);
       }
     } catch (error) {
