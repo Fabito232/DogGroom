@@ -9,6 +9,8 @@ import Resumen from './ResumenCita.jsx'
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 
+dayjs.locale('es');
+
 const ListaCitas = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalIsOpenSummary, setModalIsOpenSummary] = useState(false);
