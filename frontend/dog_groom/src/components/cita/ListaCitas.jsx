@@ -8,13 +8,10 @@ import AgendarCita from './AgendarCita.jsx';
 import Resumen from './ResumenCita.jsx'
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
-import "dayjs/locale/es";
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone'
-
+//import "dayjs/locale/es";
+//import utc from 'dayjs/plugin/utc';
 dayjs.locale('es');
-dayjs.extend(utc); // Extender Day.js con el plugin de UTC
-dayjs.extend(timezone); // Extender Day.js con el plugin de zona horaria
+//dayjs.extend(utc); // Extender Day.js con el plugin de UTC
 
 const ListaCitas = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -47,7 +44,7 @@ const ListaCitas = () => {
         const ListaCitas = resCita.data.map(cita => ({
           id: cita.ID_Cita,
           start: dayjs(cita.FechaYHora).toDate(), 
-          fechaYHora: dayjs.utc(cita.FechaYHora).format('YYYY-MM-DD HH:mm'),
+          fechaYHora: dayjs(cita.FechaYHora).format('YYYY-MM-DD HH:mm'),
           cedula: cita.Cliente.Cedula, 
           descripcion: cita.Descripcion, 
           estado: cita.Estado, 

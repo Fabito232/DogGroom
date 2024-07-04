@@ -149,7 +149,6 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
       times.push(`${String(h).padStart(2, '0')}:00`);
       times.push(`${String(h).padStart(2, '0')}:30`);
     }
-    console.log(times)
     return times;
   };
 

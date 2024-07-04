@@ -280,7 +280,7 @@ function ResumenCita({isOpen, cerrar, cita}) {
                     disabled={true}
                     name={'Fecha'}
                     label={'Fecha'}
-                    value={dayjs(cita.start).format('DD/MM/YYYY')}
+                    value={fecha}
 
                   />
                 )}
