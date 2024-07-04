@@ -152,13 +152,19 @@ function AgendarCita({isOpen, cerrar, fechaInicial}) {
     return times;
   };
 
+  function formatFechaHora(fechaHora) {
+    const fecha = dayjs(fechaHora).format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
+    return fecha;
+  }
+
   const handleAgendaCita = async (e) => {
     e.preventDefault();
     if(cedulaCliente && mascotaSeleccionada){
     const fechaYHoraCita = `${fecha}T${hora}`;
+    const fechaHoraISO = dayjs(fechaYHoraCita).toISOString();
     console.log("Fecha guardada", fechaYHoraCita)
     const cita = {
-      fechaYHora: fechaYHoraCita,
+      fechaYHora: fechaHoraISO,
       estado: estado,
       montoTotal: montoTotal,
       descripcion: descripcion,

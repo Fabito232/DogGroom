@@ -43,6 +43,7 @@ function ResumenCita({isOpen, cerrar, cita}) {
         ID_Mascota: cita.mascotas.id
 
       });
+      console.log(formatFechaHora(start))
       setMontoTotal(parseFloat(montoTotal));
       setMontoAdicional(parseFloat(montoAdicional) || 0);
       setMontoAdicionalInicial(parseFloat(montoAdicional) || 0);
@@ -91,6 +92,7 @@ function ResumenCita({isOpen, cerrar, cita}) {
   const manejarGuardar = async () => {
     try {
       const fechaHoraISO = dayjs(citaEditada.fechaYHora).toISOString();
+      console.log(citaEditada.fechaYHora)
       const estadoString = citaEditada.estado ? "True" : "False";
       const montoTotalActualizado = parseFloat(cita.montoTotal) + (parseFloat(citaEditada.montoAdicional) - montoAdicionalInicial);
       console.log({ ...citaEditada, estado: estadoString, fechaYHora: fechaHoraISO, montoTotal: montoTotalActualizado })
