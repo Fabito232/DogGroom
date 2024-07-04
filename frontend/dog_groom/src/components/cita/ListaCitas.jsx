@@ -37,6 +37,7 @@ const ListaCitas = () => {
   const cargarCitas = async () => {
     try {
       const resCita = await obtenerCitas();
+      console.log(resCita)
       if (resCita.ok) {
         const ListaCitas = resCita.data.map(cita => ({
           id: cita.ID_Cita,
@@ -65,7 +66,9 @@ const ListaCitas = () => {
             precio: cita.Servicio ? parseFloat(cita.Servicio.Precio) : 0
           }
         }));
+        console.log("Lista ",ListaCitas)
         const ordenarPorfechas = ListaCitas.sort((a, b) => new Date(b.fechaYHora) - new Date(a.fechaYHora));
+        console.log("Ordenar ",ordenarPorfechas)
         setCitas(ordenarPorfechas);
       }
     } catch (error) {
